@@ -1,0 +1,40 @@
+layout:
+  version: VERSION
+  js:
+    # Core.
+    js/layout.admin.js: { scope: footer }
+    # Models.
+    js/models/app-model.js: { scope: footer }
+    js/models/component-model.js: { scope: footer }
+    js/models/container-model.js: { scope: footer }
+    # Collections.
+    js/collections/collections.js: { scope: footer }
+    # Views.
+    js/views/modal-view.js: { scope: footer }
+    js/views/app-view.js: { scope: footer }
+    js/views/componentinstance-view.js: { scope: footer }
+    js/views/container-view.js: { scope: footer }
+    js/views/updatingcollection-view.js: { scope: footer }
+    # Other.
+    js/theme.js: { scope: footer }
+  css:
+    component:
+      css/layout.base.css: {}
+    theme:
+      css/layout.icons.css: {}
+      css/layout.theme.css: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/underscore
+    - core/backbone
+    - core/jquery.form
+    - core/jquery.ui.position
+    - core/jquery.ui.sortable
+    - core/drupal
+    - core/drupal.displace
+    - core/drupal.form
+    - core/drupal.ajax
+    - core/drupal.debounce
+    - core/drupalSettings
+    - core/drupal.dialog

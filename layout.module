@@ -1,0 +1,92 @@
+<?php
+/**
+ * Menu argument loader: Loads a layout by string.
+ *
+ * @param $name
+ *   The machine name of a layout to load.
+ *
+ * @return \Drupal\layout\Entity\Layout
+ *   A layout object or NULL if $name does not exist.
+ */
+function layout_load($name) {
+  return entity_load('layout', $name);
+}
+
+/**
+ * Menu argument loader: Loads a layout container by string.
+ *
+ * @param $name
+ *   The machine name of a layout container to load.
+ *
+ * @return \Drupal\layout\Entity\LayoutContainer
+ *   A layout object or NULL if $name does not exist.
+ */
+function layout_container_load($name) {
+  return entity_load('layout_container', $name);
+}
+
+/**
+ * Menu argument loader: Loads a layout component by string.
+ *
+ * @param $name
+ *   The machine name of a layout component  to load.
+ *
+ * @return \Drupal\layout\Entity\LayoutComponent
+ *   A layout object or NULL if $name does not exist.
+ */
+function layout_component_load($name) {
+  return entity_load('layout_component', $name);
+}
+
+/**
+ * Implements hook_permission().
+ */
+function layout_permission() {
+  return array(
+    'administer layouts' => array(
+      'title' => t('Administer layouts'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * Register layout theming functions.
+ */
+function layout_theme() {
+  \Drupal::moduleHandler()->loadInclude('layout', 'inc', 'layout.theme');
+
+  // Some quasi clever array merging here.
+  $base = array(
+    'file' => 'layout.theme.inc',
+  );
+
+  $hooks =  array();
+
+  $hooks['layout'] = $base + array(
+    'variables' => array('containers' => array()),
+    'template' => 'layout-layout',
+  );
+
+  $hooks['layout_container'] = $base + array(
+    'variables' => array('components' => array()),
+    'template' => 'layout-layout-container',
+  );
+
+  $hooks['layout_component'] = $base + array(
+    'variables' => array('component' => array()),
+    'template' => 'layout-layout-component',
+  );
+
+  var_dump($hooks);
+/*
+  return array(
+    'layout' => array(
+      'variables' => array('containers' => array()),
+      'template' => 'layout-layout',
+    ),
+  );
+*/
+  return $hooks;
+}

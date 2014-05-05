@@ -1,0 +1,93 @@
+/**
+ * @file layout.theme.css
+ */
+.layout-container-demonstration {
+  background-image: -webkit-linear-gradient(bottom, rgb(70,70,71) 40%, rgb(91,91,94) 70%, rgb(125,124,125) 88%);
+  background-image: linear-gradient(bottom, rgb(70,70,71) 40%, rgb(91,91,94) 70%, rgb(125,124,125) 88%);
+  color: white;
+  font-size: 0.8em;
+  margin: 3px;
+  padding: 10px;
+  text-transform: uppercase;
+}
+.layout-configure-form {
+  background-color: #ffffff;
+  box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.1);
+}
+.layout-configure-form .layout-display {
+  background-color: #e0e0e0;
+  border: 1px solid #ddd;
+  padding: 2em;
+}
+
+/**
+ * Containers.
+ */
+.layout-container > .lining {
+  background-color: #ffffff;
+  border-color: #cccccc;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+  padding: 0.75em;
+}
+.layout-container header {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.layout-container header .label {
+  color: #666666;
+  font-size: x-small;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/**
+ * Components.
+ */
+ .layout-configure-form .components .component {
+  padding: 0.5em;
+ }
+.layout-configure-form .component > .lining {
+  background-image: -webkit-linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);
+  background-image: linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);
+  min-height: 4.5em;
+}
+z.layout-container.layout-component {
+  background-image:-webkit-linear-gradient(rgb(123,194,170) 0%,rgb(114,179,156) 99%,rgb(114,179,156) 100%);
+  background-image:linear-gradient(rgb(123,194,170) 0%,rgb(114,179,156) 99%,rgb(114,179,156) 100%);
+}
+z.layout-container .page-component {
+  background-image: -webkit-linear-gradient(rgb(137,211,124) 0%,rgb(128,198,117) 99%,rgb(128,198,117) 100%);
+  background-image: linear-gradient(rgb(137,211,124) 0%,rgb(128,198,117) 99%,rgb(128,198,117) 100%);
+}
+
+/**
+ * Component information.
+ */
+.layout-configure-form .component .type-indicator,
+.layout-configure-form .component .label {
+  color: #ffffff;
+  padding-bottom: 0.1667em;
+  padding-top: 0.1667em;
+}
+.layout-configure-form .component .type-indicator {
+  border-bottom: 1px solid #ffffff;
+  border-right: 1px solid #ffffff; /* LTR */
+  font-weight: bold;
+  max-width: 2em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+.layout-configure-form .component .label {
+  font-weight: bold;
+}
+.layout-configure-form .component .type-indicator + .label {
+  margin-left: 2em; /* LTR */
+}
+
+
+.layout-container {
+  border: 1px solid #0000DD;
+}
+

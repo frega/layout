@@ -1,0 +1,6 @@
+name: Layout
+type: module
+description: 'Layout'
+core: 8.x
+package:  Layout
+configure: layout.settings

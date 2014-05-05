@@ -1,0 +1,59 @@
+/**
+ * @file layout.base.css
+ */
+
+.layout-app,
+.layout-app * {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.layout-app .form-textarea {
+  display: none;
+}
+
+/**
+ * Containers.
+ */
+.layout-app header .operations {
+  float: left; /* LTR */
+}
+.layout-app header .info {
+  float: right; /* LTR */
+}
+
+/**
+ * Components.
+ */
+.layout-app .components {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+.layout-app .components .row {
+  display: table-row;
+}
+.layout-app .components .component {
+  display: table-cell;
+  overflow: hidden;
+}
+.layout-app .components .component:hover {
+  cursor: pointer;
+}
+.layout-app .component > .lining {
+  display: inline-block;
+  height:100%;
+  position: relative;
+  width: 100%;
+}
+
+/**
+ * Component information.
+ */
+.layout-app .component .type-indicator,
+.layout-app .component .label {
+  display: block;
+}
+.layout-app .component .type-indicator {
+  float: left; /* LTR */
+}

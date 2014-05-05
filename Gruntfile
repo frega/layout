@@ -1,0 +1,66 @@
+/**
+ * @file
+ * Grunt file for the layout JS app. Allows for linting and build processes.
+ *
+ * @see http://gruntjs.com/
+ */
+module.exports = function(grunt) {
+  // Project configuration.
+  grunt.initConfig({
+    lint: {
+      all: [
+        'js/collections/*.js',
+        'js/models/*.js',
+        'js/views/*.js',
+        'js/routers/*.js'
+      ]
+    },
+    concat: {
+      dist: {
+        src: [
+          'js/models/*.js',
+          'js/collections/*.js',
+          'js/views/*.js',
+          'js/routers/*.js',
+          'js/*.js'
+        ],
+        // For simplicity now
+        dest: 'js/app.js'
+      },
+    },
+    watch: {
+      files: '<config:lint.all>',
+      tasks: 'default'
+    },
+    min: {
+      dist: {
+        src: ['js/app.js'],
+        dest: 'js/app.min.js'
+      }
+    },
+    jshint: {
+      options: {
+        curly: true,
+        immed: false,
+        undef: true,
+        browser: true,
+        laxbreak: true
+      },
+      globals: {
+        jQuery: true,
+        Backbone: true,
+        Drupal: true,
+        drupalSettings: true,
+        VIE: true,
+        _: true
+      }
+    }
+  });
+
+  // Load local tasks; we should add local tasks later.
+  // grunt.loadTasks("tasks");
+
+  // Set default
+  grunt.registerTask('default', 'lint concat min');
+
+};

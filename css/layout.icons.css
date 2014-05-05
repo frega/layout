@@ -1,0 +1,44 @@
+/**
+ * @file layout.icons.css
+ */
+.layout-app .icon {
+  border: 0;
+  line-height: 1;
+  padding-left: 2.5em; /* LTR */
+  position: relative;
+  text-indent: -9999px;
+}
+.layout-app .icon-text {
+  text-indent: 0;
+}
+.layout-app .icon:before {
+  background-attachment: scroll;
+  background-color: transparent;
+  background-position: center center;
+  background-repeat: no-repeat;
+  content: '';
+  display: block;
+  height: 100%;
+  left: 0.6667em; /* LTR */
+  position: absolute;
+  top: 0;
+  width: 20px;
+}
+.layout-app button.icon {
+  background-color: transparent;
+  font-size: 1em;
+}
+
+/**
+ * Icons.
+ */
+.layout-app .icon-plus:before,
+.layout-app .icon-plus:active:before,
+.layout-app .icon-plus.active:before {
+  background-image:url("../images/plus.png");
+}
+.layout-app .icon-gear:before,
+.layout-app .icon-gear:active:before,
+.layout-app .icon-gear.active:before {
+  background-image:url("../images/gear_fff.png");
+}

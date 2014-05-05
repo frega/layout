@@ -1,0 +1,5 @@
+layout.add:
+  route_name: layout.add
+  title: 'Add layout'
+  appears_on:
+    - layout.overview

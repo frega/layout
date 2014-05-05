@@ -1,0 +1,9 @@
+layout.edit:
+  title: 'Edit'
+  route_name: layout.edit
+  base_route: layout.edit
+
+layout.configure:
+  title: 'Configure components'
+  route_name: layout.configure
+  base_route: layout.edit
