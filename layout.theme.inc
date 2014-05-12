@@ -20,7 +20,6 @@ use Drupal\Core\Template\Attribute;
  *   - layout: The Layout object.
  */
 function template_preprocess_layout_layout(&$variables) {
-  var_dump('Hello layout_layout', $variables);
 }
 
 /**

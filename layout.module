@@ -79,14 +79,5 @@ function layout_theme() {
     'template' => 'layout-layout-component',
   );
 
-  var_dump($hooks);
-/*
-  return array(
-    'layout' => array(
-      'variables' => array('containers' => array()),
-      'template' => 'layout-layout',
-    ),
-  );
-*/
   return $hooks;
 }
