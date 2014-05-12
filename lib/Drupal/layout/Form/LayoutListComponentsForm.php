@@ -7,15 +7,15 @@
 
 namespace Drupal\layout\Form;
 
-use Drupal\Core\Entity\EntityFormController;
+use \Drupal\Core\Entity\EntityForm;
 use \Drupal\Component\Utility\String;
-use \Drupal\Component\Utility\Json;
+use \Drupal\Component\Serialization\Json;
 
 
 /**
  * Form controller for node type forms.
  */
-class LayoutListComponentsForm extends EntityFormController {
+class LayoutListComponentsForm extends EntityForm {
 
   /**
    * {@inheritdoc}

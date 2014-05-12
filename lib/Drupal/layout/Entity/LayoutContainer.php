@@ -9,7 +9,7 @@ namespace Drupal\layout\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Component\Utility\Json;
+use \Drupal\Component\Serialization\Json;
 
 
 /**

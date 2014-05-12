@@ -8,13 +8,13 @@
 namespace Drupal\layout;
 
 use Drupal\Core\Cache\Cache;
-use Drupal\block\BlockFormController;
+use Drupal\block\BlockForm;
 use Drupal\layout\Entity\LayoutComponent;
 
 /**
  * Provides form controller for component instance forms.
  */
-class LayoutContainerFormController extends FormController {
+class LayoutContainerFormController extends BlockForm {
   /**
    * {@inheritdoc}
    */

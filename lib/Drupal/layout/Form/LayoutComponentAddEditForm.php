@@ -7,7 +7,6 @@
 
 namespace Drupal\layout\Form;
 
-use Drupal\Core\Entity\EntityFormController;
 use Drupal\block\Controller\BlockAddController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 

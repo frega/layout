@@ -7,13 +7,13 @@
 
 namespace Drupal\layout;
 
-use Drupal\Core\Entity\EntityFormController;
+use Drupal\Core\Entity\EntityForm;
 use Drupal\Component\Utility\String;
 
 /**
  * Form controller for node type forms.
  */
-class LayoutFormController extends EntityFormController {
+class LayoutFormController extends EntityForm {
 
   /**
    * {@inheritdoc}

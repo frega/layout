@@ -8,7 +8,7 @@
 namespace Drupal\layout;
 
 use Drupal\Core\Cache\Cache;
-use Drupal\block\BlockFormController;
+use Drupal\block\BlockForm;
 use Drupal\layout\Entity\LayoutComponent;
 
 
@@ -20,7 +20,7 @@ use Drupal\layout\Ajax\LayoutComponentReload;
 /**
  * Provides form controller for component instance forms.
  */
-class LayoutComponentFormController extends BlockFormController {
+class LayoutComponentFormController extends BlockForm {
   /**
    * {@inheritdoc}
    */

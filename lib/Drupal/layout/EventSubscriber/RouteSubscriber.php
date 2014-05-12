@@ -10,7 +10,8 @@ use Drupal\layout\Layout;
 
 use Drupal\Core\Page\HtmlPage;
 use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\Core\KeyValueStore\StateInterface;
+use Drupal\Core\State\StateInterface;
+use Drupal\Core\State\State;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Drupal\Core\Routing\RoutingEvents;
 use Symfony\Component\Routing\Route;
@@ -74,7 +75,7 @@ class RouteSubscriber extends RouteSubscriberBase {
   /**
    * {@inheritdoc}
    */
-  protected function alterRoutes(RouteCollection $collection, $provider) {
+  protected function alterRoutes(RouteCollection $collection) {
     $query = $this->layoutStorage->getQuery();
     $layout_ids = $query->execute();
     $layouts = $this->layoutStorage->loadMultiple($layout_ids);
