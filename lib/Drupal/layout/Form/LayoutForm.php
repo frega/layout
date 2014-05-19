@@ -5,7 +5,7 @@
  * Contains \Drupal\layout\NodeTypeFormController.
  */
 
-namespace Drupal\layout;
+namespace Drupal\layout\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Component\Utility\String;
@@ -13,7 +13,7 @@ use Drupal\Component\Utility\String;
 /**
  * Form controller for node type forms.
  */
-class LayoutFormController extends EntityForm {
+class LayoutForm extends EntityForm {
 
   /**
    * {@inheritdoc}
@@ -60,15 +60,6 @@ class LayoutFormController extends EntityForm {
       '#description' => t('A unique path this page layout.')
     );
 
-    $form['containers'] = array(
-      '#title' => t('Containers'),
-      '#required' => TRUE,
-      '#type' => 'textarea',
-      '#default_value' => $type->get('containers') ?  $type->get('containers') : json_encode(array(array('id' => 'first', 'label' => 'First'), array('id' => 'second', 'label' => 'Second'))),
-      '#disabled' => $type->isLocked(),
-      '#description' => t('Enter JSON representing the containers ("regions")')
-    );
-
     $form['description'] = array(
       '#title' => t('Description'),
       '#type' => 'textarea',
@@ -95,13 +86,9 @@ class LayoutFormController extends EntityForm {
    */
   public function validate(array $form, array &$form_state) {
     parent::validate($form, $form_state);
-
-    $containers = trim($form_state['values']['containers']);
-    if (!$containers || !json_decode($containers)) {
-      $this->setFormError('containers', $form_state, $this->t("Invalid JSON provided"));
-    }
-
     // @todo: validate path for uniqueness etc.
+
+    // @note: this should probably be removed, just copied from elsewhere ...
     $id = trim($form_state['values']['id']);
     // '0' is invalid, since elsewhere we check it using empty().
     if ($id == '0') {
@@ -128,13 +115,9 @@ class LayoutFormController extends EntityForm {
     elseif ($status == SAVED_NEW) {
       drupal_set_message(t('The layout %name has been added.', $t_args));
       watchdog('layout', 'Added layout %name.', $t_args, WATCHDOG_NOTICE, l(t('view'), 'admin/structure/layouts'));
+
+      $form_state['redirect_route']['route_name'] = 'layout.overview';
     }
-
-    $form_state['redirect_route']['route_name'] = 'layout.overview';
-
-    // @todo: clear route cache on change of path property ...
-
-    $controller = $form_state['controller'];
   }
 
 }

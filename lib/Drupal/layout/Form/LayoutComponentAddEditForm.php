@@ -32,7 +32,7 @@ class LayoutComponentAddEditForm extends BlockAddController {
       throw new BadRequestHttpException('Invalid layout id provided');
     }
 
-    if (!$layout_entity->getContainer($layout_region_id)) {
+    if (!$layout_entity->getLayoutContainer($layout_region_id)) {
       throw new BadRequestHttpException('Invalid layout region id provided');
     }
 
@@ -51,7 +51,7 @@ class LayoutComponentAddEditForm extends BlockAddController {
       throw new BadRequestHttpException('Invalid layout id provided');
     }
 
-    if (!$layout_entity->getContainer($layout_region_id)) {
+    if (!$layout_entity->getLayoutContainer($layout_region_id)) {
       throw new BadRequestHttpException('Invalid layout region id provided');
     }
 

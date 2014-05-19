@@ -90,6 +90,11 @@ class LayoutListBuilder extends ConfigEntityListBuilder {
   public function getOperations(EntityInterface $entity) {
     $operations = parent::getOperations($entity);
     if ($entity->access('update') && $entity->hasLinkTemplate('configure-form')) {
+      $operations['configure_containers'] = array(
+          'title' => $this->t('Configure regions/containers'),
+          'weight' => 14,
+        ) + $entity->urlInfo('configure-containers-form')->toArray();
+
       $operations['configure'] = array(
           'title' => $this->t('Configure components'),
           'weight' => 15,

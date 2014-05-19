@@ -5,7 +5,7 @@
  * Contains \Drupal\block\ComponentFormController.
  */
 
-namespace Drupal\layout;
+namespace Drupal\layout\Form;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\block\BlockForm;
@@ -20,7 +20,7 @@ use Drupal\layout\Ajax\LayoutComponentReload;
 /**
  * Provides form controller for component instance forms.
  */
-class LayoutComponentFormController extends BlockForm {
+class LayoutComponentForm extends BlockForm {
   /**
    * {@inheritdoc}
    */

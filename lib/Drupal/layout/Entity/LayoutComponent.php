@@ -27,7 +27,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "access" = "Drupal\block\BlockAccessController",
  *     "view_builder" = "Drupal\block\BlockViewBuilder",
  *     "form" = {
- *       "default" = "Drupal\layout\LayoutComponentFormController",
+ *       "default" = "Drupal\layout\Form\LayoutComponentForm",
  *       "delete"  = "Drupal\layout\Form\LayoutComponentDeleteConfirmForm"
  *     }
  *   },

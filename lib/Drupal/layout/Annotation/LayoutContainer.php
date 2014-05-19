@@ -7,29 +7,12 @@
 
 namespace Drupal\layout\Annotation;
 
-use Drupal\Component\Annotation\Plugin;
+use Drupal\layout\Annotation\LayoutPluginAnnotationBase;
 
 /**
  * Defines a LayoutComponent annotation object.
  *
  * @Annotation
  */
-class LayoutContainer extends Plugin {
-
-  /**
-   * The plugin ID.
-   *
-   * @var string
-   */
-  public $id;
-
-  /**
-   * The human-readable name of the Layout plugin.
-   *
-   * @ingroup plugin_translatable
-   *
-   * @var \Drupal\Core\Annotation\Translation
-   */
-  public $title;
-
+class LayoutContainer extends LayoutPluginAnnotationBase {
 }

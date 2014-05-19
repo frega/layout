@@ -65,6 +65,7 @@ class LayoutConfigureForm extends EntityForm {
    * {@inheritdoc}
    */
   protected function actions(array $form, array &$form_state) {
+    // Changes are not submitted via the form but via a pseduo-REST recipient.
     return array();
   }
 
@@ -72,12 +73,6 @@ class LayoutConfigureForm extends EntityForm {
    * {@inheritdoc}
    */
   public function validate(array $form, array &$form_state) {
-    parent::validate($form, $form_state);
-
-    $components = Json::decode($form_state['values']['components']);
-    if (!is_array($components)) {
-      $this->setFormError('components', $form_state, $this->t("Invalid JSON provided."));
-    }
   }
 
   /**

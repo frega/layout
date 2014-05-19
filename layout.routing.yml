@@ -47,12 +47,37 @@ layout.configure:
   requirements:
     _entity_access: 'layout.configure'
 
-layout.configure_container:
-  path: '/admin/structure/layouts/containers/{layout}/{layout_region}'
+layout.configure_containers:
+  path: '/admin/structure/layouts/configure-regions/{layout}/manage'
   defaults:
-    _content: '\Drupal\layout\Form\LayoutContainerAddEditForm::addForm'
+    _entity_form: 'layout.configure_containers'
   requirements:
-    _entity_access: 'layout_container.configure'
+    _entity_access: 'layout.configure'
+
+layout.add_container:
+  path: '/admin/structure/layouts/configure-regions/{layout}/add/{plugin_id}'
+  defaults:
+    _form: '\Drupal\layout\Form\LayoutContainerAddForm'
+    _title: 'Add new container'
+  requirements:
+    _entity_access: 'layout.configure'
+
+layout.edit_container:
+  path: '/admin/structure/layouts/configure-regions/{layout}/edit/{plugin_id}'
+  defaults:
+    _form: '\Drupal\layout\Form\LayoutContainerEditForm'
+    _title: 'Edit container'
+  requirements:
+    _entity_access: 'layout.configure'
+
+layout.delete_container:
+  path: '/admin/structure/layouts/configure-regions/{layout}/delete/{plugin_id}'
+  defaults:
+    _form: '\Drupal\layout\Form\LayoutContainerDeleteForm'
+    _title: 'Delete container'
+  requirements:
+    _entity_access: 'layout.configure'
+
 
 layout.list_components:
   path: '/admin/structure/layout/components/{layout}/{layout_region_id}'

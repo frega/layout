@@ -6,7 +6,7 @@
 
 namespace Drupal\layout\EventSubscriber;
 
-use Drupal\layout\Layout;
+use Drupal\layout\Layouts;
 
 use Drupal\Core\Page\HtmlPage;
 use Drupal\Core\Entity\EntityManagerInterface;

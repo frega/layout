@@ -12,7 +12,7 @@
       attributes: {}
     });
     return '<a data-dialog-options=\'' + JSON.stringify(d.dialogOptions) + '\' data-accepts="application/vnd.drupal-modal" ' +
-      'href="' + Drupal.url(path) + '" role="button" aria-label="' + d.ariaLabel + '" class="' + d.class + ' ajax">' + title + '</a>';
+      'href="' + Drupal.url(path) + '" role="button" aria-label="' + d.ariaLabel + '" class="' + d['class'] + ' ajax">' + title + '</a>';
   };
 
   /**
@@ -26,12 +26,12 @@
       '<div id="layout-container-' + id + '" class="layout-container">' +
         '<div class="lining">' +
           '<header class="clearfix">' +
+            '<div class="info"><span class="label">' + label + '</span></div>' +
             '<div role="form" class="operations">' +
               Drupal.theme.layoutModalLink(Drupal.t('Add component'), 'admin/structure/layout/components/' + drupalSettings.layout.id + '/' + id) +
               // @note: disable for the time being.
               // Drupal.theme.layoutModalLink(Drupal.t('Configure container'), 'admin/structure/layout/containers/' + drupalSettings.layout.id + '/' + id) +
             '</div>' +
-            '<div class="info"><span class="label">' + label + '</span></div>' +
           '</header>' +
           '<div class="components">' +
             '<div class="row"></div>' +

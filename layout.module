@@ -13,19 +13,6 @@ function layout_load($name) {
 }
 
 /**
- * Menu argument loader: Loads a layout container by string.
- *
- * @param $name
- *   The machine name of a layout container to load.
- *
- * @return \Drupal\layout\Entity\LayoutContainer
- *   A layout object or NULL if $name does not exist.
- */
-function layout_container_load($name) {
-  return entity_load('layout_container', $name);
-}
-
-/**
  * Menu argument loader: Loads a layout component by string.
  *
  * @param $name
