@@ -31,7 +31,7 @@ class LayoutConfigureContainersForm extends EntityForm {
     foreach ($plugins as $plugin) {
       $operations['layout_container_add_' .  $plugin['id']] = array(
         'title' => $this->t('Add @name container', array('@name' => $plugin['title'])),
-        'route_name' => 'layout.add_container',
+        'route_name' => 'layout.layout_container_add',
         'route_parameters' => array(
           'layout' => $this->entity->id(),
           'plugin_id' => $plugin['id']
@@ -80,7 +80,7 @@ class LayoutConfigureContainersForm extends EntityForm {
       $operations = array();
       $operations['edit'] = array(
         'title' => $this->t('Edit'),
-        'route_name' => 'layout.edit_container',
+        'route_name' => 'layout.layout_container_edit',
         'route_parameters' => array(
           'layout' => $this->entity->id(),
           'plugin_id' => $container_id,
@@ -89,7 +89,7 @@ class LayoutConfigureContainersForm extends EntityForm {
 
       $operations['delete'] = array(
         'title' => $this->t('Delete'),
-        'route_name' => 'layout.delete_container',
+        'route_name' => 'layout.layout_container_delete',
         'route_parameters' => array(
           'layout' => $this->entity->id(),
           'plugin_id' => $container_id,

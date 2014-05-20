@@ -28,7 +28,7 @@
           '<header class="clearfix">' +
             '<div class="info"><span class="label">' + label + '</span></div>' +
             '<div role="form" class="operations">' +
-              Drupal.theme.layoutModalLink(Drupal.t('Add component'), 'admin/structure/layout/components/' + drupalSettings.layout.id + '/' + id) +
+              Drupal.theme.layoutModalLink(Drupal.t('Add component'), '/admin/structure/layout/manage/' + drupalSettings.layout.id + '/components/' + id + '/select') +
               // @note: disable for the time being.
               // Drupal.theme.layoutModalLink(Drupal.t('Configure container'), 'admin/structure/layout/containers/' + drupalSettings.layout.id + '/' + id) +
             '</div>' +

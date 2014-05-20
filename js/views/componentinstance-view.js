@@ -30,8 +30,8 @@
       // @see http://stackoverflow.com/questions/11594961/backbone-not-this-el-wrapping
       var old = this.$el;
       this.setElement(Drupal.theme('layoutComponent', this.model.get('id'), this.model.get('label'), {
-        'configurePath': 'admin/structure/layout/components/' + drupalSettings.layout.id + '/' + this.model.get('container') + '/' + this.model.get('id') + '/configure',
-        'deletePath': 'admin/structure/layout/component-delete/' + this.model.get('id')
+        'configurePath': '/admin/structure/layout/manage/' + drupalSettings.layout.id + '/components/' + this.model.get('container') + '/' + this.model.get('id') + '/edit',
+        'deletePath': '/admin/structure/layout/manage/' + drupalSettings.layout.id + '/components/' + this.model.get('container') + '/' + this.model.get('id') + '/delete'
       }));
       old.replaceWith(this.$el);
       // Rewire Drupal.ajax.

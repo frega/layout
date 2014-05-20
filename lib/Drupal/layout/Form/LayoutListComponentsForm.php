@@ -46,7 +46,7 @@ class LayoutListComponentsForm extends EntityForm {
 
       $form['place_blocks']['list'][$category_key]['content']['#links'][$plugin_id] = array(
         'title' => $plugin_definition['admin_label'],
-        'href' => '/admin/structure/layout/components/' . $type->id() . '/' . $this->getRequest()->get('layout_region_id') . '/' . $plugin_id,
+        'href' => '/admin/structure/layout/manage/' . $type->id() .'/components/'  . $this->getRequest()->get('layout_region_id') . '/' . $plugin_id . '/add',
         'attributes' => array(
           'class' => array('use-ajax', 'block-filter-text-source'),
           'data-accepts' => 'application/vnd.drupal-modal',
@@ -64,9 +64,7 @@ class LayoutListComponentsForm extends EntityForm {
    * {@inheritdoc}
    */
   protected function actions(array $form, array &$form_state) {
-    $actions = parent::actions($form, $form_state);
-    $actions['submit']['#value'] = t('Save layout');
-    unset($actions['delete']);
+    $actions = array();
     return $actions;
   }
 

@@ -1,14 +1,14 @@
-layout.edit:
+layout.layout_edit:
   title: 'Edit'
-  route_name: layout.edit
-  base_route: layout.edit
+  route_name: layout.layout_edit
+  base_route: layout.layout_edit
 
-layout.configure:
+layout.layout_configure:
   title: 'Components'
-  route_name: layout.configure
-  base_route: layout.edit
+  route_name: layout.layout_configure
+  base_route: layout.layout_edit
 
-layout.configure_containers:
+layout.layout_containers:
   title: 'Containers'
-  route_name: layout.configure_containers
-  base_route: layout.edit
+  route_name: layout.layout_containers
+  base_route: layout.layout_edit

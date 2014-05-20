@@ -69,7 +69,7 @@ class LayoutContainerAddForm extends LayoutContainerFormBase {
     // Save the layout page.
     $this->layout->save();
     drupal_set_message($this->t('The %label container been added.', array('%label' => $this->layoutContainer->label())));
-    $form_state['redirect_route'] = new Url('layout.configure_containers', array(
+    $form_state['redirect_route'] = new Url('layout.layout_containers', array(
       'layout' => $this->layout->id()
     ));
   }

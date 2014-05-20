@@ -121,7 +121,7 @@ class LayoutComponentForm extends BlockForm {
       return $response;
     }
     $form_state['redirect_route'] = array(
-      'route_name' => 'layout.configure',
+      'route_name' => 'layout.layout_configure',
       'route_parameters' => array(
         'layout' => $form_state['layout'],
       )

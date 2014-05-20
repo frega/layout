@@ -54,7 +54,7 @@ class LayoutComponentDeleteConfirmForm extends EntityConfirmFormBase {
    */
   public function getCancelRoute() {
     return array(
-      'route_name' => 'layout.configure',
+      'route_name' => 'layout.layout_configure',
       'route_parameters' => array(
         'layout' => $this->entity->get('layout')
       )
@@ -85,7 +85,7 @@ class LayoutComponentDeleteConfirmForm extends EntityConfirmFormBase {
     watchdog('layout_component', 'Deleted layout component %name.', $t_args, WATCHDOG_NOTICE);
 
     $form_state['redirect_route'] = array(
-      'route_name' => 'layout.configure',
+      'route_name' => 'layout.layout_configure',
       'route_parameters' => array(
         'layout' => $this->entity->get('layout')
       )

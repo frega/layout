@@ -17,7 +17,7 @@ layout.rest:
     _method: 'GET|PUT|POST'
     _permission: 'administer layouts'
 
-layout.add:
+layout.layout_add:
   path: '/admin/structure/layouts/add'
   defaults:
     _entity_form: 'layout.add'
@@ -25,14 +25,14 @@ layout.add:
   requirements:
     _permission: 'administer layouts'
 
-layout.edit:
+layout.layout_edit:
   path: '/admin/structure/layouts/manage/{layout}'
   defaults:
     _entity_form: 'layout.edit'
   requirements:
     _entity_access: 'layout.edit'
 
-layout.delete_confirm:
+layout.layout_delete:
   path: '/admin/structure/layouts/manage/{layout}/delete'
   defaults:
     _entity_form: 'layout.delete_confirm'
@@ -40,71 +40,70 @@ layout.delete_confirm:
   requirements:
     _entity_access: 'layout.delete'
 
-layout.configure:
-  path: '/admin/structure/layouts/configure/{layout}'
+layout.layout_configure:
+  path: '/admin/structure/layouts/manage/{layout}/configure'
   defaults:
     _entity_form: 'layout.configure'
   requirements:
     _entity_access: 'layout.configure'
 
-layout.configure_containers:
-  path: '/admin/structure/layouts/configure-regions/{layout}/manage'
+layout.layout_containers:
+  path: '/admin/structure/layouts/manage/{layout}/containers'
   defaults:
     _entity_form: 'layout.configure_containers'
   requirements:
     _entity_access: 'layout.configure'
 
-layout.add_container:
-  path: '/admin/structure/layouts/configure-regions/{layout}/add/{plugin_id}'
+layout.layout_container_add:
+  path: '/admin/structure/layouts/manage/{layout}/containers/add/{plugin_id}'
   defaults:
     _form: '\Drupal\layout\Form\LayoutContainerAddForm'
     _title: 'Add new container'
   requirements:
     _entity_access: 'layout.configure'
 
-layout.edit_container:
-  path: '/admin/structure/layouts/configure-regions/{layout}/edit/{plugin_id}'
+layout.layout_container_edit:
+  path: '/admin/structure/layouts/manage/{layout}/containers/{plugin_id}/edit'
   defaults:
     _form: '\Drupal\layout\Form\LayoutContainerEditForm'
     _title: 'Edit container'
   requirements:
     _entity_access: 'layout.configure'
 
-layout.delete_container:
-  path: '/admin/structure/layouts/configure-regions/{layout}/delete/{plugin_id}'
+layout.layout_container_delete:
+  path: '/admin/structure/layouts/manage/{layout}/containers/{plugin_id}/delete'
   defaults:
     _form: '\Drupal\layout\Form\LayoutContainerDeleteForm'
     _title: 'Delete container'
   requirements:
     _entity_access: 'layout.configure'
 
-
-layout.list_components:
-  path: '/admin/structure/layout/components/{layout}/{layout_region_id}'
+layout.layout_components_select:
+  path: '/admin/structure/layout/manage/{layout}/components/{layout_region_id}/select'
   defaults:
     _entity_form: 'layout.list_components'
     _title: 'Select component'
   requirements:
     _permission: 'administer layouts'
 
-layout.add_component:
-  path: '/admin/structure/layout/components/{layout}/{layout_region_id}/{plugin_id}'
+layout.layout_component_add:
+  path: '/admin/structure/layout/manage/{layout}/components/{layout_region_id}/{plugin_id}/add'
   defaults:
     _content: '\Drupal\layout\Form\LayoutComponentAddEditForm::addForm'
     _title: 'Instantiate and place component'
   requirements:
     _permission: 'administer layouts'
 
-layout.edit_component:
-  path: '/admin/structure/layout/components/{layout}/{layout_region_id}/{plugin_id}/configure'
+layout.layout_component_edit:
+  path: '/admin/structure/layout/manage/{layout}/components/{layout_region_id}/{plugin_id}/edit'
   defaults:
     _content: '\Drupal\layout\Form\LayoutComponentAddEditForm::editForm'
     _title: 'Configure component'
   requirements:
     _permission: 'administer layouts'
 
-layout.component_delete_confirm:
-  path: '/admin/structure/layout/component-delete/{layout_component}'
+layout.layout_component_delete:
+  path: '/admin/structure/layout/manage/{layout}/components/{layout_region_id}/{plugin_id}/delete'
   defaults:
     _entity_form: 'layout_component.delete'
     _title: 'Delete'

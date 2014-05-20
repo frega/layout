@@ -41,11 +41,11 @@ use Drupal\layout\LayoutStorageInterface;
  *     "label" = "label"
  *   },
  *   links = {
- *     "add-form" = "layout.add",
- *     "edit-form" = "layout.edit",
- *     "configure-containers-form" = "layout.configure_containers",
- *     "configure-form" = "layout.configure",
- *     "delete-form" = "layout.delete_confirm"
+ *     "add-form" = "layout.layout_add",
+ *     "edit-form" = "layout.layout_edit",
+ *     "configure-containers-form" = "layout.layout_containers",
+ *     "configure-form" = "layout.layout_configure",
+ *     "delete-form" = "layout.layout_delete"
  *   }
  * )
  */
