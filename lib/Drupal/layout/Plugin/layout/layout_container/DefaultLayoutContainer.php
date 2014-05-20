@@ -2,7 +2,7 @@
 
 namespace Drupal\layout\Plugin\layout\layout_container;
 
-use Drupal\layout\Plugin\LayoutContainerBase;
+use Drupal\layout\Plugin\LayoutPluginBase;
 
 
 /**
@@ -19,7 +19,7 @@ use Drupal\layout\Plugin\LayoutContainerBase;
  *   admin = @Translation("Container")
  * )
  */
-class DefaultLayoutContainer extends LayoutContainerBase {
+class DefaultLayoutContainer extends LayoutPluginBase {
   var $configuration = array();
 
   /**

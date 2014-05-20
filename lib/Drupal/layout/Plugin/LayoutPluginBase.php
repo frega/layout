@@ -13,9 +13,9 @@ use Drupal\Core\Plugin\PluginDependencyTrait;
 use Drupal\layout\Plugin\LayoutContainerInterface;
 
 /**
- * Provides a base class for LayoutContainer plugins.
+ * Provides a base class for Layout plugins.
  */
-abstract class LayoutContainerBase extends PluginBase implements LayoutContainerInterface {
+abstract class LayoutPluginBase extends PluginBase implements LayoutContainerInterface {
   /**
    * {@inheritdoc}
    */
