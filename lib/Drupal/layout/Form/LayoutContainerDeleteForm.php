@@ -63,9 +63,9 @@ class LayoutContainerDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, LayoutStorageInterface $layout = NULL, $layout_container = NULL) {
+  public function buildForm(array $form, array &$form_state, LayoutStorageInterface $layout = NULL, $plugin_id = NULL) {
     $this->layout = $layout;
-    $this->layoutContainer = $layout->getLayoutContainer($layout_container);
+    $this->layoutContainer = $layout->getLayoutContainer($plugin_id);
     return parent::buildForm($form, $form_state);
   }
 
