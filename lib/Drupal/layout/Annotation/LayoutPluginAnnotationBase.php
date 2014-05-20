@@ -22,7 +22,7 @@ abstract class LayoutPluginAnnotationBase extends Plugin implements AnnotationIn
   public $id;
 
   /**
-   * The plugin title used in the views UI.
+   * The plugin title used in the layout UI.
    *
    * @var \Drupal\Core\Annotation\Translation
    *
@@ -31,7 +31,7 @@ abstract class LayoutPluginAnnotationBase extends Plugin implements AnnotationIn
   public $title = '';
 
   /**
-   * (optional) The short title used in the views UI.
+   * (optional) The short title used in the layout UI.
    *
    * @var \Drupal\Core\Annotation\Translation
    *
@@ -40,9 +40,9 @@ abstract class LayoutPluginAnnotationBase extends Plugin implements AnnotationIn
   public $short_title = '';
 
   /**
-   * The administrative name of the display.
+   * The administrative name.
    *
-   * The name is displayed on the Views overview and also used as default name
+   * The name is displayed on the layout overview and also used as default name
    * for new displays.
    *
    * @var \Drupal\Core\Annotation\Translation
@@ -52,14 +52,13 @@ abstract class LayoutPluginAnnotationBase extends Plugin implements AnnotationIn
   public $admin = '';
 
   /**
-   * A short help string; this is displayed in the views UI.
+   * A short help string; this is displayed in the layout UI.
    *
    * @var \Drupal\Core\Annotation\Translation
    *
    * @ingroup plugin_translatable
    */
   public $help = '';
-
 
   /**
    * A class to make the plugin derivative aware.
@@ -89,21 +88,12 @@ abstract class LayoutPluginAnnotationBase extends Plugin implements AnnotationIn
    *
    * If you don't specify it there will be contextual links rendered for all
    * displays of a view. If this is not set or regions have been specified,
-   * views will display an option to 'hide contextual links'. Use an empty
+   * layout will display an option to 'hide contextual links'. Use an empty
    * array to disable.
    *
    * @var array
    */
   public $contextual_links_locations;
-
-  /**
-   * The base tables on which this display plugin can be used.
-   *
-   * If no base table is specified the plugin can be used with all tables.
-   *
-   * @var array
-   */
-  public $base;
 
   /**
    * The theme function used to render the display's output.

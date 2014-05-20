@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\views\EventSubscriber\RouteSubscriber.
+ * Contains \Drupal\layout\EventSubscriber\RouteSubscriber.
  */
 
 namespace Drupal\layout\EventSubscriber;
@@ -60,7 +60,7 @@ class RouteSubscriber extends RouteSubscriberBase {
   protected $layoutRouteNames = array();
 
   /**
-   * Constructs a \Drupal\views\EventSubscriber\RouteSubscriber instance.
+   * Constructs a \Drupal\layout\EventSubscriber\RouteSubscriber instance.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.

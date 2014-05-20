@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Container;
 class LayoutPluginManager extends DefaultPluginManager {
 
   /**
-   * Constructs a ViewsPluginManager object.
+   * Constructs a LayoutPluginManager object.
    *
    * @param string $type
    *   The plugin type, for example filter.

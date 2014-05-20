@@ -6,9 +6,9 @@ use Drupal\layout\Plugin\LayoutContainerBase;
 
 
 /**
- * The plugin that handles a full page.
+ * The plugin that handles a default container
  *
- * @ingroup views_display_plugins
+ * @ingroup layout_container_plugins
  *
  * @LayoutContainer(
  *   id = "default",
