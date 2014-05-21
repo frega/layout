@@ -42,7 +42,7 @@ class LayoutPluginManager extends DefaultPluginManager {
       'register_theme' => TRUE,
     );
 
-    $this->setCacheBackend($cache_backend, $language_manager, 'page_variant_plugins');
+    $this->setCacheBackend($cache_backend, $language_manager, "layout:layout_{$type}_plugins", array('extension' => array(TRUE, 'layout')));
     $this->alterInfo('layout_plugins_' . $type);
 
   }
