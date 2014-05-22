@@ -7,6 +7,7 @@
 
 namespace Drupal\layout\Form;
 
+use Drupal\Core\Url;
 use Drupal\Core\Entity\EntityConfirmFormBase;
 use Drupal\Core\Database\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -53,9 +54,7 @@ class LayoutDeleteConfirmForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return array(
-      'route_name' => 'node.overview_types',
-    );
+    return new Url('layout.overview');
   }
 
   /**
