@@ -10,12 +10,12 @@ namespace Drupal\layout\Plugin;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Plugin\PluginDependencyTrait;
 
-use Drupal\layout\Plugin\LayoutContainerInterface;
+use Drupal\layout\Plugin\LayoutPluginInterface;
 
 /**
  * Provides a base class for Layout plugins.
  */
-abstract class LayoutPluginBase extends PluginBase implements LayoutContainerInterface {
+abstract class LayoutPluginBase extends PluginBase implements LayoutPluginInterface {
   /**
    * {@inheritdoc}
    */

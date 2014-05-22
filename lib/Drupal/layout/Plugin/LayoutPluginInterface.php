@@ -14,5 +14,5 @@ use Drupal\Core\Plugin\PluginFormInterface;
 /**
  * Provides an interface for PageVariant plugins.
  */
-interface LayoutContainerInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
+interface LayoutPluginInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
 }

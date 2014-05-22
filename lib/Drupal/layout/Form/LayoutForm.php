@@ -60,6 +60,17 @@ class LayoutForm extends EntityForm {
       '#description' => t('A unique path this page layout.')
     );
 
+    // A new layout needs a template.
+    if ($this->operation == 'add') {
+      $form['template'] = array(
+        '#title' => t('Layout template'),
+        '#type' => 'select',
+        '#default_value' => $this->entity->getLayoutTemplateId(),
+        '#options' => $this->entity->getLayoutTemplateOptions(),
+        '#required' => TRUE
+      );
+    }
+
     $form['description'] = array(
       '#title' => t('Description'),
       '#type' => 'textarea',

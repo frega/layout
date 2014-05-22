@@ -24,6 +24,14 @@ class LayoutConfigureContainersForm extends EntityForm {
     $type = $this->entity;
     $form['#title'] = $this->t('Configure containers for %label layout', array('%label' => $type->label()));
 
+    $form['template'] = array(
+      '#title' => t('Switch template'),
+      '#description' => t('Warning: currently this just deletes and does *not* reassign components!'),
+      '#type' => 'select',
+      '#default_value' => $this->entity->getLayoutTemplateId(),
+      '#options' => $this->entity->getLayoutTemplateOptions(),
+    );
+
     $layoutContainerManager = \Drupal::service('plugin.manager.layout.layout_container');
     // Sort the plugins first by category, then by label.
     $plugins = $layoutContainerManager->getDefinitions();

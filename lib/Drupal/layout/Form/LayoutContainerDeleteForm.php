@@ -7,8 +7,10 @@
 
 namespace Drupal\layout\Form;
 
+use Drupal\Core\Url;
 use Drupal\layout\LayoutStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
+
 
 /**
  * Provides a form for deleting a page variant.
@@ -25,7 +27,7 @@ class LayoutContainerDeleteForm extends ConfirmFormBase {
   /**
    * The layout container.
    *
-   * @var \Drupal\layout\Plugin\LayoutContainerInterface
+   * @var \Drupal\layout\Plugin\LayoutPluginInterface
    */
   protected $layoutContainer;
 

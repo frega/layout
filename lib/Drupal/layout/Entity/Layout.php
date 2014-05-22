@@ -8,6 +8,7 @@
 namespace Drupal\layout\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Component\Serialization\Json;
 
@@ -49,7 +50,7 @@ use Drupal\layout\LayoutStorageInterface;
  *   }
  * )
  */
-class Layout extends ConfigEntityBase implements LayoutStorageInterface {
+class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityWithPluginBagsInterface {
   /**
    * The unique ID of the layout.
    *
@@ -84,16 +85,16 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface {
   public $description;
 
   /**
-   * A template
+   * Template configuration for a LayoutTemplate plugin.
    *
-   * @var string
+   * @var array
    */
-  public $template;
+  public $template = array();
 
   /**
    * Container configuration
    *
-   * @var string
+   * @var array
    */
   public $containers = array();
 
@@ -123,14 +124,18 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface {
     $contentByContainer = array();
     $entity_manager = \Drupal::entityManager();
     $containers = $this->getLayoutContainers();
+    // @todo: refactor into container plugin.
     foreach ($containers as $container_id => $container) {
       $componentsRenderArray = array();
-      foreach ($componentsByContainer[$container_id] as $component_id => $component) {
-        $componentsRenderArray[] = array(
-          '#theme' => 'layout_component',
-          '#component' => $entity_manager->getViewBuilder('layout_component')->view($component),
-        );
+      if (isset($componentsByContainer[$container_id])) {
+        foreach ($componentsByContainer[$container_id] as $component_id => $component) {
+          $componentsRenderArray[] = array(
+            '#theme' => 'layout_component',
+            '#component' => $entity_manager->getViewBuilder('layout_component')->view($component),
+          );
+        }
       }
+
       $contentByContainer[] = array(
         '#theme' => 'layout_container',
         '#components' => $componentsRenderArray,
@@ -257,6 +262,53 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface {
   }
 
   /**
+   * Returns the id of the LayoutTemplate.
+   *
+   * @todo: allow for configuration to be saved (not just the pluginId).
+   *
+   * @return string|null
+   */
+  public function getLayoutTemplateId() {
+    return $this->get('template');
+  }
+
+  /**
+   * Returns current LayoutTemplate plugin instance.
+   *
+   * @todo: allow for configuration to be saved (not just the pluginId).
+   *
+   * @return \Drupal\layout\Plugin\LayoutTemplatePluginInterface
+   */
+  public function getLayoutTemplate($reset = FALSE) {
+    if (isset($this->template_plugin) && !$reset) {
+      return $this->template_plugin;
+    }
+    $template_plugin_id = $this->getLayoutTemplateId();
+    $layoutTemplateManager = \Drupal::service('plugin.manager.layout.layout_template');
+    return $this->template_plugin = $layoutTemplateManager->createInstance($template_plugin_id, array());
+  }
+
+  /**
+   * Returns (nested) array of template options (grouped by category).
+   *
+   * @return array
+   */
+  public function getLayoutTemplateOptions() {
+    $layoutTemplateManager = \Drupal::service('plugin.manager.layout.layout_template');
+    // Sort the plugins first by category, then by label.
+    $plugins = $layoutTemplateManager->getDefinitions();
+    $options = array();
+    foreach ($plugins as $id => $plugin) {
+      $category = isset($plugin['category']) ? $plugin['category'] : 'default';
+      if (!isset($options[$category])) {
+        $options[$category] = array();
+      }
+      $options[$category][$id] = $plugin['title'];
+    }
+    return $options;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function addLayoutContainer(array $configuration) {
@@ -277,7 +329,13 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface {
    */
   public function removeLayoutContainer($layout_container_id) {
     $this->getLayoutContainers()->removeInstanceId($layout_container_id);
-    // @todo: remove all components in that container.
+    // @todo: refactor this, convert this to a component plugin bag anyway.
+    // remove all components in that container.
+    $components = $this->getSortedComponentsByContainer($layout_container_id);
+    foreach ($components as $component) {
+      $component->delete();
+    }
+
     return $this;
   }
 
@@ -323,6 +381,15 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface {
   }
 
   /**
+   * {inheritdoc}
+   */
+  public function getPluginBags() {
+    return array(
+      'containers' => $this->getLayoutContainers()
+    );
+  }
+
+  /**
    * Wraps the route builder.
    *
    * @return \Drupal\Core\Routing\RouteBuilderInterface
@@ -333,9 +400,38 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface {
   }
 
   public function preSave(EntityStorageInterface $storage) {
-    // Any changes to the plugin configuration must be saved to the entity's
-    // copy as well.
-    $this->set('containers', $this->getLayoutContainers()->getConfiguration());
+    // @note: plugin bags will be taken courtesy of EntityWithPluginBagsInterface.
+
+    // Ensure that the layout containers are created as per chosen LayoutTemplate.
+    if ($this->isNew()) {
+      $layoutTemplate = $this->getLayoutTemplate();
+      foreach ($layoutTemplate->getLayoutContainerPluginDefinitions() as $nr => $containerPluginDefinition) {
+        $this->addLayoutContainer(array(
+          'id' => $containerPluginDefinition['plugin_id'],
+          'label' => $containerPluginDefinition['label'],
+          'weight' => $nr,
+        ));
+      }
+    } else {
+      // Reassign & regenerate container plugins on Template change
+      // @todo: this needs to be refactored elsewhere (separate UI as well).
+      if ($this->original->getLayoutTemplateId() != $this->getLayoutTemplateId()) {
+        // Remove all "old" and add new ...
+        $containers = $this->original->getLayoutContainers();
+        foreach ($containers as $container) {
+          $this->removeLayoutContainer($container->id());
+        }
+        // Reset template plugin
+        $layoutTemplate = $this->getLayoutTemplate(TRUE);
+        foreach ($layoutTemplate->getLayoutContainerPluginDefinitions() as $nr => $containerPluginDefinition) {
+          $this->addLayoutContainer(array(
+            'id' => $containerPluginDefinition['plugin_id'],
+            'label' => $containerPluginDefinition['label'],
+            'weight' => $nr,
+          ));
+        }
+      }
+    }
 
     return parent::preSave($storage);
   }

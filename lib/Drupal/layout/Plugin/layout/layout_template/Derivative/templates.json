@@ -1,0 +1,67 @@
+[
+  {
+    "id": "one",
+    "label": "One row",
+    "category": "One column layouts",
+    "containers": [{
+      "id": "main",
+      "plugin_id": "default",
+      "label": "Main region"
+    }]
+  },
+  {
+    "id": "two",
+    "label": "Two rows",
+    "category": "One column layouts",
+    "containers": [{
+      "id": "top",
+      "plugin_id": "default",
+      "label": "Top region"
+    }, {
+      "id": "bottom",
+      "plugin_id": "default",
+      "label": "Bottom region"
+    }]
+  },
+  {
+    "id": "three",
+    "label": "Three rows",
+    "category": "One column layouts",
+    "containers": [{
+      "id": "top",
+      "plugin_id": "default",
+      "label": "Top region"
+    }, {
+      "id": "main",
+      "plugin_id": "default",
+      "label": "Main region"
+    }, {
+      "id": "bottom",
+      "plugin_id": "default",
+      "label": "Bottom region"
+    }]
+  },
+  {
+    "id": "two-three",
+    "label": "Three rows",
+    "category": "Two column layouts",
+    "containers": [{
+      "id": "sidebar",
+      "plugin_id": "default",
+      "label": "Sidebar region"
+    }, {
+      "id": "top",
+      "plugin_id": "default",
+      "label": "Top region"
+    }, {
+      "id": "main",
+      "plugin_id": "default",
+      "label": "Main region"
+    }, {
+      "id": "bottom",
+      "plugin_id": "default",
+      "label": "Bottom region"
+    }]
+  }
+
+]
