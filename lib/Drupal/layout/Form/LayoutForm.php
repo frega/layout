@@ -127,7 +127,12 @@ class LayoutForm extends EntityForm {
       drupal_set_message(t('The layout %name has been added.', $t_args));
       watchdog('layout', 'Added layout %name.', $t_args, WATCHDOG_NOTICE, l(t('view'), 'admin/structure/layouts'));
 
-      $form_state['redirect_route']['route_name'] = 'layout.overview';
+      $form_state['redirect_route'] = array(
+        'route_name' => 'layout.layout_edit',
+        'route_parameters' => array(
+          'layout' => $type->id(),
+        ),
+      );
     }
   }
 
