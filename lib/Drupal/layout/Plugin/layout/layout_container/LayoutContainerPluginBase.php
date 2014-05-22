@@ -3,6 +3,7 @@
 namespace Drupal\layout\Plugin\layout\layout_container;
 
 use Drupal\layout\Plugin\LayoutPluginBase;
+use Drupal\layout\Plugin\LayoutContainerPluginInterface;
 
 
 /**
@@ -19,9 +20,7 @@ use Drupal\layout\Plugin\LayoutPluginBase;
  *   admin = @Translation("Container")
  * )
  */
-class DefaultLayoutContainer extends LayoutPluginBase {
-  var $configuration = array();
-
+class LayoutContainerPluginBase extends LayoutPluginBase implements LayoutContainerPluginInterface {
   /**
    * {@inheritdoc}
    */

@@ -5,8 +5,6 @@ namespace Drupal\layout\Plugin\layout\layout_template;
 use Drupal\layout\Plugin\LayoutPluginBase;
 use Drupal\layout\Plugin\LayoutTemplatePluginInterface;
 
-use Drupal\layout\Plugin\layout\layout_template\DerivativeLayoutTemplate;
-
 /**
  * The plugin that handles the default layout template.
  *
@@ -22,7 +20,7 @@ use Drupal\layout\Plugin\layout\layout_template\DerivativeLayoutTemplate;
  *   derivative = "\Drupal\layout\Plugin\layout\layout_template\Derivative\DerivativeLayoutTemplate"
  * )
  */
-class DefaultLayoutTemplate extends LayoutPluginBase implements LayoutTemplatePluginInterface {
+class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplatePluginInterface {
   var $configuration = array();
 
   public function getLayoutContainerPluginDefinitions() {

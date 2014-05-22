@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\layout\Plugin\LayountContainerInterface.
+ * Contains \Drupal\layout\Plugin\LayoutTemplatePluginInterface.
  */
 
 namespace Drupal\layout\Plugin;
