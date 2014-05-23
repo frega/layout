@@ -10,7 +10,7 @@ namespace Drupal\layout\Annotation;
 use Drupal\layout\Annotation\LayoutPluginAnnotationBase;
 
 /**
- * Defines a LayoutComponent annotation object.
+ * Defines a LayoutTemplate annotation object.
  *
  * @Annotation
  */

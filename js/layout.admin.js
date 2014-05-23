@@ -4,7 +4,7 @@
 
 var appView;
 
-Drupal.AjaxCommands.prototype.layoutComponentReload = function (ajax, response, status) {
+Drupal.AjaxCommands.prototype.layoutBlockReload = function (ajax, response, status) {
   // Find the appropriate model by its id.
   var m = Drupal.layout.getComponentInstanceModelById(response.data.id);
   if (m) {

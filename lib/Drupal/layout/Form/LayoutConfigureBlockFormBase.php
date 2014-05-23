@@ -16,7 +16,7 @@ use Drupal\Core\Url;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseDialogCommand;
-use Drupal\layout\Ajax\LayoutComponentReload;
+use Drupal\layout\Ajax\LayoutBlockReload;
 
 /**
  * Provides a base form for configuring a block as part of a page variant.
@@ -73,13 +73,14 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       '#type' => 'value',
       '#value' => $this->block->getPluginId(),
     );
-    $form['region'] = array(
+    // @note: we disable this, region is implicit in URL.
+    /* $form['region'] = array(
       '#title' => $this->t('Region'),
       '#type' => 'select',
       '#options' => $this->layout->getRegionNames(),
       '#default_value' => $layout_region_id,
       '#required' => TRUE,
-    );
+    ); */
 
     if ($this->block instanceof ContextAwarePluginInterface) {
       $form['context_assignments'] = $this->addContextAssignmentElement($this->block, $this->layout->getContexts());
@@ -89,10 +90,14 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       '#type' => 'submit',
       '#value' => $this->submitText(),
       '#button_type' => 'primary',
-      '#ajax' => array(
-        'callback' => array($this, 'submitForm')
-      )
+
     );
+
+    if ($this->getRequest()->isXmlHttpRequest()) {
+      $form['actions']['submit']['#ajax'] = array(
+        'callback' => array($this, 'submitForm')
+      );
+    }
 
     return $form;
   }
@@ -124,13 +129,13 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
     }
 
-    $this->layout->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));
+    $this->layout->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutContainer->id()));
     $this->layout->save();
 
     if ($this->getRequest()->isXmlHttpRequest()) {
       $response = new AjaxResponse();
       $response->addCommand(new CloseDialogCommand());
-      $response->addCommand(new LayoutComponentReload($this->block));
+      $response->addCommand(new LayoutBlockReload($this->block));
 
       $form_state['response'] = $response;
       return $response;

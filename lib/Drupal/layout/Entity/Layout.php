@@ -7,13 +7,9 @@
 
 namespace Drupal\layout\Entity;
 
-use Drupal\block\BlockInterface;
-use Drupal\block\BlockPluginInterface;
-
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Component\Serialization\Json;
 
 use Drupal\layout\Layouts;
 use Drupal\layout\Plugin\LayoutContainerPluginBag;
@@ -34,8 +30,7 @@ use Drupal\layout\LayoutStorageInterface;
  *       "edit" = "Drupal\layout\Form\LayoutForm",
  *       "configure" = "Drupal\layout\Form\LayoutConfigureForm",
  *       "configure_containers" = "Drupal\layout\Form\LayoutConfigureContainersForm",
- *       "delete_confirm" = "Drupal\layout\Form\LayoutDeleteConfirmForm",
- *       "list_components" = "Drupal\layout\Form\LayoutListComponentsForm"
+ *       "delete_confirm" = "Drupal\layout\Form\LayoutDeleteConfirmForm"
  *     },
  *     "list_builder" = "Drupal\layout\LayoutListBuilder"
  *   },

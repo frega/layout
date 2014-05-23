@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\kayout\Annotation\LayoutComponent.
+ * Contains Drupal\kayout\Annotation\LayoutContainer.
  */
 
 namespace Drupal\layout\Annotation;
@@ -10,7 +10,7 @@ namespace Drupal\layout\Annotation;
 use Drupal\layout\Annotation\LayoutPluginAnnotationBase;
 
 /**
- * Defines a LayoutComponent annotation object.
+ * Defines a LayoutContainer annotation object.
  *
  * @Annotation
  */
