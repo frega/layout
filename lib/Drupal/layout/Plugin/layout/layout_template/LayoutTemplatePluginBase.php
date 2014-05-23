@@ -2,6 +2,8 @@
 
 namespace Drupal\layout\Plugin\layout\layout_template;
 
+use Drupal\layout\LayoutStorageInterface;
+use Drupal\layout\Plugin\LayoutContainerPluginBag;
 use Drupal\layout\Plugin\LayoutPluginBase;
 use Drupal\layout\Plugin\LayoutTemplatePluginInterface;
 
@@ -25,6 +27,23 @@ class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplat
 
   public function getLayoutContainerPluginDefinitions() {
     return isset($this->pluginDefinition['containers']) ? $this->pluginDefinition['containers'] : array();
+  }
+
+  public function build(LayoutStorageInterface $layout, $options = array()) {
+    $containers = $layout->getLayoutContainers();
+    $renderArray = array();
+    foreach ($containers as $container) {
+      $renderArray[] = array(
+        '#theme' => 'layout_container',
+        '#components' => $container->build($layout, $options),
+        '#container_id' => $container->id()
+      );
+    }
+
+    return array(
+      '#theme' => 'layout',
+      '#containers' => $renderArray
+    );
   }
 
   /**

@@ -7,9 +7,13 @@
 
 namespace Drupal\layout\Ajax;
 
+use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Ajax\CommandInterface;
 
 use Drupal\layout\Entity\LayoutComponent;
+use Drupal\layout\Layouts;
+use Drupal\layout\LayoutStorageInterface;
+use Drupal\migrate_drupal\Plugin\migrate\Process\d6\BlockPluginId;
 
 
 /**
@@ -37,9 +41,9 @@ class LayoutComponentReload implements CommandInterface {
    * @param string $data
    *   The data to pass on to the client side.
    */
-  public function __construct(LayoutComponent $layout_component) {
+  public function __construct(BlockPluginInterface $block) {
     $this->command = 'layoutComponentReload';
-    $this->data = $layout_component->toArray();
+    $this->data = Layouts::blockToArray($block);
   }
 
   /**

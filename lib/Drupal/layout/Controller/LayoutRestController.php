@@ -5,7 +5,7 @@
  * Contains \Drupal\layout\NodeTypeFormController.
  */
 
-namespace Drupal\layout;
+namespace Drupal\layout\Controller ;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class LayoutRestController extends ContainerAware {
 
-  public function put(Request $request) {
+  public function put(Request $request, $layout = NULL) {
     $payload = $request->getContent();
     $data = json_decode($payload, TRUE);
 
@@ -30,23 +30,22 @@ class LayoutRestController extends ContainerAware {
       throw new BadRequestHttpException('Invalid layout id provided');
     }
 
+    $layout->getLayoutContainers();
+
     foreach ($data['containers'] as $region) {
       foreach ($region['components'] as $component_data) {
-        $component = layout_component_load($component_data['id']);
-        if ($component) {
-          $component->set('container', $region['id']);
-          $component->set('weight', $component_data['weight']);
-          $component->save();
+        $block = $layout->getBlock($component_data['id']);
+        if ($block) {
+          $configuration = $block->getConfiguration();
+          $configuration['region'] = $region['id'];
+          $configuration['weight'] = $component_data['weight'];
+          $block->setConfiguration($configuration);
         }
       }
     }
+    $layout->save();
+
     return new Response('{}', 200, array('Content-Type' => 'application/json'));
-  }
-
-  public function get(Request $request) {
-    // Deserialze incoming data if available.
-    $serializer = $this->container->get('serializer');
-
   }
 
   /**
@@ -55,12 +54,11 @@ class LayoutRestController extends ContainerAware {
   public function handle(Request $request) {
     // @todo: this is clearly not restful - but let's get this on the road
     switch ($request->getMethod()) {
-      case 'GET':
-        return $this->get($request);
-        break;
       case 'PUT':
         return $this->put($request);
         break;
+      default:
+        throw new BadRequestHttpException('Invalid acces method, currently only PUT supported');
     }
   }
 }

@@ -7,6 +7,9 @@
 
 namespace Drupal\layout\Entity;
 
+use Drupal\block\BlockInterface;
+use Drupal\block\BlockPluginInterface;
+
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -14,6 +17,7 @@ use Drupal\Component\Serialization\Json;
 
 use Drupal\layout\Layouts;
 use Drupal\layout\Plugin\LayoutContainerPluginBag;
+use Drupal\layout\Plugin\LayoutBlockPluginBag;
 
 use Drupal\layout\LayoutStorageInterface;
 
@@ -98,7 +102,15 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
    */
   public $containers = array();
 
+  /**
+   * Block configuration
+   *
+   * @var array
+   */
+  public $blocks = array();
 
+
+  protected $blockPluginBag = array();
   protected $_componentsByContainer = NULL;
 
   /**
@@ -120,74 +132,8 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
    *  delegate to the container and component plugins.
    */
   public function build() {
-    $componentsByContainer = $this->getSortedComponentsByContainer();
-    $contentByContainer = array();
-    $entity_manager = \Drupal::entityManager();
-    $containers = $this->getLayoutContainers();
-    // @todo: refactor into container plugin.
-    foreach ($containers as $container_id => $container) {
-      $componentsRenderArray = array();
-      if (isset($componentsByContainer[$container_id])) {
-        foreach ($componentsByContainer[$container_id] as $component_id => $component) {
-          $componentsRenderArray[] = array(
-            '#theme' => 'layout_component',
-            '#component' => $entity_manager->getViewBuilder('layout_component')->view($component),
-          );
-        }
-      }
-
-      $contentByContainer[] = array(
-        '#theme' => 'layout_container',
-        '#components' => $componentsRenderArray,
-        '#container_id' => $container_id
-      );
-    }
-
-    return array(
-      '#theme' => 'layout',
-      '#containers' => $contentByContainer
-    );
-  }
-
-  /**
-   * @return LayoutComponent[]
-   */
-  function getComponents() {
-    // Get all the components which are in this region.
-    $query = \Drupal::service('entity.manager')->getStorage('layout_component')->getQuery();
-    $query->condition('layout', $this->id(), 'CONTAINS');
-    $component_ids = $query->execute();
-
-    $array = array();
-    foreach ($component_ids as $component_id) {
-      $component = layout_component_load($component_id);
-      $array[$component->id()] = $component;
-    }
-    return $array;
-  }
-
-  function getSortedComponents() {
-    $components = $this->getComponents();
-    uasort($components, function($a, $b) {
-      $a_weight = $a->get('weight');
-      $b_weight = $b->get('weight');
-      if ($a_weight == $b_weight) {
-        return 0;
-      }
-      return ($a_weight < $b_weight) ? -1 : 1;
-    });
-    return $components;
-  }
-
-
-  /**
-   * Returns an array of container info
-   * Keys: id and label.
-   *
-   * @return mixed
-   */
-  function getContainerArray() {
-    return $this->getLayoutContainers()->getConfiguration();
+    // @todo: should the plugin be "aware" of the LayoutStorageInstance instantiating it?
+    return $this->getLayoutTemplate()->build($this);
   }
 
   /**
@@ -201,29 +147,21 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
   }
 
   /**
-   * Retrieves all components in given container.
+   * Retrieves all blocks (optionally in one container).
    *
    * @param null $container_id
    * @param bool $reset
    * @return array|null
    */
-  function getSortedComponentsByContainer($container_id = NULL, $reset = FALSE) {
-    if (!isset($this->_componentsByContainer) || $reset) {
-      $this->_componentsByContainer = array();
-      $components = $this->getSortedComponents();
-      foreach ($components as $component_id => $component) {
-        if (!isset($this->_componentsByContainer[$component->get('container')])) {
-          $this->_componentsByContainer[$component->get('container')] = array();
-        }
-        $this->_componentsByContainer[$component->get('container')][$component_id] = $component;
-      }
+  function getSortedBlocksByRegion($container_id = NULL, $reset = FALSE) {
+    if (!isset($this->_blocksByRegion) || $reset) {
+      $this->_blocksByRegion = $this->getBlocks()->getAllByRegion();
     }
-
     if (!isset($container_id)) {
-      return $this->_componentsByContainer;
+      return $this->_blocksByRegion;
     }
 
-    return isset($this->_componentsByContainer[$container_id]) ? $this->_componentsByContainer[$container_id] : array();
+    return isset($this->_blocksByRegion[$container_id]) ? $this->_blocksByRegion[$container_id] : array();
   }
 
   /**
@@ -233,12 +171,10 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
    * @return array
    */
   public function exportGroupedByContainer() {
-    // Render the layout in an admin context with region demonstrations.
-    $containers = $this->getLayoutContainers()->sort();
-
+    $containers = $this->getLayoutContainers();
     $data = array(
       'id' => $this->id(),
-      'layout' => isset($this->layout) ? $this->layout : ''
+      'layout' => $this->getLayoutTemplateId(),
     );
 
     foreach ($containers as $container_id => $container) {
@@ -247,10 +183,11 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
         'label' => $container->label(),
         'components' => array(),
       );
-      $components = $this->getSortedComponentsByContainer($container_id);
+
+      $components = $this->getSortedBlocksByRegion($container_id);
       foreach ($components as $component_id => $component) {
-        $component_info = $component->toArray();
-        // @todo: this should be proper data. Component instances should maybe
+        $component_info = Layouts::blockToArray($component);
+
         // be classed objects as well.
         $block_id = str_replace('component.', '', $component_id);
         $region_data['components'][] = $component_info;
@@ -329,13 +266,11 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
    */
   public function removeLayoutContainer($layout_container_id) {
     $this->getLayoutContainers()->removeInstanceId($layout_container_id);
-    // @todo: refactor this, convert this to a component plugin bag anyway.
-    // remove all components in that container.
-    $components = $this->getSortedComponentsByContainer($layout_container_id);
-    foreach ($components as $component) {
-      $component->delete();
+    // @todo: remove contained blocks.
+    $blocksInRegion = $this->getBlocks()->getAllByRegion($layout_container_id);
+    foreach ($blocksInRegion as $block_id => $block) {
+      $this->getBlocks()->removeInstanceId($block_id);
     }
-
     return $this;
   }
 
@@ -352,6 +287,50 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
     }
     return $this->layoutContainerBag;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addBlock(array $configuration) {
+    $configuration['uuid'] = $this->uuidGenerator()->generate();
+    $this->getBlocks()->addInstanceId($configuration['uuid'], $configuration);
+    return $configuration['uuid'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function updateBlock($block_id, array $configuration) {
+    $existing_configuration = $this->getBlock($block_id)->getConfiguration();
+    $this->getBlocks()->setInstanceConfiguration($block_id, $configuration + $existing_configuration);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBlock($block_id) {
+    return $this->getBlocks()->get($block_id);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeBlock($block_id) {
+    $this->getBlocks()->removeInstanceId($block_id);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBlocks() {
+    if (!$this->blockPluginBag) {
+      $this->blockPluginBag = new LayoutBlockPluginBag(\Drupal::service('plugin.manager.block'), $this->get('blocks'));
+    }
+    return $this->blockPluginBag;
+  }
+
 
   /**
    * Gets an executable instance for this layout.
@@ -373,11 +352,6 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
    */
   public function calculateDependencies() {
     parent::calculateDependencies();
-    $components = $this->getComponents();
-    foreach ($components as $component) {
-      $this->addDependency('entity', $component->id());
-    }
-    // @todo: add plugin dependencies for containers.
   }
 
   /**
@@ -385,7 +359,8 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
    */
   public function getPluginBags() {
     return array(
-      'containers' => $this->getLayoutContainers()
+      'containers' => $this->getLayoutContainers(),
+      'blocks' => $this->getBlocks(),
     );
   }
 
@@ -455,4 +430,27 @@ class Layout extends ConfigEntityBase implements LayoutStorageInterface, EntityW
 
     return parent::postDelete($storage, $entities);
   }
+
+  // {{ Page_manager integration stuff.
+
+  function getRegionNames() {
+    $containers = $this->getLayoutContainers();
+    $region_names = array();
+    foreach ($containers as $id => $container) {
+      $region_names[$container->id()] = $container->label();
+    }
+    return $region_names;
+  }
+
+  function getRegionAssignment($block_id) {
+    $this->getBlocks()->getRegionByBlockId($block_id);
+  }
+
+  function getContexts() {
+    return array();
+  }
+  function setContexts() {
+    return array();
+  }
+
 }

@@ -22,7 +22,7 @@ class LayoutConfigureContainersForm extends EntityForm {
     $form = parent::form($form, $form_state);
 
     $type = $this->entity;
-    $form['#title'] = $this->t('Configure containers for %label layout', array('%label' => $type->label()));
+    $form['#title'] = $this->t('Configure the layout/template for %label layout', array('%label' => $type->label()));
 
     $form['template'] = array(
       '#title' => t('Switch template'),
@@ -48,6 +48,7 @@ class LayoutConfigureContainersForm extends EntityForm {
     }
 
     $form['add_container'] = array(
+      '#prefix' => t('Note: you can add more container/regions to this template'),
       '#type' => 'operations',
       '#links' => $operations,
     );

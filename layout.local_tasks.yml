@@ -4,11 +4,11 @@ layout.layout_edit:
   base_route: layout.layout_edit
 
 layout.layout_configure:
-  title: 'Components'
+  title: 'Blocks/Content'
   route_name: layout.layout_configure
   base_route: layout.layout_edit
 
 layout.layout_containers:
-  title: 'Containers'
+  title: 'Layout/Template'
   route_name: layout.layout_containers
   base_route: layout.layout_edit

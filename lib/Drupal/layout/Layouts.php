@@ -3,6 +3,8 @@
 namespace Drupal\layout;
 
 
+use Drupal\block\BlockPluginInterface;
+
 class Layouts {
   /**
    * Returns the plugin manager for a certain layout plugin type.
@@ -26,4 +28,27 @@ class Layouts {
     return \Drupal::service('layout.executable');
   }
 
+  /**
+   * Converts a BlockPluginInterface to a minimal array (id, label, weight and region/container)
+   *
+   * @param BlockPluginInterface $block
+   * @return array
+   */
+  public static function blockToArray(BlockPluginInterface $block) {
+    $config = $block->getConfiguration();
+    $settings = isset($config['settings']) ? $config['settings'] : array();
+    $definition = $block->getPluginDefinition();
+    if (isset($config['label']) && !empty($config['label'])) {
+      $label = $config['label'];
+    }
+    else {
+      $label = isset($definition['admin_label']) ? $definition['admin_label'] : $block->getPluginId();
+    }
+    return array(
+      'id' => $config['uuid'],
+      'label' => $label,
+      'weight' => isset($config['weight']) ? $config['weight'] : 0,
+      'container' => $config['region']
+    );
+  }
 }

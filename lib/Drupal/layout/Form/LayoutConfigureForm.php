@@ -32,11 +32,10 @@ class LayoutConfigureForm extends EntityForm {
         'layoutData' => $type->exportGroupedByContainer(),
         'locked' => $type->isLocked(),
         'webserviceURL' => $this->urlGenerator()->generateFromRoute('layout.rest', array(
-            'layout' => $this->entity->id()
-          ))
+          'layout' => $this->entity->id()
+        ))
       )
     );
-
 
     $form['links'] = array(
       '#type' => 'markup',
