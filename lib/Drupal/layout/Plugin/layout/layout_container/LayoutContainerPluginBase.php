@@ -2,7 +2,7 @@
 
 namespace Drupal\layout\Plugin\layout\layout_container;
 
-use Drupal\layout\LayoutStorageInterface;
+use Drupal\layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutPluginBase;
 use Drupal\layout\Plugin\LayoutContainerPluginInterface;
 
@@ -22,16 +22,16 @@ use Drupal\layout\Plugin\LayoutContainerPluginInterface;
  * )
  */
 class LayoutContainerPluginBase extends LayoutPluginBase implements LayoutContainerPluginInterface {
-  public function build(LayoutStorageInterface $layout, $options = array()) {
-    $components = $layout->getSortedBlocksByRegion($this->id());
-    $componentsRenderArray = array();
-    foreach ($components as $component) {
-      $componentsRenderArray[] = $component->build();
+  public function build(LayoutPageVariantInterface $page_variant, $options = array()) {
+    $blocksInRegion = $page_variant->getBlocksByRegion($this->id());
+    $regionRenderArray = array();
+    foreach ($blocksInRegion as $id => $component) {
+      $regionRenderArray[] = $component->build();
     }
 
     return array(
       '#theme' => $this->pluginDefinition['theme'],
-      '#components' => $componentsRenderArray,
+      '#components' => $regionRenderArray,
       '#container_id' => $this->id()
     );
   }

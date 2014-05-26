@@ -25,7 +25,7 @@ class LayoutEditBlockForm extends LayoutConfigureBlockFormBase {
    * {@inheritdoc}
    */
   protected function prepareBlock($block_id) {
-    return $this->layout->getBlock($block_id);
+    return $this->pageVariant->getBlock($block_id);
   }
 
   /**

@@ -9,6 +9,7 @@ namespace Drupal\layout\Form;
 
 use Drupal\layout\LayoutStorageInterface;
 
+use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
@@ -28,9 +29,18 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
   /**
    * The page entity.
    *
-   * @var \Drupal\layout\LayoutStorageInterface
+   * @var \Drupal\page_manager\PageInterface;
    */
-  protected $layout;
+  protected $page;
+
+
+  /**
+   * The page variant plugin.
+   *
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface;
+   */
+  protected $pageVariant;
+
 
   /**
    * The plugin being configured.
@@ -61,9 +71,11 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, LayoutStorageInterface $layout = NULL, $layout_region_id = NULL, $block_id = NULL) {
-    $this->layout = $layout;
-    $this->layoutContainer = $this->layout->getLayoutContainer($layout_region_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
+
+    $this->page = $page;
+    $this->pageVariant = $this->page->getPageVariant($page_variant_id);
+    $this->layoutContainer = $this->pageVariant->getLayoutContainer($layout_region_id);
 
     $this->block = $this->prepareBlock($block_id);
 
@@ -73,17 +85,10 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       '#type' => 'value',
       '#value' => $this->block->getPluginId(),
     );
-    // @note: we disable this, region is implicit in URL.
-    /* $form['region'] = array(
-      '#title' => $this->t('Region'),
-      '#type' => 'select',
-      '#options' => $this->layout->getRegionNames(),
-      '#default_value' => $layout_region_id,
-      '#required' => TRUE,
-    ); */
 
+    // @note: we removed the region widget as it is implicit in URL.
     if ($this->block instanceof ContextAwarePluginInterface) {
-      $form['context_assignments'] = $this->addContextAssignmentElement($this->block, $this->layout->getContexts());
+      $form['context_assignments'] = $this->addContextAssignmentElement($this->block, $this->pageVariant->getContexts());
     }
 
     $form['actions']['submit'] = array(
@@ -129,8 +134,8 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
     }
 
-    $this->layout->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutContainer->id()));
-    $this->layout->save();
+    $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutContainer->id()));
+    $this->page->save();
 
     if ($this->getRequest()->isXmlHttpRequest()) {
       $response = new AjaxResponse();
@@ -141,8 +146,9 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       return $response;
     }
 
-    $form_state['redirect_route'] = new Url('layout.layout_configure', array(
-      'layout' => $this->layout->id()
+    return new Url('page_manager.page_variant_edit', array(
+      'page' => $this->page->id(),
+      'page_variant_id' => $this->pageVariant->id()
     ));
   }
 

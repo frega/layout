@@ -10,6 +10,9 @@ namespace Drupal\layout\Ajax;
 use Drupal\Core\Ajax\CommandInterface;
 
 use Drupal\layout\Entity\Layout;
+use Drupal\layout\Layouts;
+use Drupal\page_manager\PageInterface;
+use Drupal\page_manager\Plugin\PageVariantInterface;
 
 
 /**
@@ -37,9 +40,9 @@ class LayoutReload implements CommandInterface {
    * @param string $data
    *   The data to pass on to the client side.
    */
-  public function __construct(Layout $layout) {
+  public function __construct(PageInterface $page, PageVariantInterface $page_variant) {
     $this->command = 'layoutReload';
-    $this->data = $layout->toArray();
+    $this->data = Layouts::getLayoutPageVariantClientData($page, $page_variant);
   }
 
   /**

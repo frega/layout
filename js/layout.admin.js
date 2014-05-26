@@ -21,6 +21,12 @@ Drupal.AjaxCommands.prototype.layoutBlockReload = function (ajax, response, stat
   }
 };
 
+Drupal.AjaxCommands.prototype.layoutReload = function (ajax, response, status) {
+  // Note: this does not yet work :(
+  Drupal.layout.appModel.get('containers').reset(Drupal.layout.generateRegionCollections(response.data.layout.layoutData));
+};
+
+
 /**
  * Attach display editor functionality.
  */
@@ -85,7 +91,7 @@ Drupal.behaviors.displayEditor = {
      * @param layoutData
      * @return {Drupal.layout.ContainerCollection}
      */
-    function generateRegionCollections(layoutData) {
+    Drupal.layout.generateRegionCollections = function(layoutData) {
       var containers = new Drupal.layout.ContainerCollection();
       _(layoutData.containers).each(function(region) {
         var components = new Drupal.layout.ComponentCollection();
@@ -104,11 +110,11 @@ Drupal.behaviors.displayEditor = {
       Drupal.layout.appModel = new Drupal.layout.AppModel({
         id: drupalSettings.layout.id,
         layout: drupalSettings.layout.layoutData.layout,
-        containers: generateRegionCollections(drupalSettings.layout.layoutData)
+        containers: Drupal.layout.generateRegionCollections(drupalSettings.layout.layoutData)
       });
       appView = new Drupal.layout.AppView({
         model: Drupal.layout.appModel,
-        el: $('#content .form-item-components'),
+        el: $('#content .form-item-page-variant-components .form-textarea-wrapper'),
         locked: drupalSettings.layout.locked
       });
 
@@ -127,7 +133,7 @@ Drupal.behaviors.displayEditor = {
         Drupal.layout.appModel.set({
           id: drupalSettings.layout.id,
           layout: drupalSettings.layout.layoutData.layout,
-          containers: generateRegionCollections(drupalSettings.layout.layoutData)
+          containers: Drupal.layout.generateRegionCollections(drupalSettings.layout.layoutData)
         });
         // @todo: we need to do this in order to circumvent the merge-behavior of
         // Drupal.ajax on drupalSettings (which makes sense, just not here).

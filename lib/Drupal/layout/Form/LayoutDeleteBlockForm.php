@@ -7,11 +7,16 @@
 
 namespace Drupal\layout\Form;
 
-use Drupal\layout\LayoutStorageInterface;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\Core\Form\ConfirmFormBase;
 
 use Drupal\block\BlockPluginInterface;
-
+use Drupal\Core\Url;
+use Drupal\layout\Ajax\LayoutBlockReload;
+use Drupal\layout\Ajax\LayoutReload;
+use Drupal\page_manager\PageInterface;
+use \Drupal\page_manager\Plugin\PageVariantInterface;
 
 /**
  * Provides a form for deleting an access condition.
@@ -21,9 +26,16 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
   /**
    * The page entity this selection condition belongs to.
    *
-   * @var \Drupal\layout\LayoutStorageInterface
+   * @var \Drupal\page_manager\PageInterface;
    */
-  protected $layout;
+  protected $page;
+
+  /**
+   * The page variant plugin.
+   *
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface
+   */
+  protected $pageVariant;
 
   /**
    * The access condition used by this form.
@@ -51,7 +63,10 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return $this->layout->urlInfo('configure-form');
+    return new Url('page_manager.page_variant_edit', array(
+      'page' => $this->page->id(),
+      'page_variant_id' => $this->pageVariant->id()
+    ));
   }
 
   /**
@@ -64,19 +79,39 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, LayoutStorageInterface $layout = NULL, $layout_region_id = NULL, $block_id = NULL) {
-    $this->layout = $layout;
-    $this->block = $this->layout->getBlock($block_id);
-    return parent::buildForm($form, $form_state);
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
+    $this->page = $page;
+    $this->pageVariant = $this->page->getPageVariant($page_variant_id);
+    $this->block = $this->pageVariant->getBlock($block_id);
+    $form = parent::buildForm($form, $form_state, $page, $page_variant_id, $layout_region_id, $block_id);
+
+    // @todo: fix LayoutReload
+    /* if ($this->getRequest()->isXmlHttpRequest()) {
+      $form['actions']['submit']['#ajax'] = array(
+        'callback' => array($this, 'submitForm')
+      );
+    }*/
+    return $form;
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->layout->removeBlock($this->block->getConfiguration()['uuid']);
-    $this->layout->save();
+    $this->pageVariant->removeBlock($this->block->getConfiguration()['uuid']);
+    $this->page->save();
     drupal_set_message($this->t('The block %name has been removed.', array('%name' => $this->block->getConfiguration()['label'])));
+
+    // @todo: fix LayoutReload
+    /* if ($this->getRequest()->isXmlHttpRequest()) {
+      $response = new AjaxResponse();
+      $response->addCommand(new CloseDialogCommand());
+      $response->addCommand(new LayoutReload($this->page, $this->pageVariant));
+
+      $form_state['response'] = $response;
+      return $response;
+    } */
+
     $form_state['redirect_route'] = $this->getCancelRoute();
   }
 

@@ -3,6 +3,9 @@
 namespace Drupal\layout\Plugin\layout\layout_template;
 
 use Drupal\layout\LayoutStorageInterface;
+
+use Drupal\page_manager\Plugin\PageVariantInterface;
+
 use Drupal\layout\Plugin\LayoutContainerPluginBag;
 use Drupal\layout\Plugin\LayoutPluginBase;
 use Drupal\layout\Plugin\LayoutTemplatePluginInterface;
@@ -29,13 +32,22 @@ class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplat
     return isset($this->pluginDefinition['containers']) ? $this->pluginDefinition['containers'] : array();
   }
 
-  public function build(LayoutStorageInterface $layout, $options = array()) {
-    $containers = $layout->getLayoutContainers();
+  public function getRegionNames() {
+    $regions = $this->getLayoutContainerPluginDefinitions();
+    $names = array();
+    foreach ($regions as $info) {
+       $names[$info['id']] = $info['label'];
+    }
+    return $names;
+  }
+
+  public function build(PageVariantInterface $page_variant, $options = array()) {
+    $containers = $page_variant->getLayoutContainers();
     $renderArray = array();
     foreach ($containers as $container) {
       $renderArray[] = array(
         '#theme' => 'layout_container',
-        '#components' => $container->build($layout, $options),
+        '#components' => $container->build($page_variant, $options),
         '#container_id' => $container->id()
       );
     }

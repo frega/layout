@@ -15,12 +15,14 @@ Use Drupal\page_manager\ContextHandler;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\page_manager\PageInterface;
+use Drupal\page_manager\Plugin\PageVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides route controllers for Page Manager.
  */
-class LayoutController extends ControllerBase {
+class LayoutPageVariantController extends ControllerBase {
   /**
    * The block manager.
    *
@@ -69,7 +71,7 @@ class LayoutController extends ControllerBase {
    * @return array
    *   The block selection page.
    */
-  public function selectBlock(LayoutStorageInterface $layout, $layout_region_id = NULL) {
+  public function selectBlock(PageInterface $page, $page_variant_id, $layout_region_id = NULL) {
     // Add a section containing the available blocks to be added to the variant.
     $build = array(
       '#type' => 'container',
@@ -80,7 +82,8 @@ class LayoutController extends ControllerBase {
       ),
     );
 
-    $plugins = $this->getAvailableBlocks();
+    // Sort the plugins first by category, then by label.
+    $plugins = $this->contextHandler->getAvailablePlugins($page->getContexts(), $this->blockManager);
     foreach ($plugins as $plugin_id => $plugin_definition) {
       $category = String::checkPlain($plugin_definition['category']);
       $category_key = 'category-' . $category;
@@ -101,10 +104,10 @@ class LayoutController extends ControllerBase {
         );
       }
 
-
       $form['place_blocks']['list'][$category_key]['content']['#links'][$plugin_id] = array(
         'title' => $plugin_definition['admin_label'],
-        'href' => '/admin/structure/layout/manage/' . $layout->id() .'/blocks/'  . $layout_region_id . '/' . $plugin_id . '/add',
+        // path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/add'
+        'href' => '/admin/structure/page_manager/manage/' . $page->id() .'/manage/' . $page_variant_id . '/layout/'  . $layout_region_id . '/block/' . $plugin_id . '/add',
         'attributes' => array(
           'class' => array('use-ajax', 'block-filter-text-source'),
           'data-accepts' => 'application/vnd.drupal-modal',
@@ -118,9 +121,7 @@ class LayoutController extends ControllerBase {
     return $form;
   }
 
-  public function getAvailableBlocks() {
-    // Sort the plugins first by category, then by label.
-    $plugins = $this->blockManager->getDefinitions();
+  public function getAvailableBlocks($page) {
     uasort($plugins, function ($a, $b) {
       if ($a['category'] != $b['category']) {
         return strnatcasecmp($a['category'], $b['category']);

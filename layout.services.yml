@@ -1,14 +1,4 @@
 services:
-  layout.route_subscriber:
-    class: Drupal\layout\EventSubscriber\RouteSubscriber
-    arguments: ['@entity.manager', '@state']
-    tags:
-      - { name: 'event_subscriber' }
-
-  layout.executable:
-    class: Drupal\layout\LayoutExecutableFactory
-    arguments: ['@current_user']
-
   plugin.manager.layout.layout_display:
     class: Drupal\layout\Plugin\LayoutPluginManager
     arguments: ['display', '@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']

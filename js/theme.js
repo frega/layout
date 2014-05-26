@@ -28,7 +28,10 @@
           '<header class="clearfix">' +
             '<div class="info"><span class="label">' + label + '</span></div>' +
             '<div role="form" class="operations">' +
-              Drupal.theme.layoutModalLink(Drupal.t('Add block'), '/admin/structure/layout/manage/' + drupalSettings.layout.id + '/blocks/' + id + '/select') +
+              Drupal.theme.layoutModalLink(
+                Drupal.t('Add block'),
+                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/blocks/select'
+              ) +
               // @note: disable for the time being.
               // Drupal.theme.layoutModalLink(Drupal.t('Configure container'), 'admin/structure/layout/containers/' + drupalSettings.layout.id + '/' + id) +
             '</div>' +

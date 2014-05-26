@@ -1,59 +1,46 @@
-layout.overview:
-  path: '/admin/structure/layouts'
+layout.page_variant_layout_blocks_select:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/blocks/select'
   defaults:
-    _content: '\Drupal\Core\Entity\Controller\EntityListController::listing'
-    entity_type: 'layout'
-    _title: 'Layouts'
+    _content: '\Drupal\layout\Controller\LayoutPageVariantController::selectBlock'
+    _title: 'Select block'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.page_variant_layout_block_add:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/add'
+  defaults:
+    _form: 'Drupal\layout\Form\LayoutAddBlockForm'
+    _title: 'Add block'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.page_variant_layout_block_edit:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/edit'
+  defaults:
+    _form: 'Drupal\layout\Form\LayoutEditBlockForm'
+    _title: 'Edit block'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.page_variant_layout_block_delete:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/delete'
+  defaults:
+    _form: 'Drupal\layout\Form\LayoutDeleteBlockForm'
+    _title: 'Configure block'
   requirements:
     _permission: 'administer layouts'
 
 # Fake layout.rest handler
-layout.rest:
-  path: '/admin/structure/layout/{layout}'
+layout.page_variant_layout_rest:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout'
   defaults:
-    _controller: '\Drupal\layout\Controller\LayoutRestController::handle'
+    _controller: '\Drupal\layout\Controller\LayoutPageVariantRestController::handle'
     _title: 'Layout'
   requirements:
     _method: 'GET|PUT|POST'
     _permission: 'administer layouts'
 
-layout.layout_add:
-  path: '/admin/structure/layouts/add'
-  defaults:
-    _entity_form: 'layout.add'
-    _title: 'Add layout'
-  requirements:
-    _permission: 'administer layouts'
-
-layout.layout_edit:
-  path: '/admin/structure/layouts/manage/{layout}'
-  defaults:
-    _entity_form: 'layout.edit'
-  requirements:
-    _entity_access: 'layout.edit'
-
-layout.layout_delete:
-  path: '/admin/structure/layouts/manage/{layout}/delete'
-  defaults:
-    _entity_form: 'layout.delete_confirm'
-    _title: 'Delete'
-  requirements:
-    _entity_access: 'layout.delete'
-
-layout.layout_configure:
-  path: '/admin/structure/layouts/manage/{layout}/configure'
-  defaults:
-    _entity_form: 'layout.configure'
-  requirements:
-    _entity_access: 'layout.configure'
-
-layout.layout_containers:
-  path: '/admin/structure/layouts/manage/{layout}/containers'
-  defaults:
-    _entity_form: 'layout.configure_containers'
-  requirements:
-    _entity_access: 'layout.configure'
-
+# @todo: reintroduce modifying templates/containers.
 layout.layout_container_add:
   path: '/admin/structure/layouts/manage/{layout}/containers/add/{plugin_id}'
   defaults:
@@ -77,35 +64,3 @@ layout.layout_container_delete:
     _title: 'Delete container'
   requirements:
     _entity_access: 'layout.configure'
-
-layout.layout_blocks_select:
-  path: '/admin/structure/layout/manage/{layout}/blocks/{layout_region_id}/select'
-  defaults:
-    _content: '\Drupal\layout\Controller\LayoutController::selectBlock'
-    _title: 'Select block'
-  requirements:
-    _permission: 'administer layouts'
-
-layout.layout_block_add:
-  path: '/admin/structure/layout/manage/{layout}/blocks/{layout_region_id}/{block_id}/add'
-  defaults:
-    _form: 'Drupal\layout\Form\LayoutAddBlockForm'
-    _title: 'Add block'
-  requirements:
-    _permission: 'administer layouts'
-
-layout.layout_block_edit:
-  path: '/admin/structure/layout/manage/{layout}/blocks/{layout_region_id}/{block_id}/edit'
-  defaults:
-    _form: 'Drupal\layout\Form\LayoutEditBlockForm'
-    _title: 'Configure block'
-  requirements:
-    _permission: 'administer layouts'
-
-layout.layout_block_delete:
-  path: '/admin/structure/layout/manage/{layout}/blocks/{layout_region_id}/{block_id}/delete'
-  defaults:
-    _form: 'Drupal\layout\Form\LayoutDeleteBlockForm'
-    _title: 'Configure block'
-  requirements:
-    _permission: 'administer layouts'

@@ -53,8 +53,8 @@ class LayoutAddBlockForm extends LayoutConfigureBlockFormBase {
    */
   protected function prepareBlock($plugin_id) {
     $block = $this->blockManager->createInstance($plugin_id);
-    $block_id = $this->layout->addBlock($block->getConfiguration());
-    return $this->layout->getBlock($block_id);
+    $block_id = $this->pageVariant->addBlock($block->getConfiguration());
+    return $this->pageVariant->getBlock($block_id);
   }
 
   /**
