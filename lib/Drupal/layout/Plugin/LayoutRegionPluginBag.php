@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\layout\Plugin\LayoutContainerPluginBag.
+ * Contains \Drupal\layout\Plugin\LayoutRegionPluginBag.
  */
 
 namespace Drupal\layout\Plugin;
@@ -12,7 +12,7 @@ use Drupal\Core\Plugin\DefaultPluginBag;
 /**
  * Provides a collection of block plugins.
  */
-class LayoutContainerPluginBag extends DefaultPluginBag {
+class LayoutRegionPluginBag extends DefaultPluginBag {
 
   /**
    * {@inheritdoc}

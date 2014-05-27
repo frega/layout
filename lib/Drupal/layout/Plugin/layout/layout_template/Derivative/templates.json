@@ -3,7 +3,7 @@
     "id": "one",
     "label": "One row",
     "category": "One column layouts",
-    "containers": [{
+    "regions": [{
       "id": "main",
       "plugin_id": "default",
       "label": "Main region"
@@ -13,7 +13,7 @@
     "id": "two",
     "label": "Two rows",
     "category": "One column layouts",
-    "containers": [{
+    "regions": [{
       "id": "top",
       "plugin_id": "default",
       "label": "Top region"
@@ -27,7 +27,7 @@
     "id": "three",
     "label": "Three rows",
     "category": "One column layouts",
-    "containers": [{
+    "regions": [{
       "id": "top",
       "plugin_id": "default",
       "label": "Top region"
@@ -45,7 +45,7 @@
     "id": "two-three",
     "label": "Three rows",
     "category": "Two column layouts",
-    "containers": [{
+    "regions": [{
       "id": "sidebar",
       "plugin_id": "default",
       "label": "Sidebar region"

@@ -21,9 +21,9 @@
    * @param label
    * @return {String}
    */
-  Drupal.theme.layoutContainer = function (id, label, attributes) {
+  Drupal.theme.layoutRegion = function (id, label, attributes) {
     var html =
-      '<div id="layout-container-' + id + '" class="layout-container">' +
+      '<div id="layout-region-' + id + '" class="layout-region">' +
         '<div class="lining">' +
           '<header class="clearfix">' +
             '<div class="info"><span class="label">' + label + '</span></div>' +
@@ -33,10 +33,10 @@
                 '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/blocks/select'
               ) +
               // @note: disable for the time being.
-              // Drupal.theme.layoutModalLink(Drupal.t('Configure container'), 'admin/structure/layout/containers/' + drupalSettings.layout.id + '/' + id) +
+              // Drupal.theme.layoutModalLink(Drupal.t('Configure region'), 'admin/structure/layout/regions/' + drupalSettings.layout.id + '/' + id) +
             '</div>' +
           '</header>' +
-          '<div class="components">' +
+          '<div class="blocks">' +
             '<div class="row"></div>' +
           '</div>' +
         '</div>' +
@@ -45,21 +45,21 @@
   }
 
   /**
-   * Theme function to get the html for a component instance.
+   * Theme function to get the html for a block instance.
    * @param id
    * @param label
    * @return {String}
    */
-  Drupal.theme.layoutComponent = function (id, label, attributes) {
+  Drupal.theme.layoutBlock = function (id, label, attributes) {
     if (!label) {
       label = id;
     }
-    return '<div class="component" id="component-' + id + '">' +
+    return '<div class="block" id="block-' + id + '">' +
       '<div class="lining">' +
         '<div class="info">' +
           '<span class="label mb-text">' + label + '</span>' +
         '</div>' +
-        '<div class="operations mb-component-operations">' +
+        '<div class="operations mb-block-operations">' +
           Drupal.theme.layoutModalLink(Drupal.t('Configure'), attributes.configurePath) +
           Drupal.theme.layoutModalLink(Drupal.t('Delete'), attributes.deletePath) +
         '</div>' +

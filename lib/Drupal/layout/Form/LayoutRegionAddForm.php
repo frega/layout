@@ -8,14 +8,14 @@
 namespace Drupal\layout\Form;
 
 use Drupal\layout\Plugin\LayoutPluginManager;
-use Drupal\layout\Form\LayoutContainerFormBase;
+use Drupal\layout\Form\LayoutRegionFormBase;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a form for adding a new page variant.
  */
-class LayoutContainerEditForm extends LayoutContainerFormBase {
+class LayoutRegionAddForm extends LayoutRegionFormBase {
 
   /**
    * The page variant manager.
@@ -27,8 +27,8 @@ class LayoutContainerEditForm extends LayoutContainerFormBase {
   /**
    * Constructs a new PageVariantAddForm.
    *
-   * @param \Drupal\layout\Plugin\LayoutPluginManager $layout_plugin_manager
-   *   The layout manager.
+   * @param \Drupal\block_page\Plugin\PageVariantManager $layout_plugin_manager
+   *   The page variant manager.
    */
   public function __construct(LayoutPluginManager $layout_plugin_manager) {
     $this->layoutPluginManager = $layout_plugin_manager;
@@ -39,7 +39,7 @@ class LayoutContainerEditForm extends LayoutContainerFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.layout.layout_container')
+      $container->get('plugin.manager.layout.layout_region')
     );
   }
 
@@ -47,14 +47,14 @@ class LayoutContainerEditForm extends LayoutContainerFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'layout_layout_container_edit_form';
+    return 'layout_layout_region_add_form';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function submitText() {
-    return $this->t('Edit layout container');
+    return $this->t('Add layout region');
   }
 
   /**
@@ -63,10 +63,13 @@ class LayoutContainerEditForm extends LayoutContainerFormBase {
   public function submitForm(array &$form, array &$form_state) {
     parent::submitForm($form, $form_state);
 
+    // If this page variant is new, add it to the page.
+    $region_id = $this->layout->addLayoutRegion($this->layoutRegion->getConfiguration());
+
     // Save the layout page.
     $this->layout->save();
-    drupal_set_message($this->t('The %label container been updated.', array('%label' => $this->layoutContainer->label())));
-    $form_state['redirect_route'] = new Url('layout.layout_containers', array(
+    drupal_set_message($this->t('The %label region been added.', array('%label' => $this->layoutRegion->label())));
+    $form_state['redirect_route'] = new Url('layout.layout_regions', array(
       'layout' => $this->layout->id()
     ));
   }
@@ -74,9 +77,9 @@ class LayoutContainerEditForm extends LayoutContainerFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareLayoutContainer($container_id = 'default') {
-    // Load the page variant directly from the block page.
-    return $this->layout->getLayoutContainer($container_id);
+  protected function prepareLayoutRegion($region_id = 'default') {
+    // Create a new page variant instance.
+    return $this->layoutPluginManager->createInstance($region_id);
   }
 
 }

@@ -7,14 +7,14 @@
 
   Drupal.layout = Drupal.layout || {};
 
-  Drupal.layout.ContainerModel = Backbone.Model.extend({
+  Drupal.layout.RegionModel = Backbone.Model.extend({
     url: function() {
       return drupalSettings.layout.webserviceURL + '/region/' + this.get('id');
     },
     defaults: {
       'id': null,
-      // Drupal.layout.ComponentCollection.
-      'components': null,
+      // Drupal.layout.BlockCollection.
+      'blocks': null,
       'config': null
     }
   });

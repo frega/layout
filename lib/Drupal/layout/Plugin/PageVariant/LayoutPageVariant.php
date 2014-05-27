@@ -11,7 +11,7 @@ use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\layout\Layouts;
-use Drupal\layout\Plugin\LayoutContainerPluginBag;
+use Drupal\layout\Plugin\LayoutRegionPluginBag;
 use Drupal\layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\ContextHandler;
 use Drupal\page_manager\PageInterface;
@@ -30,26 +30,26 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * {@inheritdoc}
    */
-  public function addLayoutContainer(array $configuration) {
+  public function addLayoutRegion(array $configuration) {
     $configuration['uuid'] = $this->uuidGenerator()->generate();
-    $this->getLayoutContainers()->addInstanceId($configuration['uuid'], $configuration);
+    $this->getLayoutRegions()->addInstanceId($configuration['uuid'], $configuration);
     return $configuration['uuid'];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getLayoutContainer($layout_container_id) {
-    return $this->getLayoutContainers()->get($layout_container_id);
+  public function getLayoutRegion($layout_region_id) {
+    return $this->getLayoutRegions()->get($layout_region_id);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function removeLayoutContainer($layout_container_id) {
-    $this->getLayoutContainers()->removeInstanceId($layout_container_id);
+  public function removeLayoutRegion($layout_region_id) {
+    $this->getLayoutRegions()->removeInstanceId($layout_region_id);
     // @todo: remove contained blocks.
-    $blocksInRegion = $this->getBlockBag()->getAllByRegion($layout_container_id);
+    $blocksInRegion = $this->getBlockBag()->getAllByRegion($layout_region_id);
     foreach ($blocksInRegion as $block_id => $block) {
       $this->getBlockBag()->removeInstanceId($block_id);
     }
@@ -59,40 +59,40 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * {@inheritdoc}
    */
-  public function getLayoutContainers() {
-    if (!isset($this->layoutContainerBag) || !$this->layoutContainerBag) {
-      if (!isset($this->configuration['containers'])) {
-        $this->configuration['containers'] = array();
+  public function getLayoutRegions() {
+    if (!isset($this->layoutRegionBag) || !$this->layoutRegionBag) {
+      if (!isset($this->configuration['regions'])) {
+        $this->configuration['regions'] = array();
         $layoutTemplate = $this->getLayoutTemplate();
-        $definitions = $layoutTemplate ? $layoutTemplate->getLayoutContainerPluginDefinitions() : array();
-        foreach ($definitions as $nr => $containerPluginDefinition) {
-          $this->addLayoutContainer(array(
-            'id' => $containerPluginDefinition['plugin_id'],
-            'label' => $containerPluginDefinition['label'],
+        $definitions = $layoutTemplate ? $layoutTemplate->getLayoutRegionPluginDefinitions() : array();
+        foreach ($definitions as $nr => $regionPluginDefinition) {
+          $this->addLayoutRegion(array(
+            'id' => $regionPluginDefinition['plugin_id'],
+            'label' => $regionPluginDefinition['label'],
             'weight' => $nr,
           ));
         }
-        $this->configuration['containers'] = $this->getLayoutContainers()->getConfiguration();
-        return $this->getLayoutContainers();
+        $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
+        return $this->getLayoutRegions();
       }
 
-      $containers_data = $this->configuration['containers'];
-      $this->layoutContainerBag = new LayoutContainerPluginBag(\Drupal::service('plugin.manager.layout.layout_container'),
-        $containers_data
+      $regions_data = $this->configuration['regions'];
+      $this->layoutRegionBag = new LayoutRegionPluginBag(\Drupal::service('plugin.manager.layout.layout_region'),
+        $regions_data
       );
-      $this->layoutContainerBag->sort();
+      $this->layoutRegionBag->sort();
     }
-    return $this->layoutContainerBag;
+    return $this->layoutRegionBag;
   }
 
   /**
-   * Build an array for container configuration.
+   * Build an array for region configuration.
    *
    * @todo: distinguish between "template" config & local overrides.
    */
   protected function getContainerConfiguration() {
-    return isset($this->configuration['containers']) ? $this->configuration['containers'] :
-      $this->getLayoutTemplate()->getLayoutContainerPluginDefinitions();
+    return isset($this->configuration['regions']) ? $this->configuration['regions'] :
+      $this->getLayoutTemplate()->getLayoutRegionPluginDefinitions();
   }
 
 
@@ -172,13 +172,13 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $region, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('context.handler'),
-      $container->get('current_user')
+      $region->get('context.handler'),
+      $region->get('current_user')
     );
   }
 
@@ -186,10 +186,10 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    * {@inheritdoc}
    */
   public function getRegionNames() {
-    $containers = $this->getLayoutContainers();
+    $regions = $this->getLayoutRegions();
     $names = array();
-    foreach ($containers as $id => $container) {
-      $names[$id] = $container->label();
+    foreach ($regions as $id => $region) {
+      $names[$id] = $region->label();
     }
     return $names;
   }
@@ -229,14 +229,14 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
         '#markup' => l(t('Preview layout'), $page->get('path'), array('attributes' => array('target' => drupal_html_id($page->id()))))
       );
 
-      $form['components'] = array(
-        '#title' => t('Components'),
+      $form['blocks'] = array(
+        '#title' => t('Blocks'),
         '#type' => 'textarea',
         // quick hack for styling.
         '#prefix' => '<div class="layout-configure-form">',
         '#suffix' => '</div>',
         '#default_value' => '',
-        '#description' => t('Provide the JSON describing all components of this layout.'),
+        '#description' => t('Provide the JSON describing all blocks of this layout.'),
         '#attached' => array(
           'library' => array(
             'layout/layout'
@@ -262,8 +262,8 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
     $this->configuration['template_id'] = $form_state['values']['template_id'];
 
     // @note: we have no "oop"-way to latch onto the Page-preSave hook.
-    if (!isset($this->configuration['containers'])) {
-      $this->configuration['containers'] = $this->getLayoutContainers()->getConfiguration();
+    if (!isset($this->configuration['regions'])) {
+      $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
     }
   }
 

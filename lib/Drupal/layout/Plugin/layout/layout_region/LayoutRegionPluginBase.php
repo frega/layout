@@ -1,38 +1,38 @@
 <?php
 
-namespace Drupal\layout\Plugin\layout\layout_container;
+namespace Drupal\layout\Plugin\layout\layout_region;
 
 use Drupal\layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutPluginBase;
-use Drupal\layout\Plugin\LayoutContainerPluginInterface;
+use Drupal\layout\Plugin\LayoutRegionPluginInterface;
 
 
 /**
- * The plugin that handles a default container
+ * The plugin that handles a default region
  *
- * @ingroup layout_container_plugins
+ * @ingroup layout_region_plugins
  *
- * @LayoutContainer(
+ * @LayoutRegion(
  *   id = "default",
  *   title = @Translation("Default"),
- *   help = @Translation("Handles default layout container within a layout."),
+ *   help = @Translation("Handles default layout region within a layout."),
  *   contextual_links_locations = {"page"},
- *   theme = "layout_container",
+ *   theme = "layout_region",
  *   admin = @Translation("Container")
  * )
  */
-class LayoutContainerPluginBase extends LayoutPluginBase implements LayoutContainerPluginInterface {
+class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPluginInterface {
   public function build(LayoutPageVariantInterface $page_variant, $options = array()) {
     $blocksInRegion = $page_variant->getBlocksByRegion($this->id());
     $regionRenderArray = array();
-    foreach ($blocksInRegion as $id => $component) {
-      $regionRenderArray[] = $component->build();
+    foreach ($blocksInRegion as $id => $block) {
+      $regionRenderArray[] = $block->build();
     }
 
     return array(
       '#theme' => $this->pluginDefinition['theme'],
-      '#components' => $regionRenderArray,
-      '#container_id' => $this->id()
+      '#blocks' => $regionRenderArray,
+      '#region_id' => $this->id()
     );
   }
 
@@ -43,7 +43,7 @@ class LayoutContainerPluginBase extends LayoutPluginBase implements LayoutContai
     $form['label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
-      '#description' => $this->t('The label for this container'),
+      '#description' => $this->t('The label for this region'),
       '#default_value' => $this->label(),
       '#maxlength' => '255',
     );

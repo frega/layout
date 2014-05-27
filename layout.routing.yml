@@ -40,27 +40,27 @@ layout.page_variant_layout_rest:
     _method: 'GET|PUT|POST'
     _permission: 'administer layouts'
 
-# @todo: reintroduce modifying templates/containers.
-layout.layout_container_add:
-  path: '/admin/structure/layouts/manage/{layout}/containers/add/{plugin_id}'
+# @todo: reintroduce modifying templates/regions.
+layout.layout_region_add:
+  path: '/admin/structure/layouts/manage/{layout}/regions/add/{plugin_id}'
   defaults:
-    _form: '\Drupal\layout\Form\LayoutContainerAddForm'
-    _title: 'Add new container'
+    _form: '\Drupal\layout\Form\LayoutRegionAddForm'
+    _title: 'Add new region'
   requirements:
     _entity_access: 'layout.configure'
 
-layout.layout_container_edit:
-  path: '/admin/structure/layouts/manage/{layout}/containers/{plugin_id}/edit'
+layout.layout_region_edit:
+  path: '/admin/structure/layouts/manage/{layout}/regions/{plugin_id}/edit'
   defaults:
-    _form: '\Drupal\layout\Form\LayoutContainerEditForm'
-    _title: 'Edit container'
+    _form: '\Drupal\layout\Form\LayoutRegionEditForm'
+    _title: 'Edit region'
   requirements:
     _entity_access: 'layout.configure'
 
-layout.layout_container_delete:
-  path: '/admin/structure/layouts/manage/{layout}/containers/{plugin_id}/delete'
+layout.layout_region_delete:
+  path: '/admin/structure/layouts/manage/{layout}/regions/{plugin_id}/delete'
   defaults:
-    _form: '\Drupal\layout\Form\LayoutContainerDeleteForm'
-    _title: 'Delete container'
+    _form: '\Drupal\layout\Form\LayoutRegionDeleteForm'
+    _title: 'Delete region'
   requirements:
     _entity_access: 'layout.configure'

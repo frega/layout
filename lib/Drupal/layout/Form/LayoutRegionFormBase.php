@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormBase;
 /**
  * Provides a base form for editing and adding a page variant.
  */
-abstract class LayoutContainerFormBase extends FormBase {
+abstract class LayoutRegionFormBase extends FormBase {
 
   /**
    * The block page this page variant belongs to.
@@ -25,13 +25,13 @@ abstract class LayoutContainerFormBase extends FormBase {
   /**
    * Prepares the page variant used by this form.
    *
-   * @param string $container_id
-   *   Either a layout container ID, or the plugin ID used to create a new layout container.
+   * @param string $region_id
+   *   Either a layout region ID, or the plugin ID used to create a new layout region.
    *
-   * @return \Drupal\layout\Plugin\layout\layout_container\LayoutContainerPluginBase
-   *   The layout container object.
+   * @return \Drupal\layout\Plugin\layout\layout_region\LayoutRegionPluginBase
+   *   The layout region object.
    */
-  abstract protected function prepareLayoutContainer($container_id);
+  abstract protected function prepareLayoutRegion($region_id);
 
   /**
    * Returns the text to use for the submit button.
@@ -47,10 +47,10 @@ abstract class LayoutContainerFormBase extends FormBase {
   public function buildForm(array $form, array &$form_state, LayoutStorageInterface $layout = NULL, $plugin_id = NULL) {
 
     $this->layout = $layout;
-    $this->layoutContainer = $this->prepareLayoutContainer($plugin_id);
+    $this->layoutRegion = $this->prepareLayoutRegion($plugin_id);
 
     // Allow the page variant to add to the form.
-    $form['plugin'] = $this->layoutContainer->buildConfigurationForm(array(), $form_state);
+    $form['plugin'] = $this->layoutRegion->buildConfigurationForm(array(), $form_state);
     $form['plugin']['#tree'] = TRUE;
 
     $form['actions'] = array('#type' => 'actions');
@@ -71,7 +71,7 @@ abstract class LayoutContainerFormBase extends FormBase {
     $plugin_values = array(
       'values' => &$form_state['values']['plugin'],
     );
-    $this->layoutContainer->validateConfigurationForm($form, $plugin_values);
+    $this->layoutRegion->validateConfigurationForm($form, $plugin_values);
   }
 
   /**
@@ -82,7 +82,7 @@ abstract class LayoutContainerFormBase extends FormBase {
     $plugin_values = array(
       'values' => &$form_state['values']['plugin'],
     );
-    $this->layoutContainer->submitConfigurationForm($form, $plugin_values);
+    $this->layoutRegion->submitConfigurationForm($form, $plugin_values);
   }
 
 }

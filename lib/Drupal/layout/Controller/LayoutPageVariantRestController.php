@@ -25,13 +25,13 @@ class LayoutPageVariantRestController extends ContainerAware {
 
   public function handlePut(PageInterface $page, PageVariantInterface $page_variant, $data = array()) {
 
-    foreach ($data['containers'] as $region) {
-      foreach ($region['components'] as $component_data) {
-        $block = $page_variant->getBlock($component_data['id']);
+    foreach ($data['regions'] as $region) {
+      foreach ($region['blocks'] as $block_data) {
+        $block = $page_variant->getBlock($block_data['id']);
         if ($block) {
           $configuration = $block->getConfiguration();
           $configuration['region'] = $region['id'];
-          $configuration['weight'] = $component_data['weight'];
+          $configuration['weight'] = $block_data['weight'];
           $block->setConfiguration($configuration);
         }
       }

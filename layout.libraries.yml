@@ -5,15 +5,14 @@ layout:
     js/layout.admin.js: { scope: footer }
     # Models.
     js/models/app-model.js: { scope: footer }
-    js/models/component-model.js: { scope: footer }
-    js/models/container-model.js: { scope: footer }
+    js/models/block-model.js: { scope: footer }
+    js/models/region-model.js: { scope: footer }
     # Collections.
     js/collections/collections.js: { scope: footer }
     # Views.
-    js/views/modal-view.js: { scope: footer }
     js/views/app-view.js: { scope: footer }
-    js/views/componentinstance-view.js: { scope: footer }
-    js/views/container-view.js: { scope: footer }
+    js/views/blockinstance-view.js: { scope: footer }
+    js/views/region-view.js: { scope: footer }
     js/views/updatingcollection-view.js: { scope: footer }
     # Other.
     js/theme.js: { scope: footer }

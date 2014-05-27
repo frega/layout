@@ -42,7 +42,7 @@ class Layouts {
 
 
   /**
-   * Converts a BlockPluginInterface to a minimal array (id, label, weight and region/container)
+   * Converts a BlockPluginInterface to a minimal array (id, label, weight and region/region)
    *
    * @param BlockPluginInterface $block
    * @return array
@@ -61,7 +61,7 @@ class Layouts {
       'id' => $config['uuid'],
       'label' => $label,
       'weight' => isset($config['weight']) ? $config['weight'] : 0,
-      'container' => $config['region']
+      'region' => $config['region']
     );
   }
 
@@ -71,28 +71,28 @@ class Layouts {
    */
   public static function getGroupedBlockArrays(PageVariantInterface $page_variant) {
     $grouped = $page_variant->getRegionAssignments();
-    $containers = $page_variant->getLayoutContainers();
+    $regions = $page_variant->getLayoutRegions();
     $data = array(
       'id' => $page_variant->id(),
       'layout' => $page_variant->getLayoutTemplateId(),
     );
 
-    foreach ($containers as $container_id => $container) {
+    foreach ($regions as $region_id => $region) {
       $region_data = array(
-        'id' => $container_id,
-        'label' => $container->label(),
-        'components' => array(),
+        'id' => $region_id,
+        'label' => $region->label(),
+        'blocks' => array(),
       );
 
-      $components = isset($grouped[$container_id]) && is_array($grouped[$container_id]) ? $grouped[$container_id] : array();
-      foreach ($components as $component_id => $component) {
-        $component_info = Layouts::blockToArray($component);
+      $blocks = isset($grouped[$region_id]) && is_array($grouped[$region_id]) ? $grouped[$region_id] : array();
+      foreach ($blocks as $block_id => $block) {
+        $block_info = Layouts::blockToArray($block);
 
         // be classed objects as well.
-        $block_id = str_replace('component.', '', $component_id);
-        $region_data['components'][] = $component_info;
+        $block_id = str_replace('block.', '', $block_id);
+        $region_data['blocks'][] = $block_info;
       }
-      $data['containers'][] = $region_data;
+      $data['regions'][] = $region_data;
     }
 
     return $data;

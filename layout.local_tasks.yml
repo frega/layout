@@ -8,7 +8,7 @@ layout.layout_configure:
   route_name: layout.layout_configure
   base_route: layout.layout_edit
 
-layout.layout_containers:
+layout.layout_regions:
   title: 'Layout/Template'
-  route_name: layout.layout_containers
+  route_name: layout.layout_regions
   base_route: layout.layout_edit

@@ -4,13 +4,13 @@ namespace Drupal\layout\Plugin;
 use \Drupal\page_manager\Plugin\PageVariantInterface;
 
 interface LayoutPageVariantInterface extends PageVariantInterface {
-  public function addLayoutContainer(array $configuration);
-  public function getLayoutContainer($layout_container_id);
+  public function addLayoutRegion(array $configuration);
+  public function getLayoutRegion($layout_region_id);
   /**
-   * Removes a layout container ids
+   * Removes a layout region ids
    */
-  public function removeLayoutContainer($layout_container_id);
-  public function getLayoutContainers();
+  public function removeLayoutRegion($layout_region_id);
+  public function getLayoutRegions();
 
   public function getLayoutTemplateId();
   public function getLayoutTemplate($reset = FALSE);

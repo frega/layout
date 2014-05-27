@@ -1,7 +1,7 @@
 /**
  * @file layout.theme.css
  */
-.layout-container-demonstration {
+.layout-region-demonstration {
   background-image: -webkit-linear-gradient(bottom, rgb(70,70,71) 40%, rgb(91,91,94) 70%, rgb(125,124,125) 88%);
   background-image: linear-gradient(bottom, rgb(70,70,71) 40%, rgb(91,91,94) 70%, rgb(125,124,125) 88%);
   color: white;
@@ -22,9 +22,9 @@
 }
 
 /**
- * Containers.
+ * Regions.
  */
-.layout-container > .lining {
+.layout-region > .lining {
   background-color: #ffffff;
   border-color: #cccccc;
   border-style: solid;
@@ -32,11 +32,11 @@
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
   padding: 0.75em;
 }
-.layout-container header {
+.layout-region header {
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
-.layout-container header .label {
+.layout-region header .label {
   color: #666666;
   font-size: x-small;
   letter-spacing: 0.1em;
@@ -44,26 +44,26 @@
 }
 
 /**
- * Components.
+ * Blocks.
  */
- .layout-configure-form .components .component {
+ .layout-configure-form .blocks .block {
   padding: 0.5em;
  }
-.layout-configure-form .component > .lining {
+.layout-configure-form .block > .lining {
   background-image: -webkit-linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);
   background-image: linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);
   min-height: 4.5em;
 }
 /**
- * Component information.
+ * Block information.
  */
-.layout-configure-form .component .type-indicator,
-.layout-configure-form .component .label {
+.layout-configure-form .block .type-indicator,
+.layout-configure-form .block .label {
   color: #ffffff;
   padding-bottom: 0.1667em;
   padding-top: 0.1667em;
 }
-.layout-configure-form .component .type-indicator {
+.layout-configure-form .block .type-indicator {
   border-bottom: 1px solid #ffffff;
   border-right: 1px solid #ffffff; /* LTR */
   font-weight: bold;
@@ -71,24 +71,24 @@
   padding-left: 0.25em;
   padding-right: 0.25em;
 }
-.layout-configure-form .component .label {
+.layout-configure-form .block .label {
   font-weight: bold;
 }
-.layout-configure-form .component .type-indicator + .label {
+.layout-configure-form .block .type-indicator + .label {
   margin-left: 2em; /* LTR */
 }
 
 
-.layout-container {
+.layout-region {
   border: 1px solid #a6a6a6;
 }
 
-.layout-container .component .lining {
+.layout-region .block .lining {
   padding: 0.25em;
   cursor: move;
 }
 
-.layout-container .component .operations a {
+.layout-region .block .operations a {
   color: #bebebe;
   text-decoration: underline;
   margin-right: 0.25em;

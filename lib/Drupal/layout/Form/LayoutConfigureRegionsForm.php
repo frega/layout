@@ -13,7 +13,7 @@ use Drupal\Component\Utility\String;
 /**
  * Form controller for node type forms.
  */
-class LayoutConfigureContainersForm extends EntityForm {
+class LayoutConfigureRegionsForm extends EntityForm {
 
   /**
    * {@inheritdoc}
@@ -26,20 +26,20 @@ class LayoutConfigureContainersForm extends EntityForm {
 
     $form['template'] = array(
       '#title' => t('Switch template'),
-      '#description' => t('Warning: currently this just deletes and does *not* reassign components!'),
+      '#description' => t('Warning: currently this just deletes and does *not* reassign blocks!'),
       '#type' => 'select',
       '#default_value' => $this->entity->getLayoutTemplateId(),
       '#options' => $this->entity->getLayoutTemplateOptions(),
     );
 
-    $layoutContainerManager = \Drupal::service('plugin.manager.layout.layout_container');
+    $layoutRegionManager = \Drupal::service('plugin.manager.layout.layout_region');
     // Sort the plugins first by category, then by label.
-    $plugins = $layoutContainerManager->getDefinitions();
+    $plugins = $layoutRegionManager->getDefinitions();
     $operations = array();
     foreach ($plugins as $plugin) {
-      $operations['layout_container_add_' .  $plugin['id']] = array(
-        'title' => $this->t('Add @name container', array('@name' => $plugin['title'])),
-        'route_name' => 'layout.layout_container_add',
+      $operations['layout_region_add_' .  $plugin['id']] = array(
+        'title' => $this->t('Add @name region', array('@name' => $plugin['title'])),
+        'route_name' => 'layout.layout_region_add',
         'route_parameters' => array(
           'layout' => $this->entity->id(),
           'plugin_id' => $plugin['id']
@@ -47,13 +47,13 @@ class LayoutConfigureContainersForm extends EntityForm {
       );
     }
 
-    $form['add_container'] = array(
-      '#prefix' => t('Note: you can add more container/regions to this template'),
+    $form['add_region'] = array(
+      '#prefix' => t('Note: you can add more region/regions to this template'),
       '#type' => 'operations',
       '#links' => $operations,
     );
 
-    $form['layout_containers']['table'] = array(
+    $form['layout_regions']['table'] = array(
       '#type' => 'table',
       '#header' => array(
         $this->t('Label'),
@@ -61,7 +61,7 @@ class LayoutConfigureContainersForm extends EntityForm {
         $this->t('Weight'),
         $this->t('Operations'),
       ),
-      '#empty' => $this->t('There are no layout containers.'),
+      '#empty' => $this->t('There are no layout regions.'),
       '#tabledrag' => array(array(
         'action' => 'order',
         'relationship' => 'sibling',
@@ -69,18 +69,18 @@ class LayoutConfigureContainersForm extends EntityForm {
       )),
     );
 
-    foreach ($this->entity->getLayoutContainers() as $container_id => $container) {
+    foreach ($this->entity->getLayoutRegions() as $region_id => $region) {
       $row = array(
         '#attributes' => array(
           'class' => array('draggable'),
         ),
       );
-      $row['label']['#markup'] = $container->label();
-      $row['id']['#markup'] = $container->getPluginId();
+      $row['label']['#markup'] = $region->label();
+      $row['id']['#markup'] = $region->getPluginId();
       $row['weight'] = array(
         '#type' => 'weight',
-        '#default_value' => $container->getWeight(),
-        '#title' => t('Weight for @container page variant', array('@container' => $container->label())),
+        '#default_value' => $region->getWeight(),
+        '#title' => t('Weight for @region page variant', array('@region' => $region->label())),
         '#title_display' => 'invisible',
         '#attributes' => array(
           'class' => array('page-variant-weight'),
@@ -89,19 +89,19 @@ class LayoutConfigureContainersForm extends EntityForm {
       $operations = array();
       $operations['edit'] = array(
         'title' => $this->t('Edit'),
-        'route_name' => 'layout.layout_container_edit',
+        'route_name' => 'layout.layout_region_edit',
         'route_parameters' => array(
           'layout' => $this->entity->id(),
-          'plugin_id' => $container_id,
+          'plugin_id' => $region_id,
         ),
       );
 
       $operations['delete'] = array(
         'title' => $this->t('Delete'),
-        'route_name' => 'layout.layout_container_delete',
+        'route_name' => 'layout.layout_region_delete',
         'route_parameters' => array(
           'layout' => $this->entity->id(),
-          'plugin_id' => $container_id,
+          'plugin_id' => $region_id,
         ),
       );
 
@@ -109,7 +109,7 @@ class LayoutConfigureContainersForm extends EntityForm {
         '#type' => 'operations',
         '#links' => $operations,
       );
-      $form['layout_containers']['table'][$container_id] = $row;
+      $form['layout_regions']['table'][$region_id] = $row;
     }
 
     return $form;
@@ -130,9 +130,9 @@ class LayoutConfigureContainersForm extends EntityForm {
    */
   public function save(array $form, array &$form_state) {
     if (!empty($form_state['values']['table'])) {
-      foreach ($form_state['values']['table'] as $container_id => $data) {
-        if ($container = $this->entity->getLayoutContainer($container_id)) {
-          $container->setWeight($data['weight']);
+      foreach ($form_state['values']['table'] as $region_id => $data) {
+        if ($region = $this->entity->getLayoutRegion($region_id)) {
+          $region->setWeight($data['weight']);
         }
       }
     }

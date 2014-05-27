@@ -23,15 +23,15 @@ function template_preprocess_layout_layout(&$variables) {
 }
 
 /**
- * Prepares variables for layout templates.
+ * Prepares variables for layout regions.
  *
- * Default template: layout-layout.html.twig.
+ * Default template: layout-region.html.twig.
  *
  * @param array $variables
  *   An associative array containing:
- *   - components: an array of LayoutComponent
+ *   - blocks: an array of LayoutComponent
  */
-function template_preprocess_layout_container(&$variables) {
+function template_preprocess_layout_region(&$variables) {
 }
 
 /**
@@ -41,7 +41,7 @@ function template_preprocess_layout_container(&$variables) {
  *
  * @param array $variables
  *   An associative array containing:
- *   - component: an instance of LayoutComponent
+ *   - block: an instance of LayoutComponent
  */
-function template_preprocess_layout_component(&$variables) {
+function template_preprocess_layout_block(&$variables) {
 }

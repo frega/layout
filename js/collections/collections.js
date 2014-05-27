@@ -9,20 +9,20 @@
 
   Drupal.layout = Drupal.layout || {};
 
-  Drupal.layout.ContainerCollection = Backbone.Collection.extend({
-    model: Drupal.layout.ContainerModel
+  Drupal.layout.RegionCollection = Backbone.Collection.extend({
+    model: Drupal.layout.RegionModel
   });
 
-  Drupal.layout.ComponentCollection = Backbone.Collection.extend({
-    model: Drupal.layout.ComponentModel,
+  Drupal.layout.BlockCollection = Backbone.Collection.extend({
+    model: Drupal.layout.BlockModel,
     initialize: function() {
-      // Reorder every time a component instance is added or removed.
+      // Reorder every time a block instance is added or removed.
       this.on('add', this.reorder, this);
       this.on('remove', this.reorder, this);
     },
     /**
      * Sorting callback for the collection.
-     * @param {Drupal.layout.ComponentModel}
+     * @param {Drupal.layout.BlockModel}
      * @return {Number}
      */
     comparator: function(model) {

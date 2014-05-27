@@ -11,8 +11,8 @@
     initializeRegions: function() {
       this.regionsView = new Drupal.layout.UpdatingCollectionView({
         el: this.$el,
-        collection: this.model.get('containers'),
-        nestedViewConstructor:Drupal.layout.ContainerView,
+        collection: this.model.get('regions'),
+        nestedViewConstructor:Drupal.layout.RegionView,
         nestedViewTagName:'div'
       });
     },

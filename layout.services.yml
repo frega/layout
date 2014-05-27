@@ -2,12 +2,12 @@ services:
   plugin.manager.layout.layout_display:
     class: Drupal\layout\Plugin\LayoutPluginManager
     arguments: ['display', '@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']
-  plugin.manager.layout.layout_container:
+  plugin.manager.layout.layout_region:
     class: Drupal\layout\Plugin\LayoutPluginManager
-    arguments: ['container', '@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']
-  plugin.manager.layout.layout_component:
+    arguments: ['region', '@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']
+  plugin.manager.layout.layout_block:
     class: Drupal\layout\Plugin\LayoutPluginManager
-    arguments: ['component', '@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']
+    arguments: ['block', '@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']
   plugin.manager.layout.layout_template:
     class: Drupal\layout\Plugin\LayoutPluginManager
     arguments: ['template', '@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']

@@ -19,6 +19,6 @@ interface LayoutTemplatePluginInterface extends LayoutPluginInterface {
    * @return array
    *  Layout Container Plugin definitions to ensure for this LayoutTemplate
    */
-   public function getLayoutContainerPluginDefinitions();
+   public function getLayoutRegionPluginDefinitions();
 
 }

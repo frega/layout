@@ -75,7 +75,7 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
 
     $this->page = $page;
     $this->pageVariant = $this->page->getPageVariant($page_variant_id);
-    $this->layoutContainer = $this->pageVariant->getLayoutContainer($layout_region_id);
+    $this->layoutRegion = $this->pageVariant->getLayoutRegion($layout_region_id);
 
     $this->block = $this->prepareBlock($block_id);
 
@@ -134,7 +134,7 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
     }
 
-    $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutContainer->id()));
+    $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutRegion->id()));
     $this->page->save();
 
     if ($this->getRequest()->isXmlHttpRequest()) {

@@ -6,24 +6,24 @@ var appView;
 
 Drupal.AjaxCommands.prototype.layoutBlockReload = function (ajax, response, status) {
   // Find the appropriate model by its id.
-  var m = Drupal.layout.getComponentInstanceModelById(response.data.id);
+  var m = Drupal.layout.getBlockInstanceModelById(response.data.id);
   if (m) {
     // The views will take care of all necessary updates (unbinding, rebinding).
     m.set(response.data);
   } else {
-    // Retrieve the container model
-    var c = Drupal.layout.getContainerModelById(response.data.container);
+    // Retrieve the region model
+    var c = Drupal.layout.getRegionModelById(response.data.region);
     if (c) {
-      // Instantiate a new component model, the container will repaint etc.
+      // Instantiate a new block model, the region will repaint etc.
       // @todo: fix weight/order will probably be *off*
-      c.get('components').add(new Drupal.layout.ComponentModel(response.data));
+      c.get('blocks').add(new Drupal.layout.BlockModel(response.data));
     }
   }
 };
 
 Drupal.AjaxCommands.prototype.layoutReload = function (ajax, response, status) {
   // Note: this does not yet work :(
-  Drupal.layout.appModel.get('containers').reset(Drupal.layout.generateRegionCollections(response.data.layout.layoutData));
+  Drupal.layout.appModel.get('regions').reset(Drupal.layout.generateRegionCollections(response.data.layout.layoutData));
 };
 
 
@@ -70,39 +70,39 @@ Drupal.behaviors.displayEditor = {
     }
 
     /**
-     * Retrieve the ComponentModel
+     * Retrieve the BlockModel
      * @param id
      * @return {*}
      */
-    Drupal.layout.getComponentInstanceModelById = function(id) {
+    Drupal.layout.getBlockInstanceModelById = function(id) {
       var m;
-      Drupal.layout.appModel.get('containers').each(function(region) {
-        m = m || region.get('components').get(id);
+      Drupal.layout.appModel.get('regions').each(function(region) {
+        m = m || region.get('blocks').get(id);
       }, this);
       return m;
     };
 
-    Drupal.layout.getContainerModelById = function(id) {
-      return Drupal.layout.appModel.get('containers').get(id);
+    Drupal.layout.getRegionModelById = function(id) {
+      return Drupal.layout.appModel.get('regions').get(id);
     };
 
     /**
      * Generates the required Backbone Collections and Models.
      * @param layoutData
-     * @return {Drupal.layout.ContainerCollection}
+     * @return {Drupal.layout.RegionCollection}
      */
     Drupal.layout.generateRegionCollections = function(layoutData) {
-      var containers = new Drupal.layout.ContainerCollection();
-      _(layoutData.containers).each(function(region) {
-        var components = new Drupal.layout.ComponentCollection();
-        components.reset(region.components);
-        containers.add(new Drupal.layout.ContainerModel({
+      var regions = new Drupal.layout.RegionCollection();
+      _(layoutData.regions).each(function(region) {
+        var blocks = new Drupal.layout.BlockCollection();
+        blocks.reset(region.blocks);
+        regions.add(new Drupal.layout.RegionModel({
           id: region.id,
           label: region.label,
-          components: components
+          blocks: blocks
         }));
       });
-      return containers;
+      return regions;
     };
 
     // Initial attaching.
@@ -110,11 +110,11 @@ Drupal.behaviors.displayEditor = {
       Drupal.layout.appModel = new Drupal.layout.AppModel({
         id: drupalSettings.layout.id,
         layout: drupalSettings.layout.layoutData.layout,
-        containers: Drupal.layout.generateRegionCollections(drupalSettings.layout.layoutData)
+        regions: Drupal.layout.generateRegionCollections(drupalSettings.layout.layoutData)
       });
       appView = new Drupal.layout.AppView({
         model: Drupal.layout.appModel,
-        el: $('#content .form-item-page-variant-components .form-textarea-wrapper'),
+        el: $('#content .form-item-page-variant-blocks .form-textarea-wrapper'),
         locked: drupalSettings.layout.locked
       });
 
@@ -133,7 +133,7 @@ Drupal.behaviors.displayEditor = {
         Drupal.layout.appModel.set({
           id: drupalSettings.layout.id,
           layout: drupalSettings.layout.layoutData.layout,
-          containers: Drupal.layout.generateRegionCollections(drupalSettings.layout.layoutData)
+          regions: Drupal.layout.generateRegionCollections(drupalSettings.layout.layoutData)
         });
         // @todo: we need to do this in order to circumvent the merge-behavior of
         // Drupal.ajax on drupalSettings (which makes sense, just not here).

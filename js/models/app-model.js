@@ -1,7 +1,7 @@
 /**
  * @file
  * This model hold application state and corresponds to the layout containing
- * containers (and component instances).
+ * regions (and block instances).
  *
  * @todo: probably split this AppModel into AppModel and LayoutModel.
  */
@@ -16,7 +16,7 @@
     defaults: {
       'id': null,
       'layout': null,
-      'containers': null,
+      'regions': null,
       'config': null
     }
   });

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\layout\Form\LayoutContainerDeleteForm.
+ * Contains \Drupal\layout\Form\LayoutRegionDeleteForm.
  */
 
 namespace Drupal\layout\Form;
@@ -15,35 +15,35 @@ use Drupal\Core\Form\ConfirmFormBase;
 /**
  * Provides a form for deleting a page variant.
  */
-class LayoutContainerDeleteForm extends ConfirmFormBase {
+class LayoutRegionDeleteForm extends ConfirmFormBase {
 
   /**
-   * The layout this container belongs to.
+   * The layout this region belongs to.
    *
    * @var \Drupal\layout\LayoutStorageInterface
    */
   protected $layout;
 
   /**
-   * The layout container.
+   * The layout region.
    *
    * @var \Drupal\layout\Plugin\LayoutPluginInterface
    */
-  protected $layoutContainer;
+  protected $layoutRegion;
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'layout_layout_container_delete_form';
+    return 'layout_layout_region_delete_form';
   }
 
   /**
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the layout container %container_name from layout %layout_name?', array(
-      '%container_name' => $this->layoutContainer->label(),
+    return $this->t('Are you sure you want to delete the layout region %region_name from layout %layout_name?', array(
+      '%region_name' => $this->layoutRegion->label(),
       '%layout_name' => $this->layout->label()
     ));
   }
@@ -52,7 +52,7 @@ class LayoutContainerDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return $this->layout->urlInfo('configure-containers-form');
+    return $this->layout->urlInfo('configure-regions-form');
   }
 
   /**
@@ -67,7 +67,7 @@ class LayoutContainerDeleteForm extends ConfirmFormBase {
    */
   public function buildForm(array $form, array &$form_state, LayoutStorageInterface $layout = NULL, $plugin_id = NULL) {
     $this->layout = $layout;
-    $this->layoutContainer = $layout->getLayoutContainer($plugin_id);
+    $this->layoutRegion = $layout->getLayoutRegion($plugin_id);
     return parent::buildForm($form, $form_state);
   }
 
@@ -75,9 +75,9 @@ class LayoutContainerDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->layout->removeLayoutContainer($this->layoutContainer->id());
+    $this->layout->removeLayoutRegion($this->layoutRegion->id());
     $this->layout->save();
-    drupal_set_message($this->t('The layout container %name has been removed.', array('%name' => $this->layoutContainer->label())));
+    drupal_set_message($this->t('The layout region %name has been removed.', array('%name' => $this->layoutRegion->label())));
     $form_state['redirect_route'] = $this->getCancelRoute();
   }
 

@@ -22,7 +22,7 @@ class DerivativeLayoutTemplate extends DerivativeBase {
       $this->derivatives[$key] = array(
         'category' => $d['category'],
         'theme' => isset($d['theme']) ? $d['theme'] : 'layout_template',
-        'containers' => isset($d['containers']) ? $d['containers'] : array(),
+        'regions' => isset($d['regions']) ? $d['regions'] : array(),
         'label' => $d['label'],
         'title' => $d['label'],
       ) + $base_plugin_definition;

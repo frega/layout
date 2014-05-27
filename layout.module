@@ -26,18 +26,18 @@ function layout_theme() {
   $hooks =  array();
 
   $hooks['layout'] = $base + array(
-    'variables' => array('containers' => array()),
+    'variables' => array('regions' => array()),
     'template' => 'layout-layout',
   );
 
-  $hooks['layout_container'] = $base + array(
-    'variables' => array('components' => array()),
-    'template' => 'layout-layout-container',
+  $hooks['layout_region'] = $base + array(
+    'variables' => array('blocks' => array()),
+    'template' => 'layout-layout-region',
   );
 
-  $hooks['layout_component'] = $base + array(
-    'variables' => array('component' => array()),
-    'template' => 'layout-layout-component',
+  $hooks['layout_block'] = $base + array(
+    'variables' => array('block' => array()),
+    'template' => 'layout-layout-block',
   );
 
   return $hooks;

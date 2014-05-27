@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\layout\Plugin\LayoutContainerBase.
+ * Contains \Drupal\layout\Plugin\LayoutRegionBase.
  */
 
 namespace Drupal\layout\Plugin;

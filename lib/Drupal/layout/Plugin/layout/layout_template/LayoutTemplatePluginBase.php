@@ -6,7 +6,7 @@ use Drupal\layout\LayoutStorageInterface;
 
 use Drupal\page_manager\Plugin\PageVariantInterface;
 
-use Drupal\layout\Plugin\LayoutContainerPluginBag;
+use Drupal\layout\Plugin\LayoutRegionPluginBag;
 use Drupal\layout\Plugin\LayoutPluginBase;
 use Drupal\layout\Plugin\LayoutTemplatePluginInterface;
 
@@ -28,12 +28,12 @@ use Drupal\layout\Plugin\LayoutTemplatePluginInterface;
 class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplatePluginInterface {
   var $configuration = array();
 
-  public function getLayoutContainerPluginDefinitions() {
-    return isset($this->pluginDefinition['containers']) ? $this->pluginDefinition['containers'] : array();
+  public function getLayoutRegionPluginDefinitions() {
+    return isset($this->pluginDefinition['regions']) ? $this->pluginDefinition['regions'] : array();
   }
 
   public function getRegionNames() {
-    $regions = $this->getLayoutContainerPluginDefinitions();
+    $regions = $this->getLayoutRegionPluginDefinitions();
     $names = array();
     foreach ($regions as $info) {
        $names[$info['id']] = $info['label'];
@@ -42,19 +42,19 @@ class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplat
   }
 
   public function build(PageVariantInterface $page_variant, $options = array()) {
-    $containers = $page_variant->getLayoutContainers();
+    $regions = $page_variant->getLayoutRegions();
     $renderArray = array();
-    foreach ($containers as $container) {
+    foreach ($regions as $region) {
       $renderArray[] = array(
-        '#theme' => 'layout_container',
-        '#components' => $container->build($page_variant, $options),
-        '#container_id' => $container->id()
+        '#theme' => 'layout_region',
+        '#blocks' => $region->build($page_variant, $options),
+        '#region_id' => $region->id()
       );
     }
 
     return array(
       '#theme' => 'layout',
-      '#containers' => $renderArray
+      '#regions' => $renderArray
     );
   }
 
@@ -62,10 +62,10 @@ class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplat
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, array &$form_state) {
-    $form['containers'] = array(
+    $form['regions'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Containers'),
-      '#description' => $this->t('The label for this container'),
+      '#title' => $this->t('Regions'),
+      '#description' => $this->t('The label for this region'),
       '#default_value' => $this->label(),
       '#maxlength' => '255',
     );
@@ -83,7 +83,7 @@ class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplat
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, array &$form_state) {
-    $this->configuration['containers'] = $form_state['values']['containers'];
+    $this->configuration['regions'] = $form_state['values']['regions'];
   }
 
   public function calculateDependencies() {

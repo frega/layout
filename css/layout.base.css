@@ -13,7 +13,7 @@
 }
 
 /**
- * Containers.
+ * Regions.
  */
 .layout-app header .operations {
   float: left; /* LTR */
@@ -23,24 +23,24 @@
 }
 
 /**
- * Components.
+ * Blocks.
  */
-.layout-app .components {
+.layout-app .blocks {
   display: table;
   table-layout: fixed;
   width: 100%;
 }
-.layout-app .components .row {
+.layout-app .blocks .row {
   display: table-row;
 }
-.layout-app .components .component {
+.layout-app .blocks .block {
   display: table-cell;
   overflow: hidden;
 }
-.layout-app .components .component:hover {
+.layout-app .blocks .block:hover {
   cursor: pointer;
 }
-.layout-app .component > .lining {
+.layout-app .block > .lining {
   display: inline-block;
   height:100%;
   position: relative;
@@ -48,12 +48,12 @@
 }
 
 /**
- * Component information.
+ * Block information.
  */
-.layout-app .component .type-indicator,
-.layout-app .component .label {
+.layout-app .block .type-indicator,
+.layout-app .block .label {
   display: block;
 }
-.layout-app .component .type-indicator {
+.layout-app .block .type-indicator {
   float: left; /* LTR */
 }
