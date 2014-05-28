@@ -1,5 +1,0 @@
-layout.overview:
-  title: 'Layouts'
-  parent: system.admin_structure
-  description: 'Manage layouts'
-  route_name: layout.overview
