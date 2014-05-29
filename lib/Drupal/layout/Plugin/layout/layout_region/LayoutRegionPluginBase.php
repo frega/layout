@@ -2,6 +2,7 @@
 
 namespace Drupal\layout\Plugin\layout\layout_region;
 
+use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutPluginBase;
 use Drupal\layout\Plugin\LayoutRegionPluginInterface;
@@ -22,11 +23,30 @@ use Drupal\layout\Plugin\LayoutRegionPluginInterface;
  * )
  */
 class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPluginInterface {
+  /**
+   *
+   * @var \Drupal\layout\Plugin\LayoutPageVariantInterface $pageVariant
+   */
+  public $pageVariant = NULL;
+
   public function build(LayoutPageVariantInterface $page_variant, $options = array()) {
+    $contexts = $page_variant->getContexts();
+
     $blocksInRegion = $page_variant->getBlocksByRegion($this->id());
+    /** @var $blocksInRegion \Drupal\block\BlockPluginInterface[] */
     $regionRenderArray = array();
     foreach ($blocksInRegion as $id => $block) {
-      $regionRenderArray[] = $block->build();
+      if ($block instanceof ContextAwarePluginInterface) {
+        $page_variant->contextHandler->preparePluginContext($block, $contexts);
+      }
+
+      if ($block->access($page_variant->account)) {
+        $row = $block->build();
+        $block_name = drupal_html_class("block-$id");
+        $row['#prefix'] = '<div class="' . $block_name . '">';
+        $row['#suffix'] = '</div>';
+        $regionRenderArray[] = $row;
+      }
     }
 
     return array(
@@ -34,6 +54,33 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
       '#blocks' => $regionRenderArray,
       '#region_id' => $this->id()
     );
+  }
+
+  public function getParentRegionId() {
+    return isset($this->configuration['parent']) ? $this->configuration['parent'] : NULL;
+  }
+
+  public function getParentRegionOptions() {
+    $regions = $this->pageVariant->getLayoutRegions();
+    $options = array();
+    foreach ($regions as $region) {
+      // @todo: filter to avoid nesting bugs & filter for valid parent region types.
+      if ($region->id() !== $this->id()) {
+        $options[$region->id()] = $region->label();
+      }
+    }
+    return $options;
+  }
+
+  public function getSubRegions() {
+    $regions = $this->pageVariant->getLayoutRegions();
+    $filtered = array();
+    foreach ($regions as $region) {
+      if ($region->getParentRegionId() === $this->id()) {
+        $filtered[] = $region;
+      }
+    }
+    return $filtered;
   }
 
   /**
@@ -47,13 +94,18 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
       '#default_value' => $this->label(),
       '#maxlength' => '255',
     );
-    return $form;
-  }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function validateConfigurationForm(array &$form, array &$form_state) {
+    $options = $this->getParentRegionOptions();
+    $form['parent'] = array(
+      '#type' => 'select',
+      '#title' => $this->t('Parent region'),
+      '#description' => $this->t('Region to nest this region in'),
+      '#options' => array(NULL => $this->t('-- No parent region --')) + $this->getParentRegionOptions(),
+      '#default_value' => $this->getParentRegionId(),
+      '#maxlength' => '255',
+    );
+
+    return $form;
   }
 
   /**
@@ -61,6 +113,7 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
    */
   public function submitConfigurationForm(array &$form, array &$form_state) {
     $this->configuration['label'] = $form_state['values']['label'];
+    $this->configuration['parent'] = isset($form_state['values']['parent']) ?  $form_state['values']['parent'] : NULL;
   }
 
   public function calculateDependencies() {

@@ -86,6 +86,10 @@ Drupal.behaviors.displayEditor = {
       return Drupal.layout.appModel.get('regions').get(id);
     };
 
+    Drupal.layout.getRegionModelsByParentId = function(id) {
+      return Drupal.layout.appModel.get('regions').where({parent: id});
+    };
+
     /**
      * Generates the required Backbone Collections and Models.
      * @param layoutData
@@ -99,7 +103,9 @@ Drupal.behaviors.displayEditor = {
         regions.add(new Drupal.layout.RegionModel({
           id: region.id,
           label: region.label,
-          blocks: blocks
+          blocks: blocks,
+          parent: region.parent,
+          plugin: region.plugin_id
         }));
       });
       return regions;

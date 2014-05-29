@@ -28,19 +28,75 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInterface, ContainerFactoryPluginInterface {
   /**
+   * The context handler.
+   *
+   * @note: this is public, so that LayoutRegion/LayoutTemplate instances
+   * can access this tbd if that stays.
+   *
+   * @var \Drupal\page_manager\ContextHandler
+   */
+  public $contextHandler;
+
+  /**
+   * The current user.
+   *
+   * @note: this is public, so that LayoutRegion/LayoutTemplate instances
+   * can access this tbd if that stays.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  public $account;
+
+  /**
+   * Layout template.
+   *
+   * @var \Drupal\Layout\Plugin\LayoutTemplatePluginInterface
+   */
+  public $layoutTemplate;
+
+  /**
+   * Layout regions.
+   *
+   * @var \Drupal\Layout\Plugin\LayoutRegionPluginBag
+   */
+  public $layoutRegionBag;
+
+  public function getContextHandler() {
+    return $this->contextHandler;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function addLayoutRegion(array $configuration) {
     $configuration['uuid'] = $this->uuidGenerator()->generate();
     $this->getLayoutRegions()->addInstanceId($configuration['uuid'], $configuration);
+    // @note: we need to update the configuration immediately to make sure this is persistable in the Page.
+    $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
     return $configuration['uuid'];
   }
 
   /**
    * {@inheritdoc}
    */
+  public function updateLayoutRegion($layout_region_id, array $configuration) {
+    $existing_configuration = $this->getLayoutRegion($layout_region_id)->getConfiguration();
+    $this->getLayoutRegions()->setInstanceConfiguration($layout_region_id, $configuration + $existing_configuration);
+    // @note: we need to update the configuration immediately to make sure this is persistable in the Page.
+    $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getLayoutRegion($layout_region_id) {
-    return $this->getLayoutRegions()->get($layout_region_id);
+    $layoutRegion = $this->getLayoutRegions()->get($layout_region_id);
+    // @todo: we need to get some kind of reference for the nested plugins, see views' PluginBase::init().
+    if (!isset($layoutRegion->pageVariant)) {
+      $layoutRegion->pageVariant = $this;
+    }
+    return $layoutRegion;
   }
 
   /**
@@ -53,6 +109,8 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
     foreach ($blocksInRegion as $block_id => $block) {
       $this->getBlockBag()->removeInstanceId($block_id);
     }
+    // @note: we need to update the configuration immediately to make sure this is persistable in the Page.
+    $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
     return $this;
   }
 
@@ -111,16 +169,19 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    * @return \Drupal\layout\Plugin\LayoutTemplatePluginInterface
    */
   public function getLayoutTemplate($reset = FALSE) {
-    if (isset($this->template_plugin) && !$reset) {
-      return $this->template_plugin;
+    if (isset($this->layoutTemplate) && !$reset) {
+      return $this->layoutTemplate;
     }
     $template_plugin_id = $this->getLayoutTemplateId();
     if (!$template_plugin_id) {
-      throw new Exception('Missing layout template plugin id');
+      throw new \Exception('Missing layout template plugin id');
     }
-
     $layoutTemplateManager = \Drupal::service('plugin.manager.layout.layout_template');
-    return $this->template_plugin = $layoutTemplateManager->createInstance($template_plugin_id, $this->configuration);
+    $this->layoutTemplate = $layoutTemplateManager->createInstance($template_plugin_id, $this->configuration);
+
+    // @todo: we need to get some kind of reference for the nested plugins, see views' PluginBase::init().
+    $this->layoutTemplate->pageVariant = $this;
+    return $this->layoutTemplate;
   }
 
   /**
@@ -236,7 +297,6 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
         '#prefix' => '<div class="layout-configure-form">',
         '#suffix' => '</div>',
         '#default_value' => '',
-        '#description' => t('Provide the JSON describing all blocks of this layout.'),
         '#attached' => array(
           'library' => array(
             'layout/layout'
@@ -249,13 +309,6 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
     }
     return $form;
   }
-
-  public function alterConfigurationForm(array &$form, array &$form_state, $form_id, PageInterface $page) {
-    $form['block_section']['#access'] = FALSE;
-    $form['selection_section']['#open'] = FALSE;
-    return $form;
-  }
-
 
   public function submitConfigurationForm(array &$form, array &$form_state) {
     parent::submitConfigurationForm($form, $form_state);

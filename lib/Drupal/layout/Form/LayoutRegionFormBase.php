@@ -7,7 +7,9 @@
 
 namespace Drupal\layout\Form;
 
-use Drupal\layout\LayoutStorageInterface;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Url;
+use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
 
 /**
@@ -18,9 +20,24 @@ abstract class LayoutRegionFormBase extends FormBase {
   /**
    * The block page this page variant belongs to.
    *
-   * @var \Drupal\layout\LayoutStorageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
-  protected $layout;
+  protected $page;
+
+  /**
+   * The block page this page variant belongs to.
+   *
+   * @var \Drupal\layout\Plugin\LayoutPageVariantInterface
+   */
+  protected $pageVariant;
+
+
+  /**
+   * The block page this page variant belongs to.
+   *
+   * @var \Drupal\layout\Plugin\LayoutRegionPluginInterface
+   */
+  protected $layoutRegion;
 
   /**
    * Prepares the page variant used by this form.
@@ -44,10 +61,19 @@ abstract class LayoutRegionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, LayoutStorageInterface $layout = NULL, $plugin_id = NULL) {
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL, $plugin_id = NULL) {
+    $this->page = $page;
+    $this->pageVariant = $page->getPageVariant($page_variant_id);
 
-    $this->layout = $layout;
-    $this->layoutRegion = $this->prepareLayoutRegion($plugin_id);
+    // Check for adding a (sub-)region to an existent region.
+    if ($plugin_id) {
+      $this->layoutRegion = $this->prepareLayoutRegion($plugin_id, $layout_region_id);
+      $this->layoutRegion->parentLayoutRegion = $this->pageVariant->getLayoutRegion($layout_region_id);
+    }
+    else {
+      $this->layoutRegion = $this->prepareLayoutRegion($layout_region_id);
+    }
+
 
     // Allow the page variant to add to the form.
     $form['plugin'] = $this->layoutRegion->buildConfigurationForm(array(), $form_state);
@@ -83,6 +109,18 @@ abstract class LayoutRegionFormBase extends FormBase {
       'values' => &$form_state['values']['plugin'],
     );
     $this->layoutRegion->submitConfigurationForm($form, $plugin_values);
+
+    $this->pageVariant->updateLayoutRegion($this->layoutRegion->id(), array(
+      'label' => $this->layoutRegion->label(),
+      'parent' => $this->layoutRegion->getParentRegionId()
+    ));
+
+    $this->page->save();
+
+    $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
+      'page' => $this->page->id(),
+      'page_variant_id' => $this->pageVariant->id()
+    ));
   }
 
 }

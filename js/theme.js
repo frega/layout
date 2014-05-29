@@ -12,7 +12,7 @@
       attributes: {}
     });
     return '<a data-dialog-options=\'' + JSON.stringify(d.dialogOptions) + '\' data-accepts="application/vnd.drupal-modal" ' +
-      'href="' + Drupal.url(path) + '" role="button" aria-label="' + d.ariaLabel + '" class="' + d['class'] + ' ajax">' + title + '</a>';
+      'href="' + Drupal.url(path) + '" role="button" aria-label="' + Drupal.checkPlain(d.ariaLabel) + '" class="' + Drupal.checkPlain(d['class']) + ' ajax">' + Drupal.checkPlain(title) + '</a>';
   };
 
   /**
@@ -23,19 +23,32 @@
    */
   Drupal.theme.layoutRegion = function (id, label, attributes) {
     var html =
-      '<div id="layout-region-' + id + '" class="layout-region">' +
+      '<div id="layout-region-' + Drupal.checkPlain(id) + '" class="layout-region layout-region-plugin-id-' + Drupal.checkPlain(attributes.plugin_id || '') + '">' +
         '<div class="lining">' +
           '<header class="clearfix">' +
-            '<div class="info"><span class="label">' + label + '</span></div>' +
+            '<div class="info"><span class="label">'  + Drupal.checkPlain(label) + '</span></div>' +
             '<div role="form" class="operations">' +
               Drupal.theme.layoutModalLink(
                 Drupal.t('Add block'),
                 '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/blocks/select'
+              ) + ' ' +
+              Drupal.theme.layoutModalLink(
+                Drupal.t('Configure region'),
+                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/edit'
+              ) + ' ' +
+              Drupal.theme.layoutModalLink(
+                Drupal.t('Add row'),
+                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/'  + id + '/region/layout_region_row/add'
+              ) + ' ' +
+              Drupal.theme.layoutModalLink(
+                Drupal.t('Delete region'),
+                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/delete'
               ) +
-              // @note: disable for the time being.
-              // Drupal.theme.layoutModalLink(Drupal.t('Configure region'), 'admin/structure/layout/regions/' + drupalSettings.layout.id + '/' + id) +
             '</div>' +
           '</header>' +
+          '<div class="regions">' +
+            '<div class="row"></div>' +
+          '</div>' +
           '<div class="blocks">' +
             '<div class="row"></div>' +
           '</div>' +
@@ -54,10 +67,10 @@
     if (!label) {
       label = id;
     }
-    return '<div class="block" id="block-' + id + '">' +
+    return '<div class="block" id="block-' + Drupal.checkPlain(id) + '">' +
       '<div class="lining">' +
         '<div class="info">' +
-          '<span class="label mb-text">' + label + '</span>' +
+          '<span class="label mb-text">' + Drupal.checkPlain(label) + '</span>' +
         '</div>' +
         '<div class="operations mb-block-operations">' +
           Drupal.theme.layoutModalLink(Drupal.t('Configure'), attributes.configurePath) +

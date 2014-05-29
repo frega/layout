@@ -42,25 +42,33 @@ layout.page_variant_layout_rest:
 
 # @todo: reintroduce modifying templates/regions.
 layout.layout_region_add:
-  path: '/admin/structure/layouts/manage/{layout}/regions/add/{plugin_id}'
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/add'
   defaults:
     _form: '\Drupal\layout\Form\LayoutRegionAddForm'
     _title: 'Add new region'
   requirements:
-    _entity_access: 'layout.configure'
+    _permission: 'administer layouts'
+
+layout.layout_region_add_row:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/region/{plugin_id}/add'
+  defaults:
+    _form: '\Drupal\layout\Form\LayoutRegionAddForm'
+    _title: 'Add new region'
+  requirements:
+    _permission: 'administer layouts'
 
 layout.layout_region_edit:
-  path: '/admin/structure/layouts/manage/{layout}/regions/{plugin_id}/edit'
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/edit'
   defaults:
     _form: '\Drupal\layout\Form\LayoutRegionEditForm'
     _title: 'Edit region'
   requirements:
-    _entity_access: 'layout.configure'
+    _permission: 'administer layouts'
 
 layout.layout_region_delete:
-  path: '/admin/structure/layouts/manage/{layout}/regions/{plugin_id}/delete'
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/delete'
   defaults:
     _form: '\Drupal\layout\Form\LayoutRegionDeleteForm'
     _title: 'Delete region'
   requirements:
-    _entity_access: 'layout.configure'
+    _permission: 'administer layouts'

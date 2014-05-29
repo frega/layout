@@ -78,23 +78,22 @@ class Layouts {
     );
 
     foreach ($regions as $region_id => $region) {
+      $plugin_definition = $region->getPluginDefinition();
       $region_data = array(
         'id' => $region_id,
         'label' => $region->label(),
+        'parent' => $region->getParentRegionId(),
+        'plugin_id' => $plugin_definition['id'],
         'blocks' => array(),
       );
 
       $blocks = isset($grouped[$region_id]) && is_array($grouped[$region_id]) ? $grouped[$region_id] : array();
       foreach ($blocks as $block_id => $block) {
         $block_info = Layouts::blockToArray($block);
-
-        // be classed objects as well.
-        $block_id = str_replace('block.', '', $block_id);
         $region_data['blocks'][] = $block_info;
       }
       $data['regions'][] = $region_data;
     }
-
     return $data;
   }
 

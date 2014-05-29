@@ -20,14 +20,14 @@ class LayoutRegionAddForm extends LayoutRegionFormBase {
   /**
    * The page variant manager.
    *
-   * @var \Drupal\block_page\Plugin\LayoutPluginManager
+   * @var \Drupal\layout\Plugin\LayoutPluginManager
    */
   protected $layoutPluginManager;
 
   /**
    * Constructs a new PageVariantAddForm.
    *
-   * @param \Drupal\block_page\Plugin\PageVariantManager $layout_plugin_manager
+   * @param \Drupal\layout\Plugin\LayoutPluginManager $layout_plugin_manager
    *   The page variant manager.
    */
   public function __construct(LayoutPluginManager $layout_plugin_manager) {
@@ -60,26 +60,14 @@ class LayoutRegionAddForm extends LayoutRegionFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
-    parent::submitForm($form, $form_state);
+  protected function prepareLayoutRegion($region_id = 'default', $parent_region_id = NULL) {
+    $configuration = array(
+      'parent' => isset($parent_region_id) ? $parent_region_id : NULL
+    );
 
-    // If this page variant is new, add it to the page.
-    $region_id = $this->layout->addLayoutRegion($this->layoutRegion->getConfiguration());
-
-    // Save the layout page.
-    $this->layout->save();
-    drupal_set_message($this->t('The %label region been added.', array('%label' => $this->layoutRegion->label())));
-    $form_state['redirect_route'] = new Url('layout.layout_regions', array(
-      'layout' => $this->layout->id()
-    ));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function prepareLayoutRegion($region_id = 'default') {
-    // Create a new page variant instance.
-    return $this->layoutPluginManager->createInstance($region_id);
+    $region = $this->layoutPluginManager->createInstance($region_id, $configuration);
+    $region_id = $this->pageVariant->addLayoutRegion($region->getConfiguration());
+    return $this->pageVariant->getLayoutRegion($region_id);
   }
 
 }

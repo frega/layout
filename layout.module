@@ -42,25 +42,3 @@ function layout_theme() {
 
   return $hooks;
 }
-
-/**
- * Implements hook_form_alter().
- */
-function layout_form_alter(&$form, &$form_state, $form_id) {
-  switch ($form_id) {
-    case 'page_manager_page_variant_edit_form':
-      $page = $form_state['build_info']['args'][0];
-      $page_variant_id = $form_state['build_info']['args'][1];
-      $page_variant = $page->getPageVariant($page_variant_id);
-
-      if ($page_variant instanceof \Drupal\layout\plugin\LayoutPageVariantInterface) {
-        // We need to move things around a bit. This currently happens in page_manager's
-        // PageVariantEditForm, but we need to take over the form a little ore.
-        $page_variant->alterConfigurationForm($form, $form_state, $form_id, $page);
-      }
-
-      break;
-    default:
-      break;
-  }
-}

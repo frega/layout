@@ -14,10 +14,11 @@ use Drupal\layout\Plugin\LayoutPluginInterface;
  */
 interface LayoutTemplatePluginInterface extends LayoutPluginInterface {
   /**
-   * Returns array of configuration/definitions for to ensure for this LayoutTemplate
+   * Returns array of configuration/definitions for LayoutRegion instances
+   * for this LayoutTemplate.
    *
    * @return array
-   *  Layout Container Plugin definitions to ensure for this LayoutTemplate
+   *  LayoutRegion Plugin definitions to use for this LayoutTemplate.
    */
    public function getLayoutRegionPluginDefinitions();
 

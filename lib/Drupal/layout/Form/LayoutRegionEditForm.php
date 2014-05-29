@@ -20,7 +20,7 @@ class LayoutRegionEditForm extends LayoutRegionFormBase {
   /**
    * The page variant manager.
    *
-   * @var \Drupal\block_page\Plugin\LayoutPluginManager
+   * @var \Drupal\layout\Plugin\LayoutPluginManager
    */
   protected $layoutPluginManager;
 
@@ -60,23 +60,9 @@ class LayoutRegionEditForm extends LayoutRegionFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
-    parent::submitForm($form, $form_state);
-
-    // Save the layout page.
-    $this->layout->save();
-    drupal_set_message($this->t('The %label region been updated.', array('%label' => $this->layoutRegion->label())));
-    $form_state['redirect_route'] = new Url('layout.layout_regions', array(
-      'layout' => $this->layout->id()
-    ));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function prepareLayoutRegion($region_id = 'default') {
     // Load the page variant directly from the block page.
-    return $this->layout->getLayoutRegion($region_id);
+    return $this->pageVariant->getLayoutRegion($region_id);
   }
 
 }

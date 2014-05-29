@@ -15,7 +15,9 @@
       'id': null,
       // Drupal.layout.BlockCollection.
       'blocks': null,
-      'config': null
+      'parent': null,
+      'plugin_id': null,
+      'plugin_type': null
     }
   });
 

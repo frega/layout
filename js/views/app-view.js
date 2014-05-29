@@ -9,24 +9,19 @@
   Drupal.layout = Drupal.layout || {};
   Drupal.layout.AppView = Backbone.View.extend({
     initializeRegions: function() {
+      var rootRegions = new Drupal.layout.RegionCollection(this.model.get('regions').filter(function(region) {
+        return (region.get('parent') === null || region.get('parent') === '');
+      }));
       this.regionsView = new Drupal.layout.UpdatingCollectionView({
         el: this.$el,
-        collection: this.model.get('regions'),
-        nestedViewConstructor:Drupal.layout.RegionView,
-        nestedViewTagName:'div'
+        collection: rootRegions,
+        nestedViewConstructor: Drupal.layout.RegionView,
+        nestedViewTagName: 'div'
       });
     },
     initialize: function(options) {
       this.initializeRegions();
       this.options = options;
-      // Listen to changes of the layout-property for a complete repaint.
-      this.model.on('change:layout', function(m) {
-        this.remove();
-        // Reinitialize region - @todo: find a way of doing this w/o
-        // reinitializing the view.
-        this.initializeRegions();
-        this.render();
-      }, this);
     },
     render: function() {
       // @todo: this should move to layout.admin.js and provide better handling.
