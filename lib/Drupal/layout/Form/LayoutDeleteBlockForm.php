@@ -11,10 +11,8 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\Core\Form\ConfirmFormBase;
 
-use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Url;
-use Drupal\layout\Ajax\LayoutBlockReload;
-use Drupal\layout\Ajax\LayoutReload;
+use Drupal\layout\Ajax\LayoutBlockDelete;
 use Drupal\page_manager\PageInterface;
 use \Drupal\page_manager\Plugin\PageVariantInterface;
 
@@ -85,12 +83,11 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
     $this->block = $this->pageVariant->getBlock($block_id);
     $form = parent::buildForm($form, $form_state, $page, $page_variant_id, $layout_region_id, $block_id);
 
-    // @todo: fix LayoutReload
-    /* if ($this->getRequest()->isXmlHttpRequest()) {
+    if ($this->getRequest()->isXmlHttpRequest()) {
       $form['actions']['submit']['#ajax'] = array(
         'callback' => array($this, 'submitForm')
       );
-    }*/
+    }
     return $form;
   }
 
@@ -102,15 +99,13 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
     $this->page->save();
     drupal_set_message($this->t('The block %name has been removed.', array('%name' => $this->block->getConfiguration()['label'])));
 
-    // @todo: fix LayoutReload
-    /* if ($this->getRequest()->isXmlHttpRequest()) {
+    if ($this->getRequest()->isXmlHttpRequest()) {
       $response = new AjaxResponse();
       $response->addCommand(new CloseDialogCommand());
-      $response->addCommand(new LayoutReload($this->page, $this->pageVariant));
-
+      $response->addCommand(new LayoutBlockDelete($this->block));
       $form_state['response'] = $response;
       return $response;
-    } */
+    }
 
     $form_state['redirect_route'] = $this->getCancelRoute();
   }

@@ -21,6 +21,15 @@ Drupal.AjaxCommands.prototype.layoutBlockReload = function (ajax, response, stat
   }
 };
 
+Drupal.AjaxCommands.prototype.layoutBlockDelete = function (ajax, response, status) {
+  // Find the appropriate model by its id.
+  var m = Drupal.layout.getBlockInstanceModelById(response.data.id);
+  if (m) {
+    // The views will take care of all necessary updates (unbinding, rebinding).
+    m.destroy();
+  }
+}
+
 Drupal.AjaxCommands.prototype.layoutReload = function (ajax, response, status) {
   // Note: this does not yet work :(
   Drupal.layout.appModel.get('regions').reset(Drupal.layout.generateRegionCollections(response.data.layout.layoutData));

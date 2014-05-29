@@ -9,9 +9,7 @@
   Drupal.layout = Drupal.layout || {};
 
   Drupal.layout.BlockModel = Backbone.Model.extend({
-    url: function() {
-      return drupalSettings.layout.webserviceURL + '/block';
-    },
+    sync: function() { return false; },
     defaults: {
       // Unique id of the block instance.
       'id': null,
