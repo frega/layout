@@ -4,6 +4,7 @@ namespace Drupal\layout\Plugin\layout\layout_template;
 
 use Drupal\layout\LayoutStorageInterface;
 
+use Drupal\layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\Plugin\PageVariantInterface;
 
 use Drupal\layout\Plugin\LayoutRegionPluginBag;
@@ -41,15 +42,20 @@ class LayoutTemplatePluginBase extends LayoutPluginBase implements LayoutTemplat
     return $names;
   }
 
-  public function build(PageVariantInterface $page_variant, $options = array()) {
+  public function build(LayoutPageVariantInterface $page_variant, $options = array()) {
     $regions = $page_variant->getLayoutRegions();
     $renderArray = array();
+    $rootRegions = array();
+    // Find rootRegions - @note we are doing it this way because *nesting* getLayoutRegions-calls
+    // resets the internal iterator apparently.
     foreach ($regions as $region) {
-      $renderArray[] = array(
-        '#theme' => 'layout_region',
-        '#blocks' => $region->build($page_variant, $options),
-        '#region_id' => $region->id()
-      );
+      if (!$region->getParentRegionId()) {
+        $rootRegions[] = $region;
+      }
+    }
+
+    foreach ($rootRegions as $region) {
+      $renderArray[] = $region->build($page_variant, $options);
     }
 
     return array(

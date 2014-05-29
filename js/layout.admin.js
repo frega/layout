@@ -105,7 +105,7 @@ Drupal.behaviors.displayEditor = {
           label: region.label,
           blocks: blocks,
           parent: region.parent,
-          plugin: region.plugin_id
+          plugin_id: region.plugin_id
         }));
       });
       return regions;
@@ -124,27 +124,7 @@ Drupal.behaviors.displayEditor = {
         locked: drupalSettings.layout.locked
       });
 
-      // @todo: we need to do this in order to circumvent the merge-behavior of
-      // Drupal.ajax on drupalSettings (which makes sense, just not here).
-      drupalSettings.layout.layoutData = {};
       appView.render();
-    } else {
-      // Drupal.ajax has (good) reasons to call the attach function three times
-      // per response (triggered by layout select menu). But we
-      // need this only once and we need to make sure that the layout data is
-      // replaced not merged, that's why we do this stunt. There needs to be
-      // some form of making this less awkward.
-      if (drupalSettings.layout.layoutData.id) {
-        // Updating the model will trigger an rendering as appropriate.
-        Drupal.layout.appModel.set({
-          id: drupalSettings.layout.id,
-          layout: drupalSettings.layout.layoutData.layout,
-          regions: Drupal.layout.generateRegionCollections(drupalSettings.layout.layoutData)
-        });
-        // @todo: we need to do this in order to circumvent the merge-behavior of
-        // Drupal.ajax on drupalSettings (which makes sense, just not here).
-        drupalSettings.layout.layoutData = {};
-      }
     }
 
   }

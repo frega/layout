@@ -31,10 +31,9 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
 
   public function build(LayoutPageVariantInterface $page_variant, $options = array()) {
     $contexts = $page_variant->getContexts();
-
     $blocksInRegion = $page_variant->getBlocksByRegion($this->id());
     /** @var $blocksInRegion \Drupal\block\BlockPluginInterface[] */
-    $regionRenderArray = array();
+    $renderArray = array();
     foreach ($blocksInRegion as $id => $block) {
       if ($block instanceof ContextAwarePluginInterface) {
         $page_variant->contextHandler->preparePluginContext($block, $contexts);
@@ -45,16 +44,28 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
         $block_name = drupal_html_class("block-$id");
         $row['#prefix'] = '<div class="' . $block_name . '">';
         $row['#suffix'] = '</div>';
-        $regionRenderArray[] = $row;
+        $renderArray[] = $row;
+      }
+    }
+
+    $regions = $this->getSubRegions($page_variant);
+    $subregionsRenderArray = array();
+    /** @var $renderArray \Drupal\layout\Plugin\LayoutRegionPluginInterface[] */
+    if (sizeof($regions)) {
+      foreach ($regions as $id => $region) {
+        $subregionsRenderArray[] = $region->build($page_variant, $options);
       }
     }
 
     return array(
       '#theme' => $this->pluginDefinition['theme'],
-      '#blocks' => $regionRenderArray,
+      '#blocks' => $renderArray,
+      '#regions' => $subregionsRenderArray,
+      '#region' => $this,
       '#region_id' => $this->id()
     );
   }
+
 
   public function getParentRegionId() {
     return isset($this->configuration['parent']) ? $this->configuration['parent'] : NULL;
@@ -72,8 +83,10 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
     return $options;
   }
 
-  public function getSubRegions() {
-    $regions = $this->pageVariant->getLayoutRegions();
+  public function getSubRegions(LayoutPageVariantInterface $page_variant = NULL) {
+    // @todo: we need to $this->pageVariant available in a consistent fashion.
+    $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
+    $regions = $page_variant->getLayoutRegions();
     $filtered = array();
     foreach ($regions as $region) {
       if ($region->getParentRegionId() === $this->id()) {

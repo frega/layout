@@ -15,9 +15,10 @@
     initialize: function() {
       this.model.on('change', this.render, this);
     },
-    onDrop:function (event, index) {
+    onDrop:function (event, index, regionView) {
       // Trigger reorder, will be handled in Drupal.layout.RegionView.
-      this.$el.trigger('reorder', [this.model, index]);
+      // @note: we should trigger events instead of doing it this way.
+      regionView.reorderInstances({}, this.model, index);
       event.preventDefault();
       event.stopPropagation();
       return ;

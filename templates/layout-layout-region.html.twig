@@ -1,3 +1,13 @@
+<!-- {{ region.id() }} -->
 <div class="layout-region">
-  {{ blocks }}
+  <h2>{{ region.label() }}</h2>
+  <div>
+      <h3>Subregions</h3>
+      {{ regions }}
+  </div>
+  <div>
+      <h3>Blocks</h3>
+      {{ blocks }}
+  </div>
+
 </div>

@@ -49,7 +49,7 @@
           '<div class="regions">' +
             '<div class="row"></div>' +
           '</div>' +
-          '<div class="blocks">' +
+          '<div id="layout-region-blocks-'+ Drupal.checkPlain(id) +'" class="blocks">' +
             '<div class="row"></div>' +
           '</div>' +
         '</div>' +

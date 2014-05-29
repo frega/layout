@@ -83,6 +83,11 @@
   border: 1px solid #a6a6a6;
 }
 
+.layout-region .blocks {
+  min-height: 5em;
+  background-color: #ccc;
+}
+
 .layout-region .block .lining {
   padding: 0.25em;
   cursor: move;

@@ -14,7 +14,7 @@ use Drupal\layout\Plugin\layout\layout_region\LayoutRegionPluginBase;
  *   id = "layout_region_row",
  *   title = @Translation("Row"),
  *   help = @Translation("Row"),
- *   theme = "layout_region_row",
+ *   theme = "layout_region",
  *   admin = @Translation("Row")
  * )
  */

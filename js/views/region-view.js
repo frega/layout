@@ -28,60 +28,60 @@
     },
     initialize:function () {
       this.subregions = Drupal.layout.getRegionModelsByParentId(this.model.get('id'));
-      if (this.subregions.length) {
-        this._subRegionCollectionView = new Drupal.layout.UpdatingCollectionView({
-          collection: new Drupal.layout.RegionCollection(this.subregions),
-          nestedViewConstructor:Drupal.layout.RegionView,
-          nestedViewTagName:'div',
-          el: this.$el,
-          nestedViewContainerSelector: '.regions .row'
-        });
-      }
+      this._subRegionCollectionView = new Drupal.layout.UpdatingCollectionView({
+        collection: new Drupal.layout.RegionCollection(this.subregions),
+        nestedViewConstructor:Drupal.layout.RegionView,
+        nestedViewTagName:'div',
+        el: this.$el,
+        nestedViewContainerSelector: '.regions .row'
+      });
+
       var blocks = this.model.get('blocks');
       this._blockCollectionView = new Drupal.layout.UpdatingCollectionView({
         collection: blocks,
         nestedViewConstructor:Drupal.layout.BlockInstanceView,
         nestedViewTagName:'div',
         el: this.$el,
-        nestedViewContainerSelector: '.blocks > .row'
+        // @note: as we have nested UpdatingCollectionView we must avoid it applying to any nested regions.
+        nestedViewContainerSelector: '#layout-region-blocks-' + this.model.get('id') + ' .row'
       });
+
       // @todo: be more selective about what changes trigger requests to the
       // server. And let that bubble up to the app-view or only persist the
       // region-specific changes here.
-      blocks.on('reorder', this.saveFullLayout, this);
       blocks.on('add', this.saveFullLayout, this);
       blocks.on('remove', this.saveFullLayout, this);
+      blocks.on('reorder', this.saveFullLayout, this);
     },
 
     render:function () {
+      var self = this;
       Drupal.layout.deajaxify(this.$el);
-
       this.$el.html(Drupal.theme.layoutRegion(this.model.get('id'), this.model.get('label'), this.model.toJSON()));
 
       // Render blocks
       this._blockCollectionView.render();
       // Making the whole layout-region-element sortable provides a larger area
       // to drop block instances on and allows for dropping on empty regions.
-      this.$('.layout-region').sortable({
-        items: '.blocks .block',
-        connectWith: '.layout-region',
+      this.$('.layout-region .blocks').sortable({
+        items: '.block',
+        connectWith: '.layout-region .blocks',
         cursor: 'move',
         placeholder: "ui-state-highlight",
-        over: function(event, ui) {
-          console.log(event, ui);
-        },
-        stop: function(event, ui) {
-          console.log(ui.item.html(), ui.item.index());
-          ui.item.trigger('drop', ui.item.index());
+        receive: function( event, ui ) {
+          // @note: this is always painful, syncing jqueryui state w/ backbone state.
+          var $item = $(this);
+          ui.item.trigger('drop', [ui.item.index(), self]);
         }
       });
 
+      // Render subregions.
       if (this._subRegionCollectionView) {
         this._subRegionCollectionView.render();
       }
 
       Drupal.layout.ajaxify(this.$el);
-      
+
       return this;
     },
 
@@ -95,7 +95,6 @@
 
     reorderInstances:function (event, model, position) {
       var collection = this.model.get('blocks');
-      console.log(this.model.get('label'), collection.toJSON());
       // Handle cross-collection drag and drop.
       if (!collection.contains(model)) {
         var originCollection;
