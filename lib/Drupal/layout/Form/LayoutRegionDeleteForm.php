@@ -7,6 +7,9 @@
 
 namespace Drupal\layout\Form;
 
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseDialogCommand;
+use Drupal\layout\Ajax\LayoutReload;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
@@ -79,7 +82,15 @@ class LayoutRegionDeleteForm extends ConfirmFormBase {
     $this->pageVariant = $page->getPageVariant($page_variant_id);
     $this->layoutRegion = $this->pageVariant->getLayoutRegion($layout_region_id);
 
-    return parent::buildForm($form, $form_state);
+    $form = parent::buildForm($form, $form_state);
+
+    if ($this->getRequest()->isXmlHttpRequest()) {
+      $form['actions']['submit']['#ajax'] = array(
+        'callback' => array($this, 'submitForm')
+      );
+    }
+
+    return $form;
   }
 
   /**
@@ -89,6 +100,15 @@ class LayoutRegionDeleteForm extends ConfirmFormBase {
     $this->pageVariant->removeLayoutRegion($this->layoutRegion->id());
     $this->page->save();
     drupal_set_message($this->t('The layout region %name has been removed.', array('%name' => $this->layoutRegion->label())));
+
+    if ($this->getRequest()->isXmlHttpRequest()) {
+      $response = new AjaxResponse();
+      $response->addCommand(new CloseDialogCommand());
+      $response->addCommand(new LayoutReload($this->page, $this->pageVariant));
+      $form_state['response'] = $response;
+      return $response;
+    }
+
     $form_state['redirect_route'] = $this->getCancelRoute();
   }
 

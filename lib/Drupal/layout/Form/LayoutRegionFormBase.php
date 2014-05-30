@@ -7,8 +7,11 @@
 
 namespace Drupal\layout\Form;
 
-use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\Core\Url;
+use Drupal\layout\Ajax\LayoutRegionReload;
+use Drupal\layout\Ajax\LayoutReload;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
 
@@ -86,6 +89,12 @@ abstract class LayoutRegionFormBase extends FormBase {
       '#button_type' => 'primary',
     );
 
+    if ($this->getRequest()->isXmlHttpRequest()) {
+      $form['actions']['submit']['#ajax'] = array(
+        'callback' => array($this, 'submitForm')
+      );
+    }
+
     return $form;
   }
 
@@ -116,6 +125,19 @@ abstract class LayoutRegionFormBase extends FormBase {
     ));
 
     $this->page->save();
+
+    if ($this->getRequest()->isXmlHttpRequest()) {
+      $response = new AjaxResponse();
+      $response->addCommand(new CloseDialogCommand());
+      if ($this->getFormId() === 'layout_layout_region_add_form') {
+        $response->addCommand(new LayoutReload($this->page, $this->pageVariant));
+      } else {
+        $response->addCommand(new LayoutRegionReload($this->pageVariant, $this->layoutRegion));
+      }
+
+      $form_state['response'] = $response;
+      return $response;
+    }
 
     $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
       'page' => $this->page->id(),

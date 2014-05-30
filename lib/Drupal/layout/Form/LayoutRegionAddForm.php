@@ -64,7 +64,6 @@ class LayoutRegionAddForm extends LayoutRegionFormBase {
     $configuration = array(
       'parent' => isset($parent_region_id) ? $parent_region_id : NULL
     );
-
     $region = $this->layoutPluginManager->createInstance($region_id, $configuration);
     $region_id = $this->pageVariant->addLayoutRegion($region->getConfiguration());
     return $this->pageVariant->getLayoutRegion($region_id);

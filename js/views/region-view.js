@@ -27,9 +27,9 @@
       Drupal.layout.appModel.save();
     },
     initialize:function () {
-      this.subregions = Drupal.layout.getRegionModelsByParentId(this.model.get('id'));
+      var subregions = Drupal.layout.getRegionModelsByParentId(this.model.get('id'));
       this._subRegionCollectionView = new Drupal.layout.UpdatingCollectionView({
-        collection: new Drupal.layout.RegionCollection(this.subregions),
+        collection: new Drupal.layout.RegionCollection(subregions),
         nestedViewConstructor:Drupal.layout.RegionView,
         nestedViewTagName:'div',
         el: this.$el,
@@ -45,13 +45,13 @@
         // @note: as we have nested UpdatingCollectionView we must avoid it applying to any nested regions.
         nestedViewContainerSelector: '#layout-region-blocks-' + this.model.get('id') + ' .row'
       });
-
-      // @todo: be more selective about what changes trigger requests to the
-      // server. And let that bubble up to the app-view or only persist the
-      // region-specific changes here.
-      blocks.on('add', this.saveFullLayout, this);
-      blocks.on('remove', this.saveFullLayout, this);
+      // If the collection is reordered, let's persist the changes via pseudo-REST.
       blocks.on('reorder', this.saveFullLayout, this);
+
+      // If the parent of the region changes, let's repaint the whole app.
+      this.model.on('change:parent', function() {
+        Drupal.layout.appView.repaint();
+      }, this);
     },
 
     render:function () {

@@ -18,21 +18,23 @@
         nestedViewConstructor: Drupal.layout.RegionView,
         nestedViewTagName: 'div'
       });
+
+      this.model.get('regions').on('change', function() {
+        this.render();
+      }, this);
     },
     initialize: function(options) {
       this.initializeRegions();
       this.options = options;
     },
     render: function() {
-      // @todo: this should move to layout.admin.js and provide better handling.
-      // Do not setup the js app if another user is currently operating on this
-      // layout (locked on the server via TempStore).
-      if (this.options.locked) {
-        return false;
-      }
-
       this.regionsView.render();
       return this;
+    },
+    // @todo: we need to make this better.
+    repaint: function() {
+      this.initializeRegions();
+      this.render();
     },
     remove: function() {
       this.regionsView.remove();

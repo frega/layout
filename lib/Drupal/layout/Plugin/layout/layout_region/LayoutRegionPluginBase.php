@@ -74,9 +74,10 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
   public function getParentRegionOptions() {
     $regions = $this->pageVariant->getLayoutRegions();
     $options = array();
+    $contained_region_ids = $this->getAllContainedRegionIds();
     foreach ($regions as $region) {
       // @todo: filter to avoid nesting bugs & filter for valid parent region types.
-      if ($region->id() !== $this->id()) {
+      if ($region->id() !== $this->id() && !in_array($region->id(), $contained_region_ids)) {
         $options[$region->id()] = $region->label();
       }
     }
@@ -95,6 +96,19 @@ class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPlu
     }
     return $filtered;
   }
+
+  public function getAllContainedRegionIds(LayoutPageVariantInterface $page_variant = NULL) {
+    $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
+    $regions = $this->getSubRegions($page_variant);
+    $contained = array();
+    if (sizeof($regions)) {
+      foreach ($regions as $region) {
+        $contained = array_merge($contained, $region->id(), $region->getAllContainedRegionIds($page_variant));
+      }
+    }
+    return $contained;
+  }
+
 
   /**
    * {@inheritdoc}
