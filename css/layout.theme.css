@@ -48,12 +48,15 @@
  */
  .layout-configure-form .blocks .block {
   padding: 0.5em;
+  min-width: 5em;
+  display: inline-block;
  }
 .layout-configure-form .block > .lining {
   background-image: -webkit-linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);
   background-image: linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);
   min-height: 4.5em;
 }
+
 /**
  * Block information.
  */
@@ -83,8 +86,20 @@
   border: 1px solid #a6a6a6;
 }
 
+.layout-region .blocks .block-placeholder {
+  margin: 0.5em;
+  padding: 0;
+  border: 1px dotted #000000;
+}
+
+.layout-region .blocks .block-placeholder:after {
+  content: ' X ';
+  padding: 2em;
+  min-width: 5em;
+}
+
 .layout-region .blocks {
-  min-height: 5em;
+  min-height: 6em;
   background-color: #ccc;
 }
 

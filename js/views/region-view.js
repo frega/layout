@@ -67,7 +67,7 @@
         items: '.block',
         connectWith: '.layout-region .blocks',
         cursor: 'move',
-        placeholder: "ui-state-highlight",
+        placeholder: "block block-placeholder",
         receive: function( event, ui ) {
           // @note: this is always painful, syncing jqueryui state w/ backbone state.
           var $item = $(this);
