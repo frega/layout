@@ -30,19 +30,19 @@
             '<div role="form" class="operations">' +
               Drupal.theme.layoutModalLink(
                 Drupal.t('Add block'),
-                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/blocks/select'
+                'admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/blocks/select'
               ) + ' ' +
               Drupal.theme.layoutModalLink(
                 Drupal.t('Configure region'),
-                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/edit'
+                'admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/edit'
               ) + ' ' +
               Drupal.theme.layoutModalLink(
                 Drupal.t('Add row'),
-                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/'  + id + '/region/layout_region_row/add'
+                'admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/'  + id + '/region/layout_region_row/add'
               ) + ' ' +
               Drupal.theme.layoutModalLink(
                 Drupal.t('Delete region'),
-                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/delete'
+                'admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/delete'
               ) +
             '</div>' +
           '</header>' +
