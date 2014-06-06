@@ -1,0 +1,44 @@
+<?php
+/**
+ * Implements hook_permission().
+ */
+function layout_permission() {
+  return array(
+    'administer layouts' => array(
+      'title' => t('Administer layouts'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * Register layout theming functions.
+ */
+function layout_theme() {
+  \Drupal::moduleHandler()->loadInclude('layout', 'inc', 'layout.theme');
+
+  // Some quasi clever array merging here.
+  $base = array(
+    'file' => 'page_layout.theme.inc',
+  );
+
+  $hooks =  array();
+
+  $hooks['layout'] = $base + array(
+    'variables' => array('regions' => array()),
+    'template' => 'layout-layout',
+  );
+
+  $hooks['layout_region'] = $base + array(
+    'variables' => array('region' => array(), 'blocks' => array(), 'regions' => array()),
+    'template' => 'layout-layout-region',
+  );
+
+  $hooks['layout_block'] = $base + array(
+    'variables' => array('block' => array()),
+    'template' => 'layout-layout-block',
+  );
+
+  return $hooks;
+}

@@ -1,0 +1,74 @@
+layout.page_variant_layout_blocks_select:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/blocks/select'
+  defaults:
+    _content: '\Drupal\page_layout\Controller\LayoutPageVariantController::selectBlock'
+    _title: 'Select block'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.page_variant_layout_block_add:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/add'
+  defaults:
+    _form: 'Drupal\page_layout\Form\LayoutAddBlockForm'
+    _title: 'Add block'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.page_variant_layout_block_edit:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/edit'
+  defaults:
+    _form: 'Drupal\page_layout\Form\LayoutEditBlockForm'
+    _title: 'Edit block'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.page_variant_layout_block_delete:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/delete'
+  defaults:
+    _form: 'Drupal\page_layout\Form\LayoutDeleteBlockForm'
+    _title: 'Configure block'
+  requirements:
+    _permission: 'administer layouts'
+
+# Fake layout.rest handler
+layout.page_variant_layout_rest:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout'
+  defaults:
+    _controller: '\Drupal\page_layout\Controller\LayoutPageVariantRestController::handle'
+    _title: 'Layout'
+  requirements:
+    _method: 'GET|PUT|POST'
+    _permission: 'administer layouts'
+
+# @todo: reintroduce modifying templates/regions.
+layout.layout_region_add:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/add'
+  defaults:
+    _form: '\Drupal\page_layout\Form\LayoutRegionAddForm'
+    _title: 'Add new region'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.layout_region_add_row:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/region/{plugin_id}/add'
+  defaults:
+    _form: '\Drupal\page_layout\Form\LayoutRegionAddForm'
+    _title: 'Add new region'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.layout_region_edit:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/edit'
+  defaults:
+    _form: '\Drupal\page_layout\Form\LayoutRegionEditForm'
+    _title: 'Edit region'
+  requirements:
+    _permission: 'administer layouts'
+
+layout.layout_region_delete:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/delete'
+  defaults:
+    _form: '\Drupal\page_layout\Form\LayoutRegionDeleteForm'
+    _title: 'Delete region'
+  requirements:
+    _permission: 'administer layouts'
