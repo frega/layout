@@ -1,0 +1,5 @@
+name: layout_example
+type: module
+description: 'Example Layouts'
+core: 8.x
+package:  Layout

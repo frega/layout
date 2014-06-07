@@ -22,9 +22,9 @@ use Drupal\Component\Annotation\Plugin;
   'css' => TRUE,
   'image' => TRUE,
 
-  Do we need
+  Do we need:
     - weight:
-    - grouping:
+    - category:
     - type: partial, content, full
 */
 

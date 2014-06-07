@@ -1,0 +1,19 @@
+1col:
+  label: 1 Column Layout
+  category: Examples
+  theme: layout_example_1col
+  regions:
+    top:
+      label: Top region
+    bottom:
+      label: Bottom region
+
+2col:
+  label: 2 Column layout
+  category: Examples
+  theme: layout_example_2col
+  regions:
+    left:
+      label: Left region
+    right:
+      label: Right region
