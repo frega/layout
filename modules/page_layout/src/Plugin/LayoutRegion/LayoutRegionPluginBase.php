@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\page_layout\Plugin\layout\layout_region;
+namespace Drupal\page_layout\Plugin\LayoutRegion;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
-use Drupal\page_layout\Plugin\LayoutPluginBase;
-use Drupal\page_layout\Plugin\LayoutRegionPluginInterface;
+use Drupal\layout\Plugin\LayoutConfigurableRegionBase;
+use Drupal\layout\Plugin\LayoutConfigurableRegionInterface;
 
 
 /**
@@ -22,7 +22,7 @@ use Drupal\page_layout\Plugin\LayoutRegionPluginInterface;
  *   admin = @Translation("Container")
  * )
  */
-class LayoutRegionPluginBase extends LayoutPluginBase implements LayoutRegionPluginInterface {
+class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
   /**
    *
    * @var \Drupal\page_layout\Plugin\LayoutPageVariantInterface $pageVariant

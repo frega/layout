@@ -16,11 +16,11 @@ function layout_permission() {
  * Register layout theming functions.
  */
 function layout_theme() {
-  \Drupal::moduleHandler()->loadInclude('layout', 'inc', 'layout.theme');
+  \Drupal::moduleHandler()->loadInclude('page_layout', 'inc', 'page_layout.theme');
 
   // Some quasi clever array merging here.
   $base = array(
-    'file' => 'page_layout.theme.inc',
+    'file' => 'modules/page_layout/page_layout.theme.inc',
   );
 
   $hooks =  array();

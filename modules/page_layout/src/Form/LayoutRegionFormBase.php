@@ -48,7 +48,7 @@ abstract class LayoutRegionFormBase extends FormBase {
    * @param string $region_id
    *   Either a layout region ID, or the plugin ID used to create a new layout region.
    *
-   * @return \Drupal\page_layout\Plugin\layout\layout_region\LayoutRegionPluginBase
+   * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase
    *   The layout region object.
    */
   abstract protected function prepareLayoutRegion($region_id);

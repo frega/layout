@@ -9,7 +9,7 @@ namespace Drupal\page_layout\Ajax;
 
 use Drupal\Core\Ajax\CommandInterface;
 
-use Drupal\page_layout\Layouts;
+use Drupal\page_layout\PageLayout;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\PageVariantInterface;
 
@@ -41,7 +41,7 @@ class LayoutReload implements CommandInterface {
    */
   public function __construct(PageInterface $page, PageVariantInterface $page_variant) {
     $this->command = 'layoutReload';
-    $this->data = Layouts::getLayoutPageVariantClientData($page, $page_variant);
+    $this->data = PageLayout::getLayoutPageVariantClientData($page, $page_variant);
   }
 
   /**

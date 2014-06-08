@@ -38,7 +38,7 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
    *
    * @return mixed
    */
-  public function getLayoutTemplateId();
+  public function getLayoutId();
 
   /**
    * Returns the

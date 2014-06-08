@@ -40,7 +40,6 @@ layout.page_variant_layout_rest:
     _method: 'GET|PUT|POST'
     _permission: 'administer layouts'
 
-# @todo: reintroduce modifying templates/regions.
 layout.layout_region_add:
   path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/add'
   defaults:

@@ -4,43 +4,10 @@ namespace Drupal\page_layout;
 
 
 use Drupal\block\BlockPluginInterface;
+use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\Plugin\PageVariantInterface;
 
-class Layouts {
-  /**
-   * Returns the plugin manager for a certain layout plugin type.
-   *
-   * @param string $type
-   *   The plugin type, for example filter.
-   *
-   * @return \Drupal\page_layout\Plugin\LayoutPluginManager
-   */
-  public static function pluginManager($type) {
-    return \Drupal::service('plugin.manager.layout.' . $type);
-  }
-
-  /**
-   * Return all available templates as an options array.
-   *
-   * @return array
-   */
-  public static function getLayoutTemplateOptions() {
-    $layoutTemplateManager = \Drupal::service('plugin.manager.layout.layout_template');
-    // Sort the plugins first by category, then by label.
-    $plugins = $layoutTemplateManager->getDefinitions();
-    $options = array();
-    foreach ($plugins as $id => $plugin) {
-      $category = isset($plugin['category']) ? $plugin['category'] : 'default';
-      if (!isset($options[$category])) {
-        $options[$category] = array();
-      }
-      $options[$category][$id] = $plugin['title'];
-    }
-    return $options;
-  }
-
-
+class PageLayout {
   /**
    * Converts a BlockPluginInterface to a minimal array (id, label, weight and region/region)
    *
@@ -66,15 +33,15 @@ class Layouts {
   }
 
   /**
-   * @param PageVariantInterface $page_variant
+   * @param LayoutPageVariantInterface $page_variant
    * @return array
    */
-  public static function getGroupedBlockArrays(PageVariantInterface $page_variant) {
+  public static function getGroupedBlockArrays(LayoutPageVariantInterface $page_variant) {
     $grouped = $page_variant->getRegionAssignments();
     $regions = $page_variant->getLayoutRegions();
     $data = array(
       'id' => $page_variant->id(),
-      'layout' => $page_variant->getLayoutTemplateId(),
+      'layout' => $page_variant->getLayoutId(),
     );
 
     foreach ($regions as $region_id => $region) {
@@ -89,7 +56,7 @@ class Layouts {
 
       $blocks = isset($grouped[$region_id]) && is_array($grouped[$region_id]) ? $grouped[$region_id] : array();
       foreach ($blocks as $block_id => $block) {
-        $block_info = Layouts::blockToArray($block);
+        $block_info = PageLayout::blockToArray($block);
         $region_data['blocks'][] = $block_info;
       }
       $data['regions'][] = $region_data;
@@ -98,7 +65,7 @@ class Layouts {
   }
 
 
-  public static function getLayoutPageVariantClientData(PageInterface $page, PageVariantInterface $page_variant) {
+  public static function getLayoutPageVariantClientData(PageInterface $page, LayoutPageVariantInterface $page_variant) {
     return array(
       'layout' => array(
         'id' => $page->id(),

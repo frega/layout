@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\page_layout\Plugin\layout\layout_region;
+namespace Drupal\page_layout\Plugin\LayoutRegion;
 
-use Drupal\page_layout\Plugin\layout\layout_region\LayoutRegionPluginBase;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase;
 
 
 /**

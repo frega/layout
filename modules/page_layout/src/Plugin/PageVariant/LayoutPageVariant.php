@@ -10,13 +10,16 @@ namespace Drupal\page_layout\Plugin\PageVariant;
 use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\page_layout\Layouts;
-use Drupal\page_layout\Plugin\LayoutRegionPluginBag;
+use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\ContextHandler;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
+use Drupal\layout\Layout;
+use Drupal\layout\Plugin\LayoutRegionPluginBag;
+
 
 /**
  * Provides a page variant that serves as a landing page.
@@ -57,7 +60,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * Layout regions.
    *
-   * @var \Drupal\page_layout\Plugin\LayoutRegionPluginBag
+   * @var \Drupal\layout\Plugin\LayoutRegionPluginBag
    */
   public $layoutRegionBag;
 
@@ -122,22 +125,26 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
       if (!isset($this->configuration['regions'])) {
         $this->configuration['regions'] = array();
         $layoutTemplate = $this->getLayoutTemplate();
-        $definitions = $layoutTemplate ? $layoutTemplate->getLayoutRegionPluginDefinitions() : array();
-        foreach ($definitions as $nr => $regionPluginDefinition) {
+        $definitions = $layoutTemplate ? $layoutTemplate->getRegionDefinitions() : array();
+        $weight = 0;
+        foreach ($definitions as $id => $regionPluginDefinition) {
           $this->addLayoutRegion(array(
-            'id' => $regionPluginDefinition['plugin_id'],
+            'id' => !empty($regionPluginDefinition['plugin_id']) ? $regionPluginDefinition['plugin_id'] : 'default',
+            'region_id' => $id,
             'label' => $regionPluginDefinition['label'],
-            'weight' => $nr,
+            'weight' => $weight,
           ));
+          $weight++;
         }
         $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
         return $this->getLayoutRegions();
       }
 
       $regions_data = $this->configuration['regions'];
-      $this->layoutRegionBag = new LayoutRegionPluginBag(\Drupal::service('plugin.manager.layout.layout_region'),
+      $this->layoutRegionBag = new LayoutRegionPluginBag(Layout::layoutRegionPluginManager(),
         $regions_data
       );
+
       $this->layoutRegionBag->sort();
     }
     return $this->layoutRegionBag;
@@ -157,8 +164,8 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * {@inheritdoc}
    */
-  public function getLayoutTemplateId() {
-    return isset($this->configuration['template_id']) ? $this->configuration['template_id'] : NULL;
+  public function getLayoutId() {
+    return isset($this->configuration['layout']) ? $this->configuration['layout'] : NULL;
   }
 
   /**
@@ -172,12 +179,12 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
     if (isset($this->layoutTemplate) && !$reset) {
       return $this->layoutTemplate;
     }
-    $template_plugin_id = $this->getLayoutTemplateId();
+    $template_plugin_id = $this->getLayoutId();
     if (!$template_plugin_id) {
-      throw new \Exception('Missing layout template plugin id');
+      throw new \Exception('Missing layout id');
     }
-    $layoutTemplateManager = \Drupal::service('plugin.manager.layout.layout_template');
-    $this->layoutTemplate = $layoutTemplateManager->createInstance($template_plugin_id, $this->configuration);
+
+    $this->layoutTemplate = Layout::layoutPluginManager()->createInstance($template_plugin_id, $this->configuration);
 
     // @todo: we need to get some kind of reference for the nested plugins, see views' PluginBase::init().
     $this->layoutTemplate->pageVariant = $this;
@@ -259,7 +266,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    * {@inheritdoc}
    */
   public function render() {
-    if ($this->getLayoutTemplateId() && $layout_template = $this->getLayoutTemplate()) {
+    if ($this->getLayoutId() && $layout_template = $this->getLayoutTemplate()) {
       return $layout_template->build($this);
     }
     return array();
@@ -267,14 +274,14 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
 
   public function buildConfigurationForm(array $form, array &$form_state) {
     // Adding
-    $adding_variant = !isset($this->configuration['template_id']);
+    $adding_variant = !isset($this->configuration['layout']);
 
     $form = parent::buildConfigurationForm($form, $form_state);
-    $form['template_id'] = array(
+    $form['layout'] = array(
       '#title' => t('Layout template'),
       '#type' => 'select',
-      '#default_value' => $this->getLayoutTemplateId(),
-      '#options' => Layouts::getLayoutTemplateOptions(),
+      '#default_value' => $this->getLayoutId(),
+      '#options' => Layout::getLayoutOptions(),
       '#disabled' => !$adding_variant,
       '#description' => t('Note: change a template would require salvaging blocks from disappearing regions. We will do that ... soon.'),
       '#required' => TRUE,
@@ -302,7 +309,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
             'page_layout/layout'
           ),
           'js' =>  array(
-            array('data' => Layouts::getLayoutPageVariantClientData($page, $page_variant), 'type' => 'setting')
+            array('data' => PageLayout::getLayoutPageVariantClientData($page, $page_variant), 'type' => 'setting')
           ),
         ),
       );
@@ -312,7 +319,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
 
   public function submitConfigurationForm(array &$form, array &$form_state) {
     parent::submitConfigurationForm($form, $form_state);
-    $this->configuration['template_id'] = $form_state['values']['template_id'];
+    $this->configuration['layout'] = $form_state['values']['layout'];
 
     // @note: we have no "oop"-way to latch onto the Page-preSave hook.
     if (!isset($this->configuration['regions'])) {

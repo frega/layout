@@ -7,7 +7,7 @@
 
 namespace Drupal\page_layout\Form;
 
-use Drupal\page_layout\Plugin\LayoutPluginManager;
+use Drupal\layout\Plugin\LayoutRegionPluginManager;
 use Drupal\page_layout\Form\LayoutRegionFormBase;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,7 +30,7 @@ class LayoutRegionEditForm extends LayoutRegionFormBase {
    * @param \Drupal\page_layout\Plugin\LayoutPluginManager $layout_plugin_manager
    *   The layout manager.
    */
-  public function __construct(LayoutPluginManager $layout_plugin_manager) {
+  public function __construct(LayoutRegionPluginManager $layout_plugin_manager) {
     $this->layoutPluginManager = $layout_plugin_manager;
   }
 
@@ -39,7 +39,7 @@ class LayoutRegionEditForm extends LayoutRegionFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.layout.layout_region')
+      $container->get('plugin.manager.layout.region')
     );
   }
 

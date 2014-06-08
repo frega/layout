@@ -9,10 +9,9 @@ namespace Drupal\page_layout\Ajax;
 
 use Drupal\Core\Ajax\CommandInterface;
 
-use Drupal\page_layout\Layouts;
+use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
-use Drupal\page_layout\Plugin\LayoutRegionPluginInterface;
-use Drupal\page_manager\PageInterface;
+use Drupal\layout\Plugin\LayoutRegionInterface;
 
 
 /**
@@ -40,9 +39,9 @@ class LayoutRegionReload implements CommandInterface {
    * @param string $data
    *   The data to pass on to the client side.
    */
-  public function __construct(LayoutPageVariantInterface $page_variant, LayoutRegionPluginInterface $layout_region) {
+  public function __construct(LayoutPageVariantInterface $page_variant, LayoutRegionInterface $layout_region) {
     $this->command = 'layoutRegionReload';
-    $data = Layouts::getGroupedBlockArrays($page_variant);
+    $data = PageLayout::getGroupedBlockArrays($page_variant);
     $region = array();
     foreach ($data['regions'] as $nr => $region) {
       if ($region['id'] === $layout_region->id()) {
