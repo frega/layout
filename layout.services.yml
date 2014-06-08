@@ -2,3 +2,6 @@ services:
   plugin.manager.layout:
     class: Drupal\layout\Plugin\LayoutPluginManager
     arguments: ['@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']
+  plugin.manager.layout.region:
+    class: Drupal\layout\Plugin\LayoutRegionPluginManager
+    arguments: ['@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']

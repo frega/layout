@@ -26,5 +26,5 @@ interface LayoutInterface extends PluginInspectionInterface {
    * @return array
    *   An array of information on regions keyed by machine name.
    */
-  function getRegionDefinitions();
+  public function getRegionDefinitions();
 }

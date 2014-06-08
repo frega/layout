@@ -14,6 +14,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\page_manager\ContextHandler;
 use Drupal\page_manager\Plugin\PageVariantBase;
+use Drupal\layout\Layout;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -25,6 +26,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class BlockPageVariant extends PageVariantBase implements ContainerFactoryPluginInterface {
+  /**
+   * The layout handler.
+   *
+   * @var \Drupal\layout\Plugin\LayoutInterface
+   */
+  protected $layout;
 
   /**
    * The context handler.
@@ -75,31 +82,16 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
   }
 
   /**
-   * Returns available layout options.
-   *
-   * @return array
-   *   Available layouts keyed by machine name.
-   */
-  public function getLayoutOptions() {
-    $layout_manager = \Drupal::service('plugin.manager.layout');
-    /** @var $layout_manager \Drupal\layout\Plugin\LayoutPluginManager */
-    $plugins = $layout_manager->getDefinitions();
-    $options = array();
-    foreach ($plugins as $id => $pluginInfo) {
-      $options[$id] = $pluginInfo['label'];
-    }
-    return $options;
-  }
-
-  /**
    * Returns instance of the layout plugin used by this page variant.
    *
    * @return \Drupal\layout\Plugin\LayoutInterface
    *   Layout plugin instance.
    */
   public function getLayout() {
-    $layout_manager = \Drupal::service('plugin.manager.layout');
-    return $layout_manager->createInstance($this->configuration['layout'], array());
+    if (!isset($this->layout)) {
+      $this->layout = Layout::layoutPluginManager()->createInstance($this->configuration['layout'], array());
+    }
+    return $this->layout;
   }
 
   /**
@@ -153,7 +145,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       $form['layout'] = array(
         '#title' => $this->t('Layout'),
         '#type' => 'select',
-        '#options' => $this->getLayoutOptions(),
+        '#options' => Layout::getLayoutOptions(),
         '#default_value' => NULL
       );
 

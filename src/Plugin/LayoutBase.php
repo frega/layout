@@ -4,14 +4,11 @@ namespace Drupal\layout\Plugin;
 use Drupal\Core\Plugin\PluginBase;
 
 /**
- * Provides a base class for static Layout plugins.
+ * Provides a base class for Layout plugins.
  */
 abstract class LayoutBase extends PluginBase implements LayoutInterface {
   /**
-   * Returns the human-readable list of regions keyed by machine name.
-   *
-   * @return array
-   *   An array of human-readable region names keyed by machine name.
+   * {@inheritdoc}
    */
   function getRegionNames() {
     $regions = $this->getRegionDefinitions();
@@ -22,10 +19,7 @@ abstract class LayoutBase extends PluginBase implements LayoutInterface {
   }
 
   /**
-   * Returns the information on regions keyed by machine name.
-   *
-   * @return array
-   *   An array of information on regions keyed by machine name.
+   * {@inheritdoc}
    */
   function getRegionDefinitions() {
     if (!isset($this->pluginDefinition['regions']) || !is_array($this->pluginDefinition['regions'])) {
@@ -38,7 +32,7 @@ abstract class LayoutBase extends PluginBase implements LayoutInterface {
         $key = $region['id'];
       }
       else {
-        $region['id'] = $key;
+        $region['region_id'] = $key;
       }
       $regions[$key] = $region;
     }
