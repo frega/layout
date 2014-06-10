@@ -54,47 +54,6 @@
 
       // Render blocks
       this._blockCollectionView.render();
-      this.setupBlockSortable();
-
-      // Render subregions.
-      if (this._subRegionCollectionView) {
-        this._subRegionCollectionView.render();
-        this.setupRegionSortable();
-      }
-
-      Drupal.layout.ajaxify(this.$el);
-      return this;
-    },
-
-    setupRegionSortable: function() {
-      var self = this;
-      // Making the whole layout-region-element sortable provides a larger area
-      // to drop block instances on and allows for dropping on empty regions.
-      this.$('.regions').sortable({
-        items: '.layout-region',
-        placeholder: 'region region-placeholder',
-        over: function(event, ui) {
-        },
-        connectWith: '.layout-region .regions',
-        start: function(event, ui) {
-          Drupal.layout.appView.$el.addClass('layout-region-dragging');
-          // We we need to do this because jQuery ui sortable makes it *hard* to distinguish between
-          // cross- and intra-sortable drags
-          this.status = null;
-
-        },
-        stop: function(event, ui) {
-          Drupal.layout.appView.$el.removeClass('layout-region-dragging');
-          if (this.status === 'updated') {
-            var model = Drupal.layout.getBlockModelById( $(ui.item).data('uuid') );
-            self.moveBlock(model, ui.item.index());
-          }
-        }
-      });
-    },
-
-    setupBlockSortable: function() {
-      var self = this;
       // Making the whole layout-region-element sortable provides a larger area
       // to drop block instances on and allows for dropping on empty regions.
       this.$('.layout-region .blocks').sortable({
@@ -115,8 +74,6 @@
           // 1. 'update' on source/target
           // We handle a move between sortables in the 'receive' event
           // and make sure that only one update event is triggered.
-
-          Drupal.layout.appView.$el.addClass('layout-block-dragging');
         },
         stop: function(event, ui) {
           if (this.status === 'updated') {
@@ -124,7 +81,6 @@
             self.moveBlock(model, ui.item.index());
           }
           this.status = null;
-          Drupal.layout.appView.$el.removeClass('layout-block-dragging');
         },
         update: function(event, ui) {
           // Only set status to 'updated', if the value hasn't been set already
@@ -140,13 +96,18 @@
           self.moveBlock(Drupal.layout.getBlockModelById($(ui.item).data('uuid')), ui.item.index());
         }
       });
+
+      // Render subregions.
+      if (this._subRegionCollectionView) {
+        this._subRegionCollectionView.render();
+      }
+
+      Drupal.layout.ajaxify(this.$el);
+      return this;
     },
 
     remove: function () {
-      // Destroy sortables
       this.$('.layout-region .blocks').sortable('destroy');
-      this.$('.layout-region .regions').sortable('destroy');
-      // Remove collection views
       this._blockCollectionView && this._blockCollectionView.remove();
       this._subRegionCollectionView && this._subRegionCollectionView.remove();
 
@@ -154,7 +115,6 @@
       this.model.off('change:parent');
       this.model.get('blocks').off('reorder');
 
-      // Empty element
       this.$el.empty();
     },
 
