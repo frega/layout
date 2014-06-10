@@ -314,7 +314,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
 
     $form = parent::buildConfigurationForm($form, $form_state);
     $form['layout'] = array(
-      '#title' => t('Layout template'),
+      '#title' => t('Layout'),
       '#type' => 'select',
       '#default_value' => $this->getLayoutId(),
       '#options' => Layout::getLayoutOptions(),

@@ -11,7 +11,7 @@ use Drupal\Core\Language\Language;
 use Drupal\Core\Template\Attribute;
 
 /**
- * Prepares variables for layout templates.
+ * Prepares variables for Layouts.
  *
  * Default template: layout-layout.html.twig.
  *
@@ -35,7 +35,7 @@ function template_preprocess_layout_region(&$variables) {
 }
 
 /**
- * Prepares variables for layout templates.
+ * Prepares variables for a layout block.
  *
  * Default template: layout-layout.html.twig.
  *
