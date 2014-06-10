@@ -10,22 +10,8 @@
   Drupal.layout = Drupal.layout || {};
 
   Drupal.layout.RegionView = Backbone.View.extend({
-    events:{
-      'reorder':'reorderInstances'
-    },
     _blockCollectionView: null,
     _subRegionCollectionView: null,
-    // @todo: listen to collection events in app-view.js instead/propagate event.
-    saveFullLayout: function(droppedModel) {
-      // If we have a dropped model, let's make sure we update the region
-      if (droppedModel) {
-        droppedModel.set('region', this.model.get('id'));
-      }
-
-      // Show the "changed" notice.
-      $('.display-changed').removeClass('js-hide');
-      Drupal.layout.appModel.save();
-    },
     initialize:function () {
       var subregions = Drupal.layout.getRegionModelsByParentId(this.model.get('id'));
       this._subRegionCollectionView = new Drupal.layout.UpdatingCollectionView({
@@ -39,14 +25,20 @@
       var blocks = this.model.get('blocks');
       this._blockCollectionView = new Drupal.layout.UpdatingCollectionView({
         collection: blocks,
-        nestedViewConstructor:Drupal.layout.BlockInstanceView,
+        nestedViewConstructor:Drupal.layout.BlockView,
         nestedViewTagName:'div',
         el: this.$el,
         // @note: as we have nested UpdatingCollectionView we must avoid it applying to any nested regions.
         nestedViewContainerSelector: '#layout-region-blocks-' + this.model.get('id') + ' .row'
       });
+
+
       // If the collection is reordered, let's persist the changes via pseudo-REST.
-      blocks.on('reorder', this.saveFullLayout, this);
+      blocks.on('reorder', function() {
+        // @note: we currently don't have a "partial" save/patch method, we are
+        // sending all regions and blocks at once.
+        Drupal.layout.appModel.save();
+      }, this);
 
       // If the parent of the region changes, let's repaint the whole app.
       this.model.on('change:parent', function() {
@@ -57,6 +49,7 @@
     render:function () {
       var self = this;
       Drupal.layout.deajaxify(this.$el);
+      this.$el.empty();
       this.$el.html(Drupal.theme.layoutRegion(this.model.get('id'), this.model.get('label'), this.model.toJSON()));
 
       // Render blocks
@@ -67,11 +60,40 @@
         items: '.block',
         connectWith: '.layout-region .blocks',
         cursor: 'move',
-        placeholder: "block block-placeholder",
-        receive: function( event, ui ) {
-          // @note: this is always painful, syncing jqueryui state w/ backbone state.
-          var $item = $(this);
-          ui.item.trigger('drop', [ui.item.index(), self]);
+        placeholder: 'block block-placeholder',
+        start: function() {
+          // We we need to do this because jQuery ui sortable makes it *hard* to distinguish between
+          // cross- and intra-sortable drags
+          this.status = null;
+          // Events fired in case of cross-sortable drag'n'drop:
+          // 1. 'update' on source
+          // 2. 'remove' on source
+          // 3. 'receive' on target
+          // 4. 'update' on target
+          // Events fired in case of intra-sortable drag'n'drop:
+          // 1. 'update' on source/target
+          // We handle a move between sortables in the 'receive' event
+          // and make sure that only one update event is triggered.
+        },
+        stop: function(event, ui) {
+          if (this.status === 'updated') {
+            var model = Drupal.layout.getBlockModelById( $(ui.item).data('uuid') );
+            self.moveBlock(model, ui.item.index());
+          }
+          this.status = null;
+        },
+        update: function(event, ui) {
+          // Only set status to 'updated', if the value hasn't been set already
+          this.status = this.status ? this.status : 'updated';
+        },
+        remove: function(event,ui) {
+          // Set the status to 'removed', skipping additional updates on stopping the drag.
+          this.status = 'removed';
+        },
+        receive: function(event, ui) {
+          // Set the status to 'received', skipping additional updates on stopping the drag.
+          this.status = 'received';
+          self.moveBlock(Drupal.layout.getBlockModelById($(ui.item).data('uuid')), ui.item.index());
         }
       });
 
@@ -81,34 +103,28 @@
       }
 
       Drupal.layout.ajaxify(this.$el);
-
       return this;
     },
 
-    remove:function () {
-      this.$el.sortable('destroy');
-      this.$el.empty();
+    remove: function () {
+      this.$('.layout-region .blocks').sortable('destroy');
       this._blockCollectionView && this._blockCollectionView.remove();
       this._subRegionCollectionView && this._subRegionCollectionView.remove();
 
+      // Unbind events
+      this.model.off('change:parent');
+      this.model.get('blocks').off('reorder');
+
+      this.$el.empty();
     },
 
-    reorderInstances:function (event, model, position) {
-      var collection = this.model.get('blocks');
-      // Handle cross-collection drag and drop.
-      if (!collection.contains(model)) {
-        var originCollection;
-        originCollection = model.collection;
-        // Let's remove it from the other first before adding it here.
-        model.collection.remove(model, {silent: true});
-        // This is set to silent to avoid potential race condition.
-        originCollection.reorder({silent: true});
-      } else {
-        // We'll be re-adding immediately, so no need for rapid-fire events.
-        collection.remove(model, {silent: true});
-      }
-      collection.add(model, {at:position});
-      this.render();
+    moveBlock: function(model, position) {
+      var oldCollection = model.collection;
+      oldCollection.remove(model, {silent: true});
+
+      model.set('region', this.model.get('id'));
+      this.model.get('blocks').add(model, {at:position, silent: true});
+      this.model.get('blocks').reorder();
     }
   });
 

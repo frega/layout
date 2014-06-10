@@ -11,7 +11,7 @@ layout:
     js/collections/collections.js: { scope: footer }
     # Views.
     js/views/app-view.js: { scope: footer }
-    js/views/blockinstance-view.js: { scope: footer }
+    js/views/block-view.js: { scope: footer }
     js/views/region-view.js: { scope: footer }
     js/views/updatingcollection-view.js: { scope: footer }
     # Other.

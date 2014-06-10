@@ -58,7 +58,7 @@
   }
 
   /**
-   * Theme function to get the html for a block instance.
+   * Theme function to get the html for a block.
    * @param id
    * @param label
    * @return {String}
@@ -67,7 +67,7 @@
     if (!label) {
       label = id;
     }
-    return '<div class="block" id="block-' + Drupal.checkPlain(id) + '">' +
+    return '<div class="block" id="block-' + Drupal.checkPlain(id) + '" data-uuid="' + Drupal.checkPlain(id) + '">' +
       '<div class="lining">' +
         '<div class="info">' +
           '<span class="label mb-text">' + Drupal.checkPlain(label) + '</span>' +

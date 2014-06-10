@@ -16,7 +16,7 @@
   Drupal.layout.BlockCollection = Backbone.Collection.extend({
     model: Drupal.layout.BlockModel,
     initialize: function() {
-      // Reorder every time a block instance is added or removed.
+      // Reorder every time a block is added or removed.
       this.on('add', this.reorder, this);
       this.on('remove', this.reorder, this);
     },

@@ -80,7 +80,7 @@
       var viewToRemove = this._getViewByModel(model);
       this._nestedViews = _(this._nestedViews).without(viewToRemove);
       if (this._rendered && viewToRemove) {
-        viewToRemove.$el.remove();
+        viewToRemove.remove();
       }
     },
 

@@ -14,8 +14,6 @@
       // Unique id of the block instance.
       'id': null,
       'weight': null,
-      // Unique id of the block (e.g CMI key).
-      'layout': '',
       'region': '',
       'config': {}
     }

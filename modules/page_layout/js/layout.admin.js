@@ -6,7 +6,7 @@ Drupal.layout = Drupal.layout || {};
 
 Drupal.AjaxCommands.prototype.layoutBlockReload = function (ajax, response, status) {
   // Find the appropriate model by its id.
-  var m = Drupal.layout.getBlockInstanceModelById(response.data.id);
+  var m = Drupal.layout.getBlockModelById(response.data.id);
   if (m) {
     // The views will take care of all necessary updates (unbinding, rebinding).
     m.set(response.data);
@@ -23,7 +23,7 @@ Drupal.AjaxCommands.prototype.layoutBlockReload = function (ajax, response, stat
 
 Drupal.AjaxCommands.prototype.layoutBlockDelete = function (ajax, response, status) {
   // Find the appropriate model by its id.
-  var m = Drupal.layout.getBlockInstanceModelById(response.data.id);
+  var m = Drupal.layout.getBlockModelById(response.data.id);
   if (m) {
     // The views will take care of all necessary updates (unbinding, rebinding).
     m.destroy();
@@ -106,7 +106,7 @@ Drupal.layout.deajaxify = function(el) {
  * @param id
  * @return {*}
  */
-Drupal.layout.getBlockInstanceModelById = function(id) {
+Drupal.layout.getBlockModelById = function(id) {
   var m;
   Drupal.layout.appModel.get('regions').each(function(region) {
     m = m || region.get('blocks').get(id);
@@ -147,7 +147,7 @@ Drupal.layout.generateRegionCollections = function(layoutData) {
 /**
  * Attach display editor functionality.
  */
-Drupal.behaviors.displayEditor = {
+Drupal.behaviors.displayLayoutEditor = {
   attach: function (context, settings) {
     // Initial attaching.
     if (!Drupal.layout.appView) {

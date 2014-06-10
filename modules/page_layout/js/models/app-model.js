@@ -1,7 +1,7 @@
 /**
  * @file
  * This model hold application state and corresponds to the layout containing
- * regions (and block instances).
+ * regions (and blocks).
  *
  * @todo: probably split this AppModel into AppModel and LayoutModel.
  */

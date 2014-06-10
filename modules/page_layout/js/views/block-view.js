@@ -1,6 +1,6 @@
 /**
  * @file
- * This view controls a single BlockInstance.
+ * This view controls a single Block.
  */
 (function ($, _, Backbone, Drupal) {
 
@@ -8,7 +8,7 @@
 
   Drupal.layout = Drupal.layout || {};
 
-  Drupal.layout.BlockInstanceView = Backbone.View.extend({
+  Drupal.layout.BlockView = Backbone.View.extend({
     events:{
       'drop':'onDrop'
     },
