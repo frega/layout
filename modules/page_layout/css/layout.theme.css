@@ -26,9 +26,6 @@
  */
 .layout-region > .lining {
   background-color: #ffffff;
-  border-color: #cccccc;
-  border-style: solid;
-  border-width: 1px;
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
   padding: 0.75em;
 }
@@ -84,6 +81,7 @@
 
 .layout-region {
   border: 1px solid #a6a6a6;
+  margin-bottom: 0.25em;
 }
 
 .layout-region .blocks .block-placeholder {
@@ -100,7 +98,7 @@
 
 .layout-region .blocks {
   min-height: 6em;
-  background-color: #ccc;
+  border: 1px dashed #ccc;
 }
 
 .layout-region .block .lining {
