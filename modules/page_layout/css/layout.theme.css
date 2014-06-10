@@ -101,6 +101,10 @@
   border: 1px dashed #ccc;
 }
 
+.layout-block-dragging .layout-region .blocks {
+  background-color: #eee;
+}
+
 .layout-region .block .lining {
   padding: 0.25em;
   cursor: move;

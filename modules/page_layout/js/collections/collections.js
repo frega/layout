@@ -10,7 +10,15 @@
   Drupal.layout = Drupal.layout || {};
 
   Drupal.layout.RegionCollection = Backbone.Collection.extend({
-    model: Drupal.layout.RegionModel
+    model: Drupal.layout.RegionModel,
+    /**
+     * Sorting callback for the collection.
+     * @param {Drupal.layout.RegionModel}
+     * @return {Number}
+     */
+    comparator: function(model) {
+      return model.get('weight');
+    }
   });
 
   Drupal.layout.BlockCollection = Backbone.Collection.extend({

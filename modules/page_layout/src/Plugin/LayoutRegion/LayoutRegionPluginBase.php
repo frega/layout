@@ -133,6 +133,14 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
       '#maxlength' => '255',
     );
 
+    $form['weight'] = array(
+      '#type' => 'weight',
+      '#title' => $this->t('Weight'),
+      '#description' => $this->t('Weight of this region'),
+      '#default_value' => $this->getWeight(),
+      '#maxlength' => '255',
+    );
+
     return $form;
   }
 
@@ -142,6 +150,7 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
   public function submitConfigurationForm(array &$form, array &$form_state) {
     $this->configuration['label'] = $form_state['values']['label'];
     $this->configuration['parent'] = isset($form_state['values']['parent']) ?  $form_state['values']['parent'] : NULL;
+    $this->configuration['weight'] = isset($form_state['values']['weight']) ?  $form_state['values']['weight'] : NULL;
   }
 
   public function calculateDependencies() {

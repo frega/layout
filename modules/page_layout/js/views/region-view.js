@@ -44,6 +44,11 @@
       this.model.on('change:parent', function() {
         Drupal.layout.appView.repaint();
       }, this);
+
+      // If the weight of the region changes, let's repaint the whole app.
+      this.model.on('change:weight', function() {
+        Drupal.layout.appView.repaint();
+      }, this);
     },
 
     render:function () {
@@ -54,6 +59,19 @@
 
       // Render blocks
       this._blockCollectionView.render();
+      this.setupBlockSortable();
+
+      // Render subregions.
+      if (this._subRegionCollectionView) {
+        this._subRegionCollectionView.render();
+      }
+
+      Drupal.layout.ajaxify(this.$el);
+      return this;
+    },
+
+    setupBlockSortable: function() {
+      var self = this;
       // Making the whole layout-region-element sortable provides a larger area
       // to drop block instances on and allows for dropping on empty regions.
       this.$('.layout-region .blocks').sortable({
@@ -74,6 +92,8 @@
           // 1. 'update' on source/target
           // We handle a move between sortables in the 'receive' event
           // and make sure that only one update event is triggered.
+
+          Drupal.layout.appView.$el.addClass('layout-block-dragging');
         },
         stop: function(event, ui) {
           if (this.status === 'updated') {
@@ -81,6 +101,7 @@
             self.moveBlock(model, ui.item.index());
           }
           this.status = null;
+          Drupal.layout.appView.$el.removeClass('layout-block-dragging');
         },
         update: function(event, ui) {
           // Only set status to 'updated', if the value hasn't been set already
@@ -96,25 +117,21 @@
           self.moveBlock(Drupal.layout.getBlockModelById($(ui.item).data('uuid')), ui.item.index());
         }
       });
-
-      // Render subregions.
-      if (this._subRegionCollectionView) {
-        this._subRegionCollectionView.render();
-      }
-
-      Drupal.layout.ajaxify(this.$el);
-      return this;
     },
 
     remove: function () {
+      // Destroy sortable.
       this.$('.layout-region .blocks').sortable('destroy');
+
+      // Remove collection views.
       this._blockCollectionView && this._blockCollectionView.remove();
       this._subRegionCollectionView && this._subRegionCollectionView.remove();
 
-      // Unbind events
+      // Unbind events.
       this.model.off('change:parent');
       this.model.get('blocks').off('reorder');
 
+      // Empty element.
       this.$el.empty();
     },
 

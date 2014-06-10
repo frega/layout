@@ -51,6 +51,7 @@ class PageLayout {
         'label' => $region->label(),
         'parent' => $region->getParentRegionId(),
         'plugin_id' => $plugin_definition['id'],
+        'weight' => $region->getWeight(),
         'blocks' => array(),
       );
 
