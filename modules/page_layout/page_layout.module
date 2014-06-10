@@ -2,7 +2,7 @@
 /**
  * Implements hook_permission().
  */
-function layout_permission() {
+function page_layout_permission() {
   return array(
     'administer layouts' => array(
       'title' => t('Administer layouts'),
@@ -15,12 +15,13 @@ function layout_permission() {
  *
  * Register layout theming functions.
  */
-function layout_theme() {
+function page_layout_theme() {
   \Drupal::moduleHandler()->loadInclude('page_layout', 'inc', 'page_layout.theme');
+
 
   // Some quasi clever array merging here.
   $base = array(
-    'file' => 'modules/page_layout/page_layout.theme.inc',
+    'file' => 'page_layout.theme.inc'
   );
 
   $hooks =  array();

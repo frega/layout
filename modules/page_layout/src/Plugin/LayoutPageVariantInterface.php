@@ -46,7 +46,7 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
    * @param bool $reset
    * @return mixed
    */
-  public function getLayoutTemplate($reset = FALSE);
+  public function getLayout($reset = FALSE);
 
   public function getBlocksByRegion($region_id);
 }

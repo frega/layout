@@ -9,7 +9,7 @@ use Drupal\layout\Plugin\LayoutRegionBase;
  *
  * @LayoutRegion(
  *   id = "layout_region_example",
- *   title = @Translation("Example Layout Region"),
+ *   label = @Translation("Example Layout Region"),
  *   help = @Translation("Layout Region"),
  *   theme = "layout_region_example"
  * )

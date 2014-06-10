@@ -12,7 +12,7 @@ use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase;
  *
  * @LayoutRegion(
  *   id = "layout_region_row",
- *   title = @Translation("Row"),
+ *   label = @Translation("Row layout"),
  *   help = @Translation("Row"),
  *   theme = "layout_region",
  *   admin = @Translation("Row")

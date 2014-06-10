@@ -15,7 +15,7 @@ use Drupal\layout\Plugin\LayoutConfigurableRegionInterface;
  *
  * @LayoutRegion(
  *   id = "default",
- *   title = @Translation("Default"),
+ *   label = @Translation("Default region"),
  *   help = @Translation("Handles default layout region within a layout."),
  *   contextual_links_locations = {"page"},
  *   theme = "layout_region",
@@ -40,11 +40,12 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
       }
 
       if ($block->access($page_variant->account)) {
-        $row = $block->build();
+        $block_render_array = $block->build();
         $block_name = drupal_html_class("block-$id");
-        $row['#prefix'] = '<div class="' . $block_name . '">';
-        $row['#suffix'] = '</div>';
-        $renderArray[] = $row;
+        $block_render_array['#prefix'] = '<div class="' . $block_name . '">';
+        $block_render_array['#suffix'] = '</div>';
+
+        $renderArray[] = $block_render_array;
       }
     }
 
@@ -103,7 +104,7 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     $contained = array();
     if (sizeof($regions)) {
       foreach ($regions as $region) {
-        $contained = array_merge($contained, $region->id(), $region->getAllContainedRegionIds($page_variant));
+        $contained = array_merge($contained, array($region->id()), $region->getAllContainedRegionIds($page_variant));
       }
     }
     return $contained;

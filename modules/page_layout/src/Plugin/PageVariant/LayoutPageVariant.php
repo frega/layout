@@ -10,10 +10,10 @@ namespace Drupal\page_layout\Plugin\PageVariant;
 use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\layout\Plugin\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\ContextHandler;
-use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,8 +33,8 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * The context handler.
    *
-   * @note: this is public, so that LayoutRegion/LayoutTemplate instances
-   * can access this tbd if that stays.
+   * @note: this is public, so that LayoutRegion/Layout instances
+   * can access this; tbd if that stays.
    *
    * @var \Drupal\page_manager\ContextHandler
    */
@@ -53,9 +53,9 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * Layout template.
    *
-   * @var \Drupal\page_layout\Plugin\LayoutTemplatePluginInterface
+   * @var \Drupal\layout\Plugin\LayoutInterface
    */
-  public $layoutTemplate;
+  public $layout;
 
   /**
    * Layout regions.
@@ -118,26 +118,35 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   }
 
   /**
+   * Initializes the page variant regions on the basis of given layout.
+   *
+   * @param LayoutInterface $layout
+   * @return LayoutRegionPluginBag|\Drupal\page_layout\Plugin\LayoutRegionPluginBag
+   */
+  private function initializeLayoutRegionsFromLayout(LayoutInterface $layout) {
+    $this->configuration['regions'] = array();
+    $definitions = $layout ? $layout->getRegionDefinitions() : array();
+    $weight = 0;
+    foreach ($definitions as $id => $regionPluginDefinition) {
+      $this->addLayoutRegion(array(
+        'id' => !empty($regionPluginDefinition['plugin_id']) ? $regionPluginDefinition['plugin_id'] : 'default',
+        'region_id' => $id,
+        'label' => $regionPluginDefinition['label'],
+        'weight' => $weight,
+      ));
+      $weight++;
+    }
+    $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
+    return $this->getLayoutRegions();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getLayoutRegions() {
     if (!isset($this->layoutRegionBag) || !$this->layoutRegionBag) {
       if (!isset($this->configuration['regions'])) {
-        $this->configuration['regions'] = array();
-        $layoutTemplate = $this->getLayoutTemplate();
-        $definitions = $layoutTemplate ? $layoutTemplate->getRegionDefinitions() : array();
-        $weight = 0;
-        foreach ($definitions as $id => $regionPluginDefinition) {
-          $this->addLayoutRegion(array(
-            'id' => !empty($regionPluginDefinition['plugin_id']) ? $regionPluginDefinition['plugin_id'] : 'default',
-            'region_id' => $id,
-            'label' => $regionPluginDefinition['label'],
-            'weight' => $weight,
-          ));
-          $weight++;
-        }
-        $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
-        return $this->getLayoutRegions();
+        return $this->initializeLayoutRegionsFromLayout($this->getLayout());
       }
 
       $regions_data = $this->configuration['regions'];
@@ -157,7 +166,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    */
   protected function getContainerConfiguration() {
     return isset($this->configuration['regions']) ? $this->configuration['regions'] :
-      $this->getLayoutTemplate()->getLayoutRegionPluginDefinitions();
+      $this->getLayout()->getLayoutRegionPluginDefinitions();
   }
 
 
@@ -169,26 +178,26 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   }
 
   /**
-   * Returns current LayoutTemplate plugin instance.
+   * Returns current Layout plugin instance.
    *
    * @todo: allow for configuration to be saved (not just the pluginId).
    *
-   * @return \Drupal\page_layout\Plugin\LayoutTemplatePluginInterface
+   * @return \Drupal\page_layout\Plugin\LayoutPluginInterface
    */
-  public function getLayoutTemplate($reset = FALSE) {
-    if (isset($this->layoutTemplate) && !$reset) {
-      return $this->layoutTemplate;
+  public function getLayout($reset = FALSE) {
+    if (isset($this->layout) && !$reset) {
+      return $this->layout;
     }
     $template_plugin_id = $this->getLayoutId();
     if (!$template_plugin_id) {
       throw new \Exception('Missing layout id');
     }
 
-    $this->layoutTemplate = Layout::layoutPluginManager()->createInstance($template_plugin_id, $this->configuration);
+    $this->layout = Layout::layoutPluginManager()->createInstance($template_plugin_id);
 
     // @todo: we need to get some kind of reference for the nested plugins, see views' PluginBase::init().
-    $this->layoutTemplate->pageVariant = $this;
-    return $this->layoutTemplate;
+    $this->layout->pageVariant = $this;
+    return $this->layout;
   }
 
   /**
@@ -266,12 +275,39 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    * {@inheritdoc}
    */
   public function render() {
-    if ($this->getLayoutId() && $layout_template = $this->getLayoutTemplate()) {
-      return $layout_template->build($this);
+    if ($this->getLayoutId() && $layout = $this->getLayout()) {
+      $regions = $this->getLayoutRegions();
+      $renderArray = array();
+      $rootRegions = array();
+      // Find rootRegions - @note we are doing it this way because *nesting* getLayoutRegions-calls
+      // resets the internal iterator apparently.
+      foreach ($regions as $region) {
+        if (!$region->getParentRegionId()) {
+          $rootRegions[] = $region;
+        }
+      }
+
+      foreach ($rootRegions as $region) {
+        $renderArray[] = $region->build($this);
+      }
+
+      return array(
+        '#theme' => 'layout',
+        '#regions' => $renderArray,
+        // All layouts get a "Configure layout" contextual link.
+        '#contextual_links' => array(
+          'page_manager.page_variant_edit' => array(
+            'route_parameters' => array('page' => '1', 'page_variant_id' => $this->id()),
+          ),
+        ),
+      );
     }
     return array();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function buildConfigurationForm(array $form, array &$form_state) {
     // Adding
     $adding_variant = !isset($this->configuration['layout']);

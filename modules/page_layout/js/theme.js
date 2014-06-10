@@ -37,8 +37,8 @@
                 '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/' + id + '/edit'
               ) + ' ' +
               Drupal.theme.layoutModalLink(
-                Drupal.t('Add row'),
-                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/'  + id + '/region/layout_region_row/add'
+                Drupal.t('Add subregion'),
+                '/admin/structure/page_manager/manage/' + drupalSettings.layout.pageId + '/manage/' + drupalSettings.layout.variantId + '/layout/'  + id + '/regions/select'
               ) + ' ' +
               Drupal.theme.layoutModalLink(
                 Drupal.t('Delete region'),

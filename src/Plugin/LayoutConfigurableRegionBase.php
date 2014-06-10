@@ -7,7 +7,7 @@ use Drupal\layout\Plugin\LayoutRegionInterface;
 /**
  * Provides a base class for Layout plugins.
  */
-abstract class LayoutConfigurableRegionBase extends PluginBase implements LayoutRegionInterface {
+abstract class LayoutConfigurableRegionBase extends PluginBase implements LayoutConfigurableRegionInterface {
   /**
    * {@inheritdoc}
    */
