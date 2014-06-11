@@ -123,8 +123,14 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
       '#maxlength' => '255',
     );
 
+    $form['region_positioning'] = array(
+      '#type' => 'details',
+      '#title' => t('Region positioning (parent and weight)'),
+      '#open' => FALSE
+    );
+
     $options = $this->getParentRegionOptions();
-    $form['parent'] = array(
+    $form['region_positioning']['parent'] = array(
       '#type' => 'select',
       '#title' => $this->t('Parent region'),
       '#description' => $this->t('Region to nest this region in'),
@@ -133,7 +139,7 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
       '#maxlength' => '255',
     );
 
-    $form['weight'] = array(
+    $form['region_positioning']['weight'] = array(
       '#type' => 'weight',
       '#title' => $this->t('Weight'),
       '#description' => $this->t('Weight of this region'),
@@ -149,8 +155,8 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
    */
   public function submitConfigurationForm(array &$form, array &$form_state) {
     $this->configuration['label'] = $form_state['values']['label'];
-    $this->configuration['parent'] = isset($form_state['values']['parent']) ?  $form_state['values']['parent'] : NULL;
-    $this->configuration['weight'] = isset($form_state['values']['weight']) ?  $form_state['values']['weight'] : NULL;
+    $this->configuration['parent'] = isset($form_state['values']['region_positioning']['parent']) ?  $form_state['values']['region_positioning']['parent'] : NULL;
+    $this->configuration['weight'] = isset($form_state['values']['region_positioning']['weight']) ?  $form_state['values']['region_positioning']['weight'] : 0;
   }
 
   public function calculateDependencies() {

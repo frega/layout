@@ -84,7 +84,7 @@ class LayoutPageVariantController extends ControllerBase {
    */
   public function selectBlock(PageInterface $page, $page_variant_id, $layout_region_id = NULL) {
     // Add a section containing the available blocks to be added to the variant.
-    $build = array(
+    $form = array(
       '#type' => 'container',
       '#attached' => array(
         'library' => array(
@@ -156,7 +156,7 @@ class LayoutPageVariantController extends ControllerBase {
    */
   public function selectRegion(PageInterface $page, $page_variant_id, $layout_region_id = NULL) {
     // Add a section containing the available blocks to be added to the variant.
-    $build = array(
+    $form = array(
       '#type' => 'container',
       '#attached' => array(
         'library' => array(
