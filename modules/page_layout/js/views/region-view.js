@@ -41,12 +41,7 @@
       }, this);
 
       // If the parent of the region changes, let's repaint the whole app.
-      this.model.on('change:parent', function() {
-        Drupal.layout.appView.repaint();
-      }, this);
-
-      // If the weight of the region changes, let's repaint the whole app.
-      this.model.on('change:weight', function() {
+      this.model.on('change', function() {
         Drupal.layout.appView.repaint();
       }, this);
     },
