@@ -14,7 +14,7 @@ class Layout {
    * @param string $type
    *   The plugin type, for example filter.
    *
-   * @return \Drupal\layout\Plugin\LayoutPluginManager
+   * @return \Drupal\layout\Plugin\Layout\LayoutPluginManager
    */
   public static function layoutPluginManager() {
     return \Drupal::service('plugin.manager.layout');
@@ -26,7 +26,7 @@ class Layout {
    * @param string $type
    *   The plugin type, for example filter.
    *
-   * @return \Drupal\layout\Plugin\LayoutRegionPluginManager
+   * @return \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginManager
    */
   public static function layoutRegionPluginManager() {
     return \Drupal::service('plugin.manager.layout.region');

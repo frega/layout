@@ -7,7 +7,7 @@
 
 namespace Drupal\page_layout\Form;
 
-use Drupal\layout\Plugin\LayoutRegionPluginManager;
+use Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginManager;
 use Drupal\page_layout\Form\LayoutRegionFormBase;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;

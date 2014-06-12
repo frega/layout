@@ -5,9 +5,9 @@
  * Contains \Drupal\layout\Plugin\LayoutConfigurableRegionInterface.
  */
 
-namespace Drupal\layout\Plugin;
+namespace Drupal\layout\Plugin\LayoutRegion;
 
-use Drupal\layout\Plugin\LayoutRegionInterface;
+use Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 

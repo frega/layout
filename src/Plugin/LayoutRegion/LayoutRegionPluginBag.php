@@ -5,7 +5,7 @@
  * Contains \Drupal\page_layout\Plugin\LayoutRegionPluginBag.
  */
 
-namespace Drupal\layout\Plugin;
+namespace Drupal\layout\Plugin\LayoutRegion;
 
 use Drupal\Core\Plugin\DefaultPluginBag;
 

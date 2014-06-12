@@ -29,7 +29,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
   /**
    * The layout handler.
    *
-   * @var \Drupal\layout\Plugin\LayoutInterface
+   * @var \Drupal\layout\Plugin\Layout\LayoutInterface
    */
   protected $layout;
 
@@ -84,7 +84,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
   /**
    * Returns instance of the layout plugin used by this page variant.
    *
-   * @return \Drupal\layout\Plugin\LayoutInterface
+   * @return \Drupal\layout\Plugin\Layout\LayoutInterface
    *   Layout plugin instance.
    */
   public function getLayout() {

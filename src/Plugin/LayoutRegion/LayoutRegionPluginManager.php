@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\layout\Plugin\LayoutPluginManager.
+ * Contains \Drupal\layout\Plugin\Layout\LayoutPluginManager.
  */
 
-namespace Drupal\layout\Plugin;
+namespace Drupal\layout\Plugin\LayoutRegion;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -15,7 +15,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 /**
  * Plugin type manager for all layouts.
  */
-class LayoutPluginManager extends DefaultPluginManager {
+class LayoutRegionPluginManager extends DefaultPluginManager {
 
   /**
    * Constructs a LayoutPluginManager object.
@@ -33,16 +33,16 @@ class LayoutPluginManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, LanguageManager $language_manager, ModuleHandlerInterface $module_handler) {
-    $plugin_definition_annotation_name = 'Drupal\layout\Annotation\Layout';
-    parent::__construct("Plugin/Layout", $namespaces, $module_handler, $plugin_definition_annotation_name);
+    $plugin_definition_annotation_name = 'Drupal\layout\Annotation\LayoutRegion';
+    parent::__construct("Plugin/LayoutRegion", $namespaces, $module_handler, $plugin_definition_annotation_name);
 
     $this->defaults += array(
-      'plugin_type' => 'Layout',
+      'plugin_type' => 'LayoutRegion',
       'register_theme' => TRUE,
     );
 
-    $this->setCacheBackend($cache_backend, $language_manager, 'layout');
-    $this->alterInfo('layout');
+    $this->setCacheBackend($cache_backend, $language_manager, 'layout_region');
+    $this->alterInfo('layout_region');
   }
 
 }

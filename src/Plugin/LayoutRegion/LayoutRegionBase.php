@@ -1,8 +1,8 @@
 <?php
-namespace Drupal\layout\Plugin;
+namespace Drupal\layout\Plugin\LayoutRegion;
 
 use Drupal\Core\Plugin\PluginBase;
-use Drupal\layout\Plugin\LayoutRegionInterface;
+use Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface;
 
 /**
  * Provides a base class for Layout plugins.

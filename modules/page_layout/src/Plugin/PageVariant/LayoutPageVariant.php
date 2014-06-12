@@ -10,7 +10,7 @@ namespace Drupal\page_layout\Plugin\PageVariant;
 use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\layout\Plugin\LayoutInterface;
+use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\ContextHandler;
@@ -18,7 +18,7 @@ use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Drupal\layout\Layout;
-use Drupal\layout\Plugin\LayoutRegionPluginBag;
+use Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag;
 
 
 /**
@@ -53,14 +53,14 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
   /**
    * Layout template.
    *
-   * @var \Drupal\layout\Plugin\LayoutInterface
+   * @var \Drupal\layout\Plugin\Layout\LayoutInterface
    */
   public $layout;
 
   /**
    * Layout regions.
    *
-   * @var \Drupal\layout\Plugin\LayoutRegionPluginBag
+   * @var \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag
    */
   public $layoutRegionBag;
 

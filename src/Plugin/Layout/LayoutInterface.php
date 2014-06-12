@@ -5,7 +5,7 @@
  * Contains \Drupal\layout\Plugin\LayoutPluginInterface.
  */
 
-namespace Drupal\layout\Plugin;
+namespace Drupal\layout\Plugin\Layout;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**

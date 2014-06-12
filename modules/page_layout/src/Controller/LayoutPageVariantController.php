@@ -8,17 +8,18 @@
 namespace Drupal\page_layout\Controller;
 
 use Drupal\block\BlockManagerInterface;
-use Drupal\layout\Plugin\LayoutConfigurableRegionBase;
-use Drupal\layout\Plugin\LayoutRegionPluginManager;
 use Drupal\page_layout\LayoutStorageInterface;
-
 Use Drupal\page_manager\ContextHandler;
+use Drupal\page_manager\PageInterface;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\page_manager\PageInterface;
-use Drupal\layout\Plugin\LayoutConfigurableRegionInterface;
+
+use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
+use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
+use Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginManager;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -42,7 +43,7 @@ class LayoutPageVariantController extends ControllerBase {
   /**
    * The context handler.
    *
-   * @var \Drupal\layout\Plugin\LayoutRegionPluginManager
+   * @var \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginManager
    */
   protected $layoutRegionManager;
 
@@ -168,7 +169,7 @@ class LayoutPageVariantController extends ControllerBase {
     $definitions = $this->layoutRegionManager->getDefinitions();
     foreach ($definitions as $plugin_id => $plugin_definition) {
       $plugin = $this->layoutRegionManager->createInstance($plugin_id, array());
-      if (is_subclass_of($plugin, 'Drupal\layout\Plugin\LayoutConfigurableRegionInterface')) {
+      if (is_subclass_of($plugin, 'Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface')) {
         $category = isset($plugin_definition['category']) ? String::checkPlain($plugin_definition['category']) : '';
         $category_key = 'category-' . $category;
         if (!isset($form['place_regions']['list'][$category_key])) {

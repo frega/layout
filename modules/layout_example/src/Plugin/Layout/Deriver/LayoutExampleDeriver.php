@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\layout\Plugin\Layout\Derivative\LayoutStaticDerivative.
+ * Contains \Drupal\layout_example\Plugin\Layout\Deriver\LayoutExampleDeriver.
  */
 
 namespace Drupal\layout_example\Plugin\Layout\Deriver;

@@ -1,7 +1,7 @@
 <?php
 
 namespace Drupal\layout_example\Plugin\Layout;
-use Drupal\layout\Plugin\LayoutBase;
+use Drupal\layout\Plugin\Layout\LayoutBase;
 
 /**
  * The plugin that handles the default layout template.

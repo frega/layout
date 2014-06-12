@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\layout\Plugin;
+namespace Drupal\layout\Plugin\Layout;
 
 use Drupal\Core\Plugin\PluginBase;
 

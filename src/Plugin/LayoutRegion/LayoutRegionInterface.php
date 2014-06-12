@@ -5,7 +5,7 @@
  * Contains \Drupal\layout\Plugin\LayoutRegionPluginInterface.
  */
 
-namespace Drupal\layout\Plugin;
+namespace Drupal\layout\Plugin\LayoutRegion;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**

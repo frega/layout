@@ -2,7 +2,7 @@
 
 namespace Drupal\layout_example\Plugin\LayoutRegion;
 
-use Drupal\layout\Plugin\LayoutRegionBase;
+use Drupal\layout\Plugin\LayoutRegion\LayoutRegionBase;
 
 /**
  * The plugin that handles the example layout region.
