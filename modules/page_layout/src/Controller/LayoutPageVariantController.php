@@ -9,7 +9,7 @@ namespace Drupal\page_layout\Controller;
 
 use Drupal\block\BlockManagerInterface;
 use Drupal\page_layout\LayoutStorageInterface;
-Use Drupal\page_manager\ContextHandler;
+Use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\page_manager\PageInterface;
 
 use Drupal\Component\Serialization\Json;
@@ -36,7 +36,7 @@ class LayoutPageVariantController extends ControllerBase {
   /**
    * The context handler.
    *
-   * @var \Drupal\page_manager\ContextHandler
+   * @var \Drupal\Core\Plugin\Context\ContextHandler
    */
   protected $contextHandler;
 
@@ -52,7 +52,7 @@ class LayoutPageVariantController extends ControllerBase {
    *
    * @param \Drupal\block\BlockManagerInterface $block_manager
    *   The block manager.
-   * @param \Drupal\page_manager\ContextHandler $context_handler
+   * @param \Drupal\Core\Plugin\Context\ContextHandler $context_handler
    *   The context handler.
    */
   public function __construct(BlockManagerInterface $block_manager, ContextHandler $context_handler, LayoutRegionPluginManager $layoutRegionManager) {

@@ -13,7 +13,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
-use Drupal\page_manager\ContextHandler;
+use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -36,7 +36,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    * @note: this is public, so that LayoutRegion/Layout instances
    * can access this; tbd if that stays.
    *
-   * @var \Drupal\page_manager\ContextHandler
+   * @var \Drupal\Core\Plugin\Context\ContextHandler
    */
   public $contextHandler;
 
@@ -234,7 +234,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\page_manager\ContextHandler $context_handler
+   * @param \Drupal\Core\Plugin\Context\ContextHandler $context_handler
    *   The context handler.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.

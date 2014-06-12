@@ -17,7 +17,7 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
    *
    * @param $layout_region_id
    *
-   * @return \Drupal\page_layout\Plugin\LayoutRegionPluginInterface
+   * @return \Drupal\layout\Plugin\LayoutRegionInterface
    */
   public function getLayoutRegion($layout_region_id);
 
@@ -29,7 +29,7 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
   /**
    * Returns the plugin bag of LayoutRegions.
    *
-   * @return \Drupal\page_layout\Plugin\LayoutRegionPluginBag
+   * @return \Drupal\layout\Plugin\LayoutRegionPluginBag
    */
   public function getLayoutRegions();
 
