@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * @file
+ * Contains \Drupal\layout\Plugin\Layout\LayoutBase.
+ */
+
 namespace Drupal\layout\Plugin\Layout;
 
 use Drupal\Core\Plugin\PluginBase;

@@ -1,22 +1,18 @@
 <?php
 
-namespace Drupal\layout_example\Plugin\Layout;
-use Drupal\layout\Plugin\Layout\LayoutBase;
+/**
+ * @file
+ * Contains \Drupal\layout\Plugin\Layout\LayoutDefault.
+ */
+
+namespace Drupal\layout\Plugin\Layout;
+
 
 /**
- * The plugin that handles the default layout template.
- *
- * @ingroup layout_template_plugins
- *
- * @Layout(
- *   id = "layout_example",
- *   title = @Translation("Example Layout"),
- *   help = @Translation("Layout"),
- *   theme = "layout_example",
- *   derivative = "\Drupal\layout_example\Plugin\Layout\Deriver\LayoutExampleDeriver"
- * )
+ * Provides a default class for Layout plugins.
  */
-class LayoutExample extends LayoutBase {
+class LayoutDefault extends LayoutBase {
+
   function getBasePath() {
     $path = isset($this->pluginDefinition['path']) && $this->pluginDefinition['path'] ? $this->pluginDefinition['path'] : FALSE;
     return $path ? $path : '';
