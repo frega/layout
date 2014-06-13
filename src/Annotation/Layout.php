@@ -25,13 +25,25 @@ use Drupal\Component\Annotation\Plugin;
   Do we need:
     - weight:
     - category:
-    - type: partial, content, full
 */
 
 /**
  * Defines a Layout annotation object.
  *
+ * @todo: Document other annotation keys.
+ *
  * @Annotation
  */
 class Layout extends Plugin {
+
+  /**
+   * The layout type.
+   *
+   *  - full: Layout for the whole page.
+   *  - page: Layout for the main page response.
+   *  - partial: A partial layout that is typically used for sub-regions.
+   *
+   * @var string
+   */
+  public $type = 'page';
 }

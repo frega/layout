@@ -1,6 +1,7 @@
 1col:
   label: 1 Column Layout
   category: Examples
+  type: page
   theme: layout_example_1col
   regions:
     top:
@@ -11,6 +12,7 @@
 2col:
   label: 2 Column layout
   category: Examples
+  type: page
   theme: layout_example_2col
   regions:
     left:

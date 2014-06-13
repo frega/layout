@@ -35,8 +35,10 @@ class LayoutPluginManager extends DefaultPluginManager {
     parent::__construct("Plugin/Layout", $namespaces, $module_handler, $plugin_definition_annotation_name);
 
     $this->defaults += array(
+      'type' => 'page',
       'plugin_type' => 'Layout',
       'register_theme' => TRUE,
+
     );
 
     $this->setCacheBackend($cache_backend, 'layout');

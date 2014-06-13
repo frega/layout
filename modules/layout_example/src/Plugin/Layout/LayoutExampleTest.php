@@ -11,6 +11,7 @@ use Drupal\layout\Plugin\Layout\LayoutBase;
  * @Layout(
  *   id = "layout_example_test",
  *   label = @Translation("Test1"),
+ *   type = "page",
  *   help = @Translation("Layout"),
  *   theme = "layout_example_test",
  *   regions = {
