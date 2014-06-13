@@ -95,7 +95,8 @@ class LayoutPageVariantController extends ControllerBase {
     );
 
     // Sort the plugins first by category, then by label.
-    $plugins = $this->contextHandler->getAvailablePlugins($page->getContexts(), $this->blockManager);
+    $plugins = $this->blockManager->getDefinitionsForContexts($page->getContexts());
+
     foreach ($plugins as $plugin_id => $plugin_definition) {
       $category = String::checkPlain($plugin_definition['category']);
       $category_key = 'category-' . $category;

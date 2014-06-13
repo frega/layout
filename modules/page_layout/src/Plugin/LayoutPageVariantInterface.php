@@ -17,7 +17,7 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
    *
    * @param $layout_region_id
    *
-   * @return \Drupal\layout\Plugin\LayoutRegionInterface
+   * @return \Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface
    */
   public function getLayoutRegion($layout_region_id);
 
@@ -29,7 +29,7 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
   /**
    * Returns the plugin bag of LayoutRegions.
    *
-   * @return \Drupal\layout\Plugin\LayoutRegionPluginBag
+   * @return \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag
    */
   public function getLayoutRegions();
 
@@ -47,6 +47,4 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
    * @return mixed
    */
   public function getLayout($reset = FALSE);
-
-  public function getBlocksByRegion($region_id);
 }
