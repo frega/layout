@@ -138,7 +138,9 @@ Drupal.layout.generateRegionCollections = function(layoutData) {
       blocks: blocks,
       parent: region.parent,
       weight: region.weight,
-      plugin_id: region.plugin_id
+      plugin_id: region.plugin_id,
+      actions: region.actions,
+      options: region.options
     }));
   });
   return regions;

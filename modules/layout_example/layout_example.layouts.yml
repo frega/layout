@@ -19,3 +19,93 @@
       label: Left region
     right:
       label: Right region
+
+two_rows_stacked_nested:
+  label: Two rows stacked
+  category: Examples
+  type: page
+  theme: layout_example_2col
+  regions:
+    top:
+      label: Top region
+      plugin_id: layout_region_row
+      subregions:
+        top_column_1:
+          label: Column 1
+          plugin_id: layout_region_column
+          weight: 1
+        top_column_2:
+          label: column Top 3
+          plugin_id: layout_region_column
+          weight: 2
+        top_column_3:
+          label: Column 2
+          plugin_id: layout_region_column
+          weight: 3
+    bottom:
+      plugin_id: layout_region_row
+      label: Bottom region
+      subregions:
+        bottom_column_1:
+          label: Column 1
+          plugin_id: layout_region_column
+          weight: 1
+        bottom_column_2:
+          label: Column 2
+          plugin_id: layout_region_column
+          weight: 1
+          subregions:
+            bottom_column_2_row_1:
+              label: Nested Row 1
+              plugin_id: layout_region_row
+              weight: 1
+            bottom_column_2_row_2:
+              label: Nested Row 2
+              plugin_id: layout_region_row
+              weight: 2
+
+koleary:
+  label: KOLEARY
+  category: Examples
+  type: page
+  theme: layout_example_koleary
+  regions:
+    header:
+      label: Header
+      plugin_id: layout_region_row
+      options: {is_configurable: false, float_blocks: true}
+    header2:
+      label: Header 2
+      plugin_id: layout_region_row
+      options: {is_configurable: false, float_blocks: true}
+    region-container-1:
+      label: Content-Wrapper
+      plugin_id: layout_region_row
+      options: {is_configurable: false, can_add_blocks: false, float_blocks: false}
+      subregions:
+        region-container-2:
+          label: region-container-2
+          plugin_id: layout_region_column
+          options: {is_configurable: false, can_add_blocks: false, width: "80%"}
+          subregions:
+            content:
+              label: Content
+              plugin_id: layout_region_row
+              options: {can_add_subregions: false, can_add_blocks: true, is_configurable: true, can_be_deleted: false, float_blocks: false}
+        region-container-3:
+          label: region-container-3
+          plugin_id: layout_region_column
+          options: {is_configurable: false, can_add_blocks: false, width: "18.25%"}
+          subregions:
+            content_2:
+              label: Content 2
+              plugin_id: layout_region_row
+              options: {can_add_subregions: false, can_add_blocks: true, is_configurable: true, can_be_deleted: false, float_blocks: false}
+            content_3:
+              label: Content 3
+              plugin_id: layout_region_row
+              options: {can_add_subregions: false, can_add_blocks: true, is_configurable: true, can_be_deleted: false, float_blocks: false}
+    footer:
+      label: Footer
+      plugin_id: layout_region_row
+      options: {can_add_subregions: true, can_add_blocks: true, is_configurable: true, can_be_deleted: true, float_blocks: true}

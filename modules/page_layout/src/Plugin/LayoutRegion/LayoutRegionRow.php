@@ -18,5 +18,5 @@ use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase;
  *   admin = @Translation("Row")
  * )
  */
-class LayoutRegionRow extends LayoutRegionPluginBase {
+class LayoutPageRegionRow extends LayoutRegionPluginBase {
 }

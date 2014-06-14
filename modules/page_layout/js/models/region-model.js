@@ -17,7 +17,8 @@
       'blocks': null,
       'parent': null,
       'plugin_id': null,
-      'plugin_type': null
+      'plugin_type': null,
+      'actions': []
     }
   });
 
