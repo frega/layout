@@ -32,17 +32,4 @@ abstract class LayoutBase extends PluginBase implements LayoutInterface {
   function getRegionDefinitions() {
     return Layout::getNormalizedLayoutRegionDefinitions($this->pluginDefinition['regions']);
   }
-
-    $regions = array();
-    foreach ($this->pluginDefinition['regions'] as $key => $region) {
-      if (is_numeric($key) && isset($region['id'])) {
-        $key = $region['id'];
-      }
-      else {
-        $region['region_id'] = $key;
-      }
-      $regions[$key] = $region;
-    }
-    return $regions;
-  }
 }
