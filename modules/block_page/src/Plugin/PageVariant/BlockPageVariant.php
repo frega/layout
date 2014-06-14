@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariant\BlockPageVariant.
+ * Contains \Drupal\block_page\Plugin\PageVariant\BlockPageVariant.
  */
 
 namespace Drupal\block_page\Plugin\PageVariant;
@@ -12,7 +12,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\page_manager\ContextHandler;
+use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\page_manager\Plugin\PageVariantBase;
 use Drupal\layout\Layout;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,7 +36,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
   /**
    * The context handler.
    *
-   * @var \Drupal\page_manager\ContextHandler
+   * @var \Drupal\Core\Plugin\Context\ContextHandler
    */
   protected $contextHandler;
 
@@ -56,7 +56,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
    *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\page_manager\ContextHandler $context_handler
+   * @param \Drupal\Core\Plugin\Context\ContextHandler $context_handler
    *   The context handler.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.
