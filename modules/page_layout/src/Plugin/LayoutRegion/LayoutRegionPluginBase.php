@@ -43,7 +43,7 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
             $mapping = array_flip($configuration['context_mapping']);
           }
         }
-        $this->pageVariant->contextHandler->applyContextMapping($block, $contexts, $mapping);
+        $page_variant->getContextHandler()->applyContextMapping($block, $contexts, $mapping);
       }
 
       if ($block->access($page_variant->account)) {
