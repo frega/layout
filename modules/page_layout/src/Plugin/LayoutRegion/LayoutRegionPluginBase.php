@@ -2,6 +2,7 @@
 
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
