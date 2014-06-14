@@ -74,7 +74,7 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
 
     $this->page = $page;
-    $this->pageVariant = $this->page->getPageVariant($page_variant_id);
+    $this->pageVariant = $this->page->getVariant($page_variant_id);
     $this->layoutRegion = $this->pageVariant->getLayoutRegion($layout_region_id);
 
     $this->block = $this->prepareBlock($block_id);

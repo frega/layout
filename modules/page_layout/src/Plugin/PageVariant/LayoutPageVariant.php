@@ -326,7 +326,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
     $page = $form_state['build_info']['args'][0];
 
     if (!$adding_variant) {
-      $page_variant = $page->getPageVariant($form_state['build_info']['args'][1]);
+      $page_variant = $page->getVariant($form_state['build_info']['args'][1]);
 
       $form['links'] = array(
         '#type' => 'markup',

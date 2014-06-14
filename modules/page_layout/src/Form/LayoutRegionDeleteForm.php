@@ -79,7 +79,7 @@ class LayoutRegionDeleteForm extends ConfirmFormBase {
    */
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $page->getPageVariant($page_variant_id);
+    $this->pageVariant = $page->getVariant($page_variant_id);
     $this->layoutRegion = $this->pageVariant->getLayoutRegion($layout_region_id);
 
     $form = parent::buildForm($form, $form_state);

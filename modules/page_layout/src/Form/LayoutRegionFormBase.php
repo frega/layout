@@ -66,7 +66,7 @@ abstract class LayoutRegionFormBase extends FormBase {
    */
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL, $plugin_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $page->getPageVariant($page_variant_id);
+    $this->pageVariant = $page->getVariant($page_variant_id);
 
     // Check for adding a (sub-)region to an existent region.
     if ($plugin_id) {

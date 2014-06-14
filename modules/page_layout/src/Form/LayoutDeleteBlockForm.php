@@ -79,7 +79,7 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
    */
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $this->page->getPageVariant($page_variant_id);
+    $this->pageVariant = $this->page->getVariant($page_variant_id);
     $this->block = $this->pageVariant->getBlock($block_id);
     $form = parent::buildForm($form, $form_state, $page, $page_variant_id, $layout_region_id, $block_id);
 

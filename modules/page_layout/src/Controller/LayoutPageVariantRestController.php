@@ -47,7 +47,7 @@ class LayoutPageVariantRestController extends ContainerAware {
     // @todo: this is clearly not restful - but let's get this on the road
     switch ($request->getMethod()) {
       case 'PUT':
-        $page_variant = $page->getPageVariant($page_variant_id);
+        $page_variant = $page->getVariant($page_variant_id);
         if (!$page_variant) {
           throw BadRequestHttpException('Invalid page variant id provided');
         }
