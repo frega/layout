@@ -36,7 +36,14 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     $renderArray = array();
     foreach ($blocksInRegion as $id => $block) {
       if ($block instanceof ContextAwarePluginInterface) {
-        $page_variant->contextHandler->preparePluginContext($block, $contexts);
+        $mapping = array();
+        if ($block instanceof ConfigurablePluginInterface) {
+          $configuration = $block->getConfiguration();
+          if (isset($configuration['context_mapping'])) {
+            $mapping = array_flip($configuration['context_mapping']);
+          }
+        }
+        $page_variant->getContextHandler()->applyContextMapping($block, $contexts, $mapping);
       }
 
       if ($block->access($page_variant->account)) {
