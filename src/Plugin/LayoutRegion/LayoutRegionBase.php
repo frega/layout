@@ -35,4 +35,11 @@ abstract class LayoutRegionBase extends PluginBase implements LayoutRegionInterf
   public function getWeight() {
     return (int) $this->pluginDefinition['weight'];
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getParentRegionId() {
+    return FALSE;
+  }
 }

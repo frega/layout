@@ -6,7 +6,9 @@
  */
 
 namespace Drupal\layout\Plugin\LayoutRegion;
+
 use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
 
 /**
  * Provides an interface for static Layout plugins.
@@ -45,4 +47,24 @@ interface LayoutRegionInterface extends PluginInspectionInterface {
    *   The layout region weight.
    */
   public function getWeight();
+
+  /**
+   * Returns if the region has a parent region.
+   *
+   * @todo Find a different solution for this?
+   *
+   * @return bool
+   */
+  public function getParentRegionId();
+
+  /**
+   * Builds the layout region.
+   *
+   * @param \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $provider
+   *   The block and context provider needed to build the layout region.
+   *
+   * @return array
+   *   The render array.
+   */
+  public function build(LayoutBlockAndContextProviderInterface $provider);
 }

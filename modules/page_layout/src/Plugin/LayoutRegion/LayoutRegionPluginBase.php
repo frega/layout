@@ -1,12 +1,22 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase.
+ */
+
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
-use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 /**
@@ -23,16 +33,67 @@ use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
  *   admin = @Translation("Container")
  * )
  */
-class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
-  /**
-   *
-   * @var \Drupal\page_layout\Plugin\LayoutPageVariantInterface $pageVariant
-   */
-  public $pageVariant = NULL;
+class LayoutRegionPluginBase extends LayoutConfigurableRegionBase implements ContainerFactoryPluginInterface {
 
-  public function build(LayoutPageVariantInterface $page_variant, $options = array()) {
-    $contexts = $page_variant->getContexts();
-    $blocksInRegion = $page_variant->getBlocksByRegion($this->id());
+  /**
+   * The context handler.
+   *
+   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
+   */
+  protected $contextHandler;
+
+  /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $account;
+
+  /**
+   * Constructs a new BlockPageVariant.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
+   *   The context handler.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The current user.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    $this->contextHandler = $context_handler;
+    $this->account = $account;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('context.handler'),
+      $container->get('current_user')
+    );
+  }
+
+  /**
+   * @var \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $pageVariant
+   */
+  public $provider = NULL;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function build(LayoutBlockAndContextProviderInterface $provider, $options = array()) {
+    $contexts = $provider->getContexts();
+    $blocksInRegion = $provider->getBlocksByRegion($this->id());
     /** @var $blocksInRegion \Drupal\block\BlockPluginInterface[] */
     $renderArray = array();
     foreach ($blocksInRegion as $id => $block) {
@@ -44,10 +105,10 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
             $mapping = array_flip($configuration['context_mapping']);
           }
         }
-        $page_variant->getContextHandler()->applyContextMapping($block, $contexts, $mapping);
+        $this->contextHandler->applyContextMapping($block, $contexts, $mapping);
       }
 
-      if ($block->access($page_variant->account)) {
+      if ($block->access($this->account)) {
         $block_render_array = $block->build();
         $block_name = drupal_html_class("block-$id");
         $block_render_array['#prefix'] = '<div class="' . $block_name . '">';
@@ -57,12 +118,12 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
       }
     }
 
-    $regions = $this->getSubRegions($page_variant);
+    $regions = $this->getSubRegions($provider);
     $subregionsRenderArray = array();
     /** @var $renderArray \Drupal\page_layout\Plugin\LayoutRegionPluginInterface[] */
     if (sizeof($regions)) {
       foreach ($regions as $id => $region) {
-        $subregionsRenderArray[] = $region->build($page_variant, $options);
+        $subregionsRenderArray[] = $region->build($provider, $options);
       }
     }
 
@@ -75,13 +136,15 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     );
   }
 
-
+  /**
+   * {@inheritdoc}
+   */
   public function getParentRegionId() {
     return isset($this->configuration['parent']) ? $this->configuration['parent'] : NULL;
   }
 
   public function getParentRegionOptions() {
-    $regions = $this->pageVariant->getLayoutRegions();
+    $regions = $this->provider->getLayoutRegions();
     $options = array();
     $contained_region_ids = $this->getAllContainedRegionIds();
     foreach ($regions as $region) {
@@ -93,10 +156,10 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     return $options;
   }
 
-  public function getSubRegions(LayoutPageVariantInterface $page_variant = NULL) {
+  public function getSubRegions(LayoutBlockAndContextProviderInterface $provider = NULL) {
     // @todo: we need to $this->pageVariant available in a consistent fashion.
-    $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
-    $regions = $page_variant->getLayoutRegions();
+    $provider = isset($provider) ? $provider : $this->provider;
+    $regions = $provider->getLayoutRegions();
     $filtered = array();
     foreach ($regions as $region) {
       if ($region->getParentRegionId() === $this->id()) {
@@ -106,13 +169,13 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     return $filtered;
   }
 
-  public function getAllContainedRegionIds(LayoutPageVariantInterface $page_variant = NULL) {
-    $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
-    $regions = $this->getSubRegions($page_variant);
+  public function getAllContainedRegionIds(LayoutPageVariantInterface $provider = NULL) {
+    $provider = isset($provider) ? $provider : $this->provider;
+    $regions = $this->getSubRegions($provider);
     $contained = array();
     if (sizeof($regions)) {
       foreach ($regions as $region) {
-        $contained = array_merge($contained, array($region->id()), $region->getAllContainedRegionIds($page_variant));
+        $contained = array_merge($contained, array($region->id()), $region->getAllContainedRegionIds($provider));
       }
     }
     return $contained;

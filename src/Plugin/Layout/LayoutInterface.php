@@ -6,6 +6,7 @@
  */
 
 namespace Drupal\layout\Plugin\Layout;
+
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
@@ -27,4 +28,15 @@ interface LayoutInterface extends PluginInspectionInterface {
    *   An array of information on regions keyed by machine name.
    */
   public function getRegionDefinitions();
+
+  /**
+   * Builds the layout.
+   *
+   * @param \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $provider
+   *   The block and context provider needed to build the layout.
+   *
+   * @return array
+   *   The render array.
+   */
+  public function build(LayoutBlockAndContextProviderInterface $provider);
 }

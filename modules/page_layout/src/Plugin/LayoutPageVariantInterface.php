@@ -1,9 +1,10 @@
 <?php
 namespace Drupal\page_layout\Plugin;
 
+use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
 use \Drupal\page_manager\Plugin\PageVariantInterface;
 
-interface LayoutPageVariantInterface extends PageVariantInterface {
+interface LayoutPageVariantInterface extends PageVariantInterface, LayoutBlockAndContextProviderInterface {
   /**
    * Adds a LayoutRegion to the layout regions bag.
    *
@@ -25,13 +26,6 @@ interface LayoutPageVariantInterface extends PageVariantInterface {
    * Remove a LayoutRegion instance from the layout regions bag.
    */
   public function removeLayoutRegion($layout_region_id);
-
-  /**
-   * Returns the plugin bag of LayoutRegions.
-   *
-   * @return \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag
-   */
-  public function getLayoutRegions();
 
   /**
    * Returns the id the template.
