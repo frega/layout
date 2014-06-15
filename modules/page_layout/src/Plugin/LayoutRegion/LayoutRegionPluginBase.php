@@ -33,25 +33,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   admin = @Translation("Container")
  * )
  */
-class LayoutRegionPluginBase extends LayoutConfigurableRegionBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('context.handler'),
-      $container->get('current_user')
-    );
-  }
-
-  /**
-   * @var \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $pageVariant
-   */
-  public $provider = NULL;
+class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
 
   /**
    * {@inheritdoc}
@@ -104,7 +86,6 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase implements Con
       '#open' => FALSE
     );
 
-    $options = $this->getParentRegionOptions();
     $form['region_positioning']['parent'] = array(
       '#type' => 'select',
       '#title' => $this->t('Parent region'),
