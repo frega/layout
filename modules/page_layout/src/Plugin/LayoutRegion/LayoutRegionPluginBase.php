@@ -31,6 +31,10 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
    */
   public $pageVariant = NULL;
 
+  public function init(LayoutPageVariantInterface $page_variant) {
+    $this->pageVariant = $page_variant;
+  }
+
   public function getParentRegionId() {
     return isset($this->configuration['parent']) ? $this->configuration['parent'] : NULL;
   }
@@ -59,7 +63,6 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     }
     return $contained;
   }
-
 
   /**
    * {@inheritdoc}
@@ -111,5 +114,38 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
 
   public function calculateDependencies() {
     // @todo
+  }
+
+  // {{{ UI & structural options.
+  public function getOptions() {
+    // @note: it would be nice to be able to merge.
+    return isset($this->configuration['options']) ? $this->configuration['options'] : array();
+  }
+
+  protected function getOption($option, $default_value = NULL) {
+    $options = $this->getOptions();
+    return isset($options[$option]) ? $options[$option] : $default_value;
+  }
+
+  public function canAddSubregions() {
+    if (!$this->isConfigurable()) {
+      return FALSE;
+    }
+    return $this->getOption('can_add_subregions', TRUE);
+  }
+
+  public function canAddBlocks() {
+    return $this->getOption('can_add_blocks', TRUE);
+  }
+
+  public function isConfigurable() {
+    return $this->getOption('is_configurable', TRUE);
+  }
+
+  public function canBeDeleted() {
+    if (!$this->isConfigurable()) {
+      return FALSE;
+    }
+    return $this->getOption('can_be_deleted', TRUE);
   }
 }

@@ -48,7 +48,7 @@ abstract class LayoutRegionFormBase extends FormBase {
    * @param string $region_id
    *   Either a layout region ID, or the plugin ID used to create a new layout region.
    *
-   * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase
+   * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutPageRegionBase
    *   The layout region object.
    */
   abstract protected function prepareLayoutRegion($region_id);
@@ -67,6 +67,7 @@ abstract class LayoutRegionFormBase extends FormBase {
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL, $plugin_id = NULL) {
     $this->page = $page;
     $this->pageVariant = $page->getVariant($page_variant_id);
+    $this->pageVariant->init($page->getExecutable());
 
     // Check for adding a (sub-)region to an existent region.
     if ($plugin_id) {
@@ -130,7 +131,7 @@ abstract class LayoutRegionFormBase extends FormBase {
       $response = new AjaxResponse();
       $response->addCommand(new CloseDialogCommand());
       if ($this->getFormId() === 'layout_layout_region_add_form') {
-        $response->addCommand(new LayoutReload($this->page, $this->pageVariant));
+        $response->addCommand(new LayoutReload($this->pageVariant));
       } else {
         $response->addCommand(new LayoutRegionReload($this->pageVariant, $this->layoutRegion));
       }

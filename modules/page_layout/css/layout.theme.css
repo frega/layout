@@ -48,6 +48,12 @@
   min-width: 5em;
   display: inline-block;
  }
+
+.layout-configure-form .blocks-full-width .blocks .block {
+  display: block;
+}
+
+
 .layout-configure-form .block > .lining {
   background-image: -webkit-linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);
   background-image: linear-gradient(rgb(102,149,168) 0%,rgb(92,133,150) 99%,rgb(92,133,150) 100%);

@@ -2,8 +2,10 @@
 
 namespace Drupal\page_layout;
 
-
+use Drupal\page_layout\LayoutPageAction;
+use Drupal\Core\Url;
 use Drupal\block\BlockPluginInterface;
+use Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\PageInterface;
 
@@ -32,6 +34,59 @@ class PageLayout {
     );
   }
 
+  public static function getRegionActions(LayoutPageVariantInterface $page_variant, LayoutRegionInterface $region) {
+    $actions = array();
+    $page = $page_variant->getPage();
+
+    if ($region->canAddBlocks()) {
+      $actions[] = new LayoutPageAction(t('Add block'),
+        new Url('layout.page_variant_layout_blocks_select', array(
+          'page' => $page->id(),
+          'page_variant_id' => $page_variant->id(),
+          'layout_region_id' => $region->id()
+        ))
+      );
+    }
+
+    if ($region->isConfigurable()) {
+      $actions[] = new LayoutPageAction(t('Configure region'),
+        new Url('layout.layout_region_edit', array(
+          'page' => $page->id(),
+          'page_variant_id' => $page_variant->id(),
+          'layout_region_id' => $region->id()
+        ))
+      );
+    }
+
+    if ($region->canAddSubregions()) {
+      $actions[] = new LayoutPageAction(t('Add subregion'),
+        new Url('layout.page_variant_layout_regions_select', array(
+          'page' => $page->id(),
+          'page_variant_id' => $page_variant->id(),
+          'layout_region_id' => $region->id()
+        ))
+      );
+    }
+
+    if ($region->canBeDeleted()) {
+      $actions[] = new LayoutPageAction(t('Delete region'),
+        new Url('layout.layout_region_delete', array(
+          'page' => $page->id(),
+          'page_variant_id' => $page_variant->id(),
+          'layout_region_id' => $region->id()
+        ))
+      );
+    }
+
+    $action_array = array();
+    foreach ($actions as $action) {
+      /** @var $action \Drupal\page_layout\LayoutPageAction */
+      $action_array[] = $action->toArray();
+    }
+
+    return $action_array;
+  }
+
   /**
    * @param LayoutPageVariantInterface $page_variant
    * @return array
@@ -45,13 +100,16 @@ class PageLayout {
     );
 
     foreach ($regions as $region_id => $region) {
+      // $region->init($page_variant);
       $plugin_definition = $region->getPluginDefinition();
       $region_data = array(
         'id' => $region_id,
-        'label' => $region->label(),
+        'label' => is_object($region->label()) ? (string) $region->label() : $region->label(),
         'parent' => $region->getParentRegionId(),
         'plugin_id' => $plugin_definition['id'],
         'weight' => $region->getWeight(),
+        'actions' => self::getRegionActions($page_variant, $region),
+        'options' => $region->getOptions(),
         'blocks' => array(),
       );
 
@@ -66,7 +124,8 @@ class PageLayout {
   }
 
 
-  public static function getLayoutPageVariantClientData(PageInterface $page, LayoutPageVariantInterface $page_variant) {
+  public static function getLayoutPageVariantClientData(LayoutPageVariantInterface $page_variant) {
+    $page = $page_variant->getPage();
     return array(
       'layout' => array(
         'id' => $page->id(),

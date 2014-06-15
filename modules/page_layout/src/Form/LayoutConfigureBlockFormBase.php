@@ -75,6 +75,7 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
 
     $this->page = $page;
     $this->pageVariant = $this->page->getVariant($page_variant_id);
+    $this->pageVariant->init($page->getExecutable());
     $this->layoutRegion = $this->pageVariant->getLayoutRegion($layout_region_id);
 
     $this->block = $this->prepareBlock($block_id);

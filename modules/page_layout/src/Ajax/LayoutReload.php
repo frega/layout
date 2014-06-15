@@ -39,9 +39,9 @@ class LayoutReload implements CommandInterface {
    * @param string $data
    *   The data to pass on to the client side.
    */
-  public function __construct(PageInterface $page, PageVariantInterface $page_variant) {
+  public function __construct(PageVariantInterface $page_variant) {
     $this->command = 'layoutReload';
-    $this->data = PageLayout::getLayoutPageVariantClientData($page, $page_variant);
+    $this->data = PageLayout::getLayoutPageVariantClientData($page_variant);
   }
 
   /**

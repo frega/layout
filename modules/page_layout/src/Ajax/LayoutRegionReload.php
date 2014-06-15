@@ -12,6 +12,7 @@ use Drupal\Core\Ajax\CommandInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface;
+use Drupal\page_manager\PageInterface;
 
 
 /**

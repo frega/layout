@@ -15,6 +15,7 @@ use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\Core\Plugin\Context\ContextHandler;
+use Drupal\page_manager\PageExecutable;
 use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -64,6 +65,13 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    * @var \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag
    */
   public $layoutRegionBag;
+
+  /**
+   * @return \Drupal\page_manager\PageInterface
+   */
+  public function getPage() {
+    return $this->executable->getPage();
+  }
 
   /**
    * {@inheritdoc}
@@ -124,15 +132,30 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
     $this->configuration['regions'] = array();
     $definitions = $layout ? $layout->getRegionDefinitions() : array();
     $weight = 0;
-    foreach ($definitions as $id => $regionPluginDefinition) {
-      $this->addLayoutRegion(array(
+    $uuids_by_region_id = array();
+    foreach ($definitions as $region_id => $regionPluginDefinition) {
+      $uuids_by_region_id[$region_id] = $this->addLayoutRegion(array(
         'id' => !empty($regionPluginDefinition['plugin_id']) ? $regionPluginDefinition['plugin_id'] : 'default',
-        'region_id' => $id,
+        'region_id' => $region_id,
         'label' => $regionPluginDefinition['label'],
         'weight' => $weight,
+        'parent' => isset($regionPluginDefinition['parent']) ? $regionPluginDefinition['parent'] : NULL,
+        'options' => isset($regionPluginDefinition['options']) ? $regionPluginDefinition['options'] : NULL,
       ));
       $weight++;
     }
+
+    $configuration = $this->getLayoutRegions()->getConfiguration();
+    // Make sure that parent machine names are replaced with uuids.
+    // We run this *after* so that we can be sure to have generated all
+    // regions.
+    foreach ($configuration as $uuid => $region_config) {
+      if (isset($region_config['parent'])) {
+        $region_config['parent'] = $uuids_by_region_id[$region_config['parent']];
+        $this->updateLayoutRegion($uuid, $region_config);
+      }
+    }
+
     $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
     return $this->getLayoutRegions();
   }
@@ -307,6 +330,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
 
     if (!$adding_variant) {
       $page_variant = $page->getVariant($form_state['build_info']['args'][1]);
+      $page_variant->init($page->getExecutable());
 
       $form['links'] = array(
         '#type' => 'markup',
@@ -325,7 +349,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
             'page_layout/layout'
           ),
           'js' =>  array(
-            array('data' => PageLayout::getLayoutPageVariantClientData($page, $page_variant), 'type' => 'setting')
+            array('data' => PageLayout::getLayoutPageVariantClientData($page_variant), 'type' => 'setting')
           ),
         ),
       );
