@@ -45,28 +45,4 @@ abstract class LayoutBase extends PluginBase implements LayoutInterface {
     return $regions;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function build(LayoutBlockAndContextProviderInterface $provider) {
-    $regions = $provider->getLayoutRegions();
-    $renderArray = array();
-    $rootRegions = array();
-    // Find rootRegions - @note we are doing it this way because *nesting* getLayoutRegions-calls
-    // resets the internal iterator apparently.
-    foreach ($regions as $region) {
-      if (!$region->getParentRegionId()) {
-        $rootRegions[] = $region;
-      }
-    }
-
-    foreach ($rootRegions as $region) {
-      $renderArray[] = $region->build($provider);
-    }
-
-    return array(
-      '#theme' => 'layout',
-      '#regions' => $renderArray,
-    );
-  }
 }

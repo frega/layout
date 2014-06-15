@@ -36,41 +36,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class LayoutRegionPluginBase extends LayoutConfigurableRegionBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The context handler.
-   *
-   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
-   */
-  protected $contextHandler;
-
-  /**
-   * The current user.
-   *
-   * @var \Drupal\Core\Session\AccountInterface
-   */
-  protected $account;
-
-  /**
-   * Constructs a new BlockPageVariant.
-   *
-   * @param array $configuration
-   *   A configuration array containing information about the plugin instance.
-   * @param string $plugin_id
-   *   The plugin ID for the plugin instance.
-   * @param mixed $plugin_definition
-   *   The plugin implementation definition.
-   * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
-   *   The context handler.
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The current user.
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-
-    $this->contextHandler = $context_handler;
-    $this->account = $account;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -91,54 +56,6 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase implements Con
   /**
    * {@inheritdoc}
    */
-  public function build(LayoutBlockAndContextProviderInterface $provider, $options = array()) {
-    $contexts = $provider->getContexts();
-    $blocksInRegion = $provider->getBlocksByRegion($this->id());
-    /** @var $blocksInRegion \Drupal\block\BlockPluginInterface[] */
-    $renderArray = array();
-    foreach ($blocksInRegion as $id => $block) {
-      if ($block instanceof ContextAwarePluginInterface) {
-        $mapping = array();
-        if ($block instanceof ConfigurablePluginInterface) {
-          $configuration = $block->getConfiguration();
-          if (isset($configuration['context_mapping'])) {
-            $mapping = array_flip($configuration['context_mapping']);
-          }
-        }
-        $this->contextHandler->applyContextMapping($block, $contexts, $mapping);
-      }
-
-      if ($block->access($this->account)) {
-        $block_render_array = $block->build();
-        $block_name = drupal_html_class("block-$id");
-        $block_render_array['#prefix'] = '<div class="' . $block_name . '">';
-        $block_render_array['#suffix'] = '</div>';
-
-        $renderArray[] = $block_render_array;
-      }
-    }
-
-    $regions = $this->getSubRegions($provider);
-    $subregionsRenderArray = array();
-    /** @var $renderArray \Drupal\page_layout\Plugin\LayoutRegionPluginInterface[] */
-    if (sizeof($regions)) {
-      foreach ($regions as $id => $region) {
-        $subregionsRenderArray[] = $region->build($provider, $options);
-      }
-    }
-
-    return array(
-      '#theme' => $this->pluginDefinition['theme'],
-      '#blocks' => $renderArray,
-      '#regions' => $subregionsRenderArray,
-      '#region' => $this,
-      '#region_id' => $this->id()
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getParentRegionId() {
     return isset($this->configuration['parent']) ? $this->configuration['parent'] : NULL;
   }
@@ -154,19 +71,6 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase implements Con
       }
     }
     return $options;
-  }
-
-  public function getSubRegions(LayoutBlockAndContextProviderInterface $provider = NULL) {
-    // @todo: we need to $this->pageVariant available in a consistent fashion.
-    $provider = isset($provider) ? $provider : $this->provider;
-    $regions = $provider->getLayoutRegions();
-    $filtered = array();
-    foreach ($regions as $region) {
-      if ($region->getParentRegionId() === $this->id()) {
-        $filtered[] = $region;
-      }
-    }
-    return $filtered;
   }
 
   public function getAllContainedRegionIds(LayoutPageVariantInterface $provider = NULL) {

@@ -56,15 +56,4 @@ interface LayoutRegionInterface extends PluginInspectionInterface {
    * @return bool
    */
   public function getParentRegionId();
-
-  /**
-   * Builds the layout region.
-   *
-   * @param \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $provider
-   *   The block and context provider needed to build the layout region.
-   *
-   * @return array
-   *   The render array.
-   */
-  public function build(LayoutBlockAndContextProviderInterface $provider);
 }

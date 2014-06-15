@@ -36,6 +36,7 @@ class LayoutPluginManager extends DefaultPluginManager {
 
     $this->defaults += array(
       'type' => 'page',
+      'theme' => 'layout',
       'register_theme' => TRUE,
       // Used for plugins defined in layouts.yml that  do not specify a class
       // themself.

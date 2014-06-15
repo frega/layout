@@ -10,6 +10,7 @@ namespace Drupal\page_layout\Plugin\PageVariant;
 use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\layout\LayoutRendererBlockAndContext;
 use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
@@ -272,7 +273,8 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    */
   public function render() {
     if ($this->getLayoutId() && $layout = $this->getLayout()) {
-      $output = $layout->build($this);
+      $renderer = new LayoutRendererBlockAndContext($this->contextHandler, $this->account);
+      $output = $renderer->build($layout, $this);
       // All layouts get a "Configure layout" contextual link.
       $output['#contextual_links'] = array(
         'page_manager.page_variant_edit' => array(
