@@ -7,17 +7,8 @@
 
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
-use Drupal\Component\Plugin\ContextAwarePluginInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Plugin\Context\ContextHandlerInterface;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 /**
  * The plugin that handles a default region
@@ -34,16 +25,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
-
   /**
-   * {@inheritdoc}
+   *
+   * @var \Drupal\page_layout\Plugin\LayoutPageVariantInterface $pageVariant
    */
+  public $pageVariant = NULL;
+
   public function getParentRegionId() {
     return isset($this->configuration['parent']) ? $this->configuration['parent'] : NULL;
   }
 
   public function getParentRegionOptions() {
-    $regions = $this->provider->getLayoutRegions();
+    $regions = $this->pageVariant->getLayoutRegions();
     $options = array();
     $contained_region_ids = $this->getAllContainedRegionIds();
     foreach ($regions as $region) {
@@ -55,13 +48,13 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     return $options;
   }
 
-  public function getAllContainedRegionIds(LayoutPageVariantInterface $provider = NULL) {
-    $provider = isset($provider) ? $provider : $this->provider;
-    $regions = $this->getSubRegions($provider);
+  public function getAllContainedRegionIds(LayoutPageVariantInterface $page_variant = NULL) {
+    $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
+    $regions = $this->getSubRegions($page_variant);
     $contained = array();
     if (sizeof($regions)) {
       foreach ($regions as $region) {
-        $contained = array_merge($contained, array($region->id()), $region->getAllContainedRegionIds($provider));
+        $contained = array_merge($contained, array($region->id()), $region->getAllContainedRegionIds($page_variant));
       }
     }
     return $contained;
@@ -86,6 +79,7 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
       '#open' => FALSE
     );
 
+    $options = $this->getParentRegionOptions();
     $form['region_positioning']['parent'] = array(
       '#type' => 'select',
       '#title' => $this->t('Parent region'),
