@@ -44,4 +44,5 @@ abstract class LayoutBase extends PluginBase implements LayoutInterface {
     }
     return $regions;
   }
+
 }

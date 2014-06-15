@@ -14,4 +14,13 @@ use Drupal\Core\Plugin\DefaultPluginBag;
  */
 class LayoutRegionPluginBag extends DefaultPluginBag {
   // @todo: implement sortHelper for configurable and non-configurable LayoutRegion plugins.
+
+  /**
+   * @return \Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface
+   */
+  public function current() {
+    return parent::current();
+  }
+
+
 }

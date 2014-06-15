@@ -1,13 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase.
+ */
+
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
-use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
-use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
-
 
 /**
  * The plugin that handles a default region
@@ -30,52 +31,6 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
    */
   public $pageVariant = NULL;
 
-  public function build(LayoutPageVariantInterface $page_variant, $options = array()) {
-    $contexts = $page_variant->getContexts();
-    $blocksInRegion = $page_variant->getBlocksByRegion($this->id());
-    /** @var $blocksInRegion \Drupal\block\BlockPluginInterface[] */
-    $renderArray = array();
-    foreach ($blocksInRegion as $id => $block) {
-      if ($block instanceof ContextAwarePluginInterface) {
-        $mapping = array();
-        if ($block instanceof ConfigurablePluginInterface) {
-          $configuration = $block->getConfiguration();
-          if (isset($configuration['context_mapping'])) {
-            $mapping = array_flip($configuration['context_mapping']);
-          }
-        }
-        $page_variant->getContextHandler()->applyContextMapping($block, $contexts, $mapping);
-      }
-
-      if ($block->access($page_variant->account)) {
-        $block_render_array = $block->build();
-        $block_name = drupal_html_class("block-$id");
-        $block_render_array['#prefix'] = '<div class="' . $block_name . '">';
-        $block_render_array['#suffix'] = '</div>';
-
-        $renderArray[] = $block_render_array;
-      }
-    }
-
-    $regions = $this->getSubRegions($page_variant);
-    $subregionsRenderArray = array();
-    /** @var $renderArray \Drupal\page_layout\Plugin\LayoutRegionPluginInterface[] */
-    if (sizeof($regions)) {
-      foreach ($regions as $id => $region) {
-        $subregionsRenderArray[] = $region->build($page_variant, $options);
-      }
-    }
-
-    return array(
-      '#theme' => $this->pluginDefinition['theme'],
-      '#blocks' => $renderArray,
-      '#regions' => $subregionsRenderArray,
-      '#region' => $this,
-      '#region_id' => $this->id()
-    );
-  }
-
-
   public function getParentRegionId() {
     return isset($this->configuration['parent']) ? $this->configuration['parent'] : NULL;
   }
@@ -91,19 +46,6 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
       }
     }
     return $options;
-  }
-
-  public function getSubRegions(LayoutPageVariantInterface $page_variant = NULL) {
-    // @todo: we need to $this->pageVariant available in a consistent fashion.
-    $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
-    $regions = $page_variant->getLayoutRegions();
-    $filtered = array();
-    foreach ($regions as $region) {
-      if ($region->getParentRegionId() === $this->id()) {
-        $filtered[] = $region;
-      }
-    }
-    return $filtered;
   }
 
   public function getAllContainedRegionIds(LayoutPageVariantInterface $page_variant = NULL) {

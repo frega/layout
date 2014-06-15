@@ -10,6 +10,7 @@ namespace Drupal\page_layout\Plugin\PageVariant;
 use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\layout\LayoutRendererBlockAndContext;
 use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
@@ -63,10 +64,6 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    * @var \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag
    */
   public $layoutRegionBag;
-
-  public function getContextHandler() {
-    return $this->contextHandler;
-  }
 
   /**
    * {@inheritdoc}
@@ -182,7 +179,7 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    *
    * @todo: allow for configuration to be saved (not just the pluginId).
    *
-   * @return \Drupal\page_layout\Plugin\LayoutPluginInterface
+   * @return \Drupal\layout\Plugin\Layout\LayoutInterface
    */
   public function getLayout($reset = FALSE) {
     if (isset($this->layout) && !$reset) {
@@ -276,31 +273,14 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
    */
   public function render() {
     if ($this->getLayoutId() && $layout = $this->getLayout()) {
-      $regions = $this->getLayoutRegions();
-      $renderArray = array();
-      $rootRegions = array();
-      // Find rootRegions - @note we are doing it this way because *nesting* getLayoutRegions-calls
-      // resets the internal iterator apparently.
-      foreach ($regions as $region) {
-        if (!$region->getParentRegionId()) {
-          $rootRegions[] = $region;
-        }
-      }
-
-      foreach ($rootRegions as $region) {
-        $renderArray[] = $region->build($this);
-      }
-
-      return array(
-        '#theme' => 'layout',
-        '#regions' => $renderArray,
-        // All layouts get a "Configure layout" contextual link.
-        '#contextual_links' => array(
-          'page_manager.page_variant_edit' => array(
-            'route_parameters' => array('page' => '1', 'page_variant_id' => $this->id()),
-          ),
-        ),
-      );
+      $renderer = new LayoutRendererBlockAndContext($this->contextHandler, $this->account);
+      $output = $renderer->build($layout, $this);
+      // All layouts get a "Configure layout" contextual link.
+      $output['#contextual_links'] = array(
+        'page_manager.page_variant_edit' => array(
+        'route_parameters' => array('page' => '1', 'page_variant_id' => $this->id()),
+      ));
+      return $output;
     }
     return array();
   }
