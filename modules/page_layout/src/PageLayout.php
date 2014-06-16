@@ -38,8 +38,22 @@ class PageLayout {
     $actions = array();
     $page = $page_variant->getPage();
 
-    if ($region->canAddBlocks()) {
-      $actions[] = new LayoutPageAction(t('Add block'),
+    // @note: this is super-hacky; as we are looping the LayoutRegionPluginBag
+    // in self::getGroupedBlockArrays we cannot iterate over it again without
+    // resetting / affecting the outer loop :( so that's why we clone.
+    $regions = clone $page_variant->getLayoutRegions();
+    $has_subregions = FALSE;
+    foreach ($regions as $r) {
+      if ($r->getParentRegionId() === $region->id()) {
+        $has_subregions = TRUE;
+        break;
+      }
+    }
+    $has_blocks = ( $blocks = $page_variant->getBlocksByRegion($region->id()) ) && sizeof($blocks);
+    $is_configurable_region = is_subclass_of($region, 'Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase');
+
+    if (!$has_subregions) {
+      $actions[] = new LayoutPageAction('add_block', t('Add block'),
         new Url('layout.page_variant_layout_blocks_select', array(
           'page' => $page->id(),
           'page_variant_id' => $page_variant->id(),
@@ -48,8 +62,8 @@ class PageLayout {
       );
     }
 
-    if ($region->isConfigurable()) {
-      $actions[] = new LayoutPageAction(t('Configure region'),
+    if ($is_configurable_region) {
+      $actions[] = new LayoutPageAction('configure_region', t('Configure region'),
         new Url('layout.layout_region_edit', array(
           'page' => $page->id(),
           'page_variant_id' => $page_variant->id(),
@@ -58,8 +72,8 @@ class PageLayout {
       );
     }
 
-    if ($region->canAddSubregions()) {
-      $actions[] = new LayoutPageAction(t('Add subregion'),
+    if (!$has_blocks && $is_configurable_region && $region->canAddSubregions()) {
+      $actions[] = new LayoutPageAction('add_subregion', t('Add subregion'),
         new Url('layout.page_variant_layout_regions_select', array(
           'page' => $page->id(),
           'page_variant_id' => $page_variant->id(),
@@ -68,8 +82,8 @@ class PageLayout {
       );
     }
 
-    if ($region->canBeDeleted()) {
-      $actions[] = new LayoutPageAction(t('Delete region'),
+    if ($is_configurable_region && $region->canBeDeleted()) {
+      $actions[] = new LayoutPageAction('delete_region', t('Delete region'),
         new Url('layout.layout_region_delete', array(
           'page' => $page->id(),
           'page_variant_id' => $page_variant->id(),
@@ -81,7 +95,7 @@ class PageLayout {
     $action_array = array();
     foreach ($actions as $action) {
       /** @var $action \Drupal\page_layout\LayoutPageAction */
-      $action_array[] = $action->toArray();
+      $action_array[$action->id()] = $action->toArray();
     }
 
     return $action_array;

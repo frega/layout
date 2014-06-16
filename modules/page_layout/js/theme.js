@@ -24,8 +24,8 @@
    */
   Drupal.theme.layoutRegion = function (id, label, attributes) {
     var actions = [];
-    if (_.isArray(attributes.actions) && attributes.actions.length) {
-      _.forEach(attributes.actions, function(action) {
+    if (_.isObject(attributes.actions)) {
+      _.forEach(_.values(attributes.actions), function(action) {
         actions.push(Drupal.theme.layoutModalLink(action.label, action.url, action.options));
       });
     }
@@ -47,13 +47,14 @@
     }
 
     var blocks = '';
-    // Unless can_add_blocks is set to false, shw the section.
-    if (attributes.options.can_add_blocks !== false) {
+
+    // Only show the block region, if you can add blocks.
+    if (_.isObject(attributes.actions) && attributes.actions.add_block) {
       blocks = '<div id="layout-region-blocks-' + Drupal.checkPlain(id) + '" class="blocks"><div class="row"></div></div>';
     }
 
     if (attributes.options.float_blocks === false) {
-      classes.push('blocks-full-width')
+      classes.push('blocks-full-width');
     }
 
     var html =

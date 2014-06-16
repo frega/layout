@@ -52,6 +52,18 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
     return $options;
   }
 
+  public function getSubRegions(LayoutPageVariantInterface $page_variant) {
+    $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
+    $regions = $page_variant->getLayoutRegions();
+    $filtered = array();
+    foreach ($regions as $region) {
+      if ($region->getParentRegionId() === $this->id()) {
+        $filtered[] = $region;
+      }
+    }
+    return $filtered;
+  }
+
   public function getAllContainedRegionIds(LayoutPageVariantInterface $page_variant = NULL) {
     $page_variant = isset($page_variant) ? $page_variant : $this->pageVariant;
     $regions = $this->getSubRegions($page_variant);
@@ -128,24 +140,11 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
   }
 
   public function canAddSubregions() {
-    if (!$this->isConfigurable()) {
-      return FALSE;
-    }
-    return $this->getOption('can_add_subregions', TRUE);
-  }
-
-  public function canAddBlocks() {
-    return $this->getOption('can_add_blocks', TRUE);
-  }
-
-  public function isConfigurable() {
-    return $this->getOption('is_configurable', TRUE);
+    return $this->getOption('can_add_subregions');
   }
 
   public function canBeDeleted() {
-    if (!$this->isConfigurable()) {
-      return FALSE;
-    }
-    return $this->getOption('can_be_deleted', TRUE);
+    // @todo: check if this is a dynamically added subregion
+    return $this->getOption('can_be_deleted', FALSE);
   }
 }

@@ -18,7 +18,7 @@
       'parent': null,
       'plugin_id': null,
       'plugin_type': null,
-      'actions': []
+      'actions': {}
     }
   });
 
