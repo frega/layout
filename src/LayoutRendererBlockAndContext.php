@@ -8,6 +8,7 @@
 namespace Drupal\layout;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
+use Drupal\Component\Utility\String;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
@@ -109,10 +110,17 @@ class LayoutRendererBlockAndContext {
       }
 
       if ($block->access($this->account)) {
-        $block_render_array = $block->build();
-        $block_name = $this->htmlId($id);
-        $block_render_array['#prefix'] = '<div class="' . $block_name . '">';
-        $block_render_array['#suffix'] = '</div>';
+        $block_render_array = array(
+          '#theme' => 'block',
+          '#attributes' => array(),
+          //'#weight' => $entity->get('weight'),
+          '#configuration' => $block->getConfiguration(),
+          '#plugin_id' => $block->getPluginId(),
+          '#base_plugin_id' => $block->getBasePluginId(),
+          '#derivative_plugin_id' => $block->getDerivativeId(),
+        );
+        $block_render_array['#configuration']['label'] = String::checkPlain($block_render_array['#configuration']['label']);
+        $block_render_array['content'] = $block->build();
 
         $renderArray[] = $block_render_array;
       }
