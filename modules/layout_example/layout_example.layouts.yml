@@ -96,5 +96,3 @@ koleary:
               options: {float_blocks: false}
     footer:
       label: Footer
-      plugin_id: layout_region_row
-      options: {can_add_subregions: true, can_be_deleted: true, float_blocks: true}
