@@ -337,12 +337,20 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
         '#markup' => l(t('Preview layout'), $page->get('path'), array('attributes' => array('target' => drupal_html_id($page->id()))))
       );
 
+      // This is just a quick hack, we need some form of theme_layout_ui call.
       $form['blocks'] = array(
         '#title' => t('Blocks'),
-        '#type' => 'textarea',
-        // quick hack for styling.
-        '#prefix' => '<div class="layout-configure-form">',
-        '#suffix' => '</div>',
+        '#markup' =>
+          '<label>' . t('Layout UI') . '</label>' .
+          '<div class="layout-configure-form">' .
+            '<div id="layout-app">' .
+              '<div class="operations">' .
+                '<a class="highlight-blocks" href="#blocks">' . $this->t('Focus on blocks') . '</a> ' .
+                '<a class="highlight-regions" href="#regions">' . $this->t('Focus on regions') . '</a> ' .
+              '</div>' .
+              '<div class="layout-app-inner"></div>' .
+            '</div>' .
+          '</div>',
         '#default_value' => '',
         '#attached' => array(
           'library' => array(

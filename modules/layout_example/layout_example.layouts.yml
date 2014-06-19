@@ -76,19 +76,18 @@ koleary:
       label: Header 2
     region-container-1:
       label: Content-Wrapper
-      options: {float_blocks: false}
-      subregions:
+      children:
         region-container-2:
           label: region-container-2
-          options: {width: "80%"}
-          subregions:
+          options: {admin-width: '4/5'}
+          children:
             content:
               label: Content
               options: {float_blocks: false}
         region-container-3:
           label: region-container-3
-          options: {width: "18.25%"}
-          subregions:
+          options: {admin-width: '1/5'}
+          children:
             content_2:
               label: Content 2
               options: {float_blocks: false}

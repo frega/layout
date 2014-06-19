@@ -115,6 +115,12 @@ class PageLayout {
 
     foreach ($regions as $region_id => $region) {
       // $region->init($page_variant);
+
+      $options = $region->getOptions();
+      if (isset($options['admin-width'])) {
+        $options['width'] = self::calculateAdminWidthPercentage($options['admin-width']);
+      }
+
       $plugin_definition = $region->getPluginDefinition();
       $region_data = array(
         'id' => $region_id,
@@ -123,7 +129,7 @@ class PageLayout {
         'plugin_id' => $plugin_definition['id'],
         'weight' => $region->getWeight(),
         'actions' => self::getRegionActions($page_variant, $region),
-        'options' => $region->getOptions(),
+        'options' => $options,
         'blocks' => array(),
       );
 
@@ -153,5 +159,22 @@ class PageLayout {
           ))
       )
     );
+  }
+
+  protected static function calculateAdminWidthPercentage($string) {
+    // Parse
+    if (strpos($string, '%') !== FALSE) {
+      return floatval($string) . '%';
+    }
+    else if (strpos($string, '/') !== FALSE) {
+      list($a, $b) = explode('/', $string);
+      $a = (int) $a;
+      $b = (int) $b;
+      if ($a && $b) {
+        return round( ( (int) $a/(int) $b ) * 100, 3) . '%';
+      }
+      return NULL;
+    }
+    return NULL;
   }
 }

@@ -98,12 +98,15 @@ class Layout {
         $region['label'] = (string) $region['label'];
       }
 
-      if (isset($region['subregions'])) {
-        $subregions = $region['subregions'];
+      $children = isset($region['children']) ? $region['children'] :
+        ( isset($region['subregions']) ? $region['subregions'] : NULL );
+
+      if (isset($children)) {
+        unset($region['children']);
         unset($region['subregions']);
         $regions[$region_id] = $region;
-        $normalized_subregions = self::getNormalizedLayoutRegionDefinitions($subregions, $region_id);
-        $regions += $normalized_subregions;
+        $normalized_children = self::getNormalizedLayoutRegionDefinitions($children, $region_id);
+        $regions += $normalized_children;
       }
       else {
         $regions[$region_id] = $region;

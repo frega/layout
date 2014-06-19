@@ -21,6 +21,7 @@ class LayoutPageAction {
 
   function toArray() {
     return array(
+      'id' => $this->id(),
       'label' => $this->label,
       'url' => is_object($this->url) ? $this->url->toString() : $this->url,
       'options' => $this->options

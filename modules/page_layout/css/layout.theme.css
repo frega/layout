@@ -26,7 +26,6 @@
  */
 .layout-region > .lining {
   background-color: #ffffff;
-  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
   padding: 0.75em;
 }
 .layout-region header {
@@ -88,6 +87,7 @@
 .layout-region {
   border: 1px solid #a6a6a6;
   margin-bottom: 0.25em;
+  box-sizing: border-box;
 }
 
 .layout-region .blocks .block-placeholder {
@@ -120,4 +120,66 @@
   color: #bebebe;
   text-decoration: underline;
   margin-right: 0.25em;
+}
+
+.layout-region .blocks .indicator {
+  display: none;
+}
+
+.layout-region:hover > .lining > .blocks .indicator,
+.layout-block-dragging .layout-region .blocks.indicator {
+  display: block;
+}
+
+
+.layout-region .blocks .indicator {
+  position: relative; width: 100%; height: 100%;
+}
+
+
+.layout-region .blocks .indicator-inner {
+  position: absolute;
+  display: table;
+  width: 100%; height: 100%;
+}
+
+.layout-region .blocks .indicator-inner .label {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+#layout-app > .operations {
+  text-align: right;
+}
+
+#layout-app.highlight-regions a.highlight-regions {
+  font-weight: bold;
+}
+
+#layout-app.highlight-blocks a.highlight-blocks {
+  font-weight: bold;
+}
+
+#layout-app.highlight-regions .blocks {
+  display: none;
+}
+
+/* hide labels for regions that act as containers when placing blocks */
+#layout-app.highlight-blocks .layout-region.layout-region-container > .lining > header {
+  display: none;
+}
+
+#layout-app.highlight-blocks .layout-region.layout-region-container {
+  border: 0;
+}
+
+#layout-app.highlight-blocks .layout-region.layout-region-container > .lining {
+  padding: 0;
+  border: 0;
+}
+
+
+#layout-app.highlight-blocks .layout-region header .operations {
+  display: none;
 }

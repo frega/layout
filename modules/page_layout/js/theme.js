@@ -26,7 +26,9 @@
     var actions = [];
     if (_.isObject(attributes.actions)) {
       _.forEach(_.values(attributes.actions), function(action) {
-        actions.push(Drupal.theme.layoutModalLink(action.label, action.url, action.options));
+        if (action.id !== 'add_block') {
+          actions.push(Drupal.theme.layoutModalLink(action.label, action.url, action.options));
+        }
       });
     }
 
@@ -47,10 +49,26 @@
     }
 
     var blocks = '';
-
     // Only show the block region, if you can add blocks.
     if (_.isObject(attributes.actions) && attributes.actions.add_block) {
-      blocks = '<div id="layout-region-blocks-' + Drupal.checkPlain(id) + '" class="blocks"><div class="row"></div></div>';
+      blocks =
+        '<div id="layout-region-blocks-' + Drupal.checkPlain(id) + '" class="blocks">' +
+          '<div class="indicator">' +
+            '<div class="indicator-inner">' +
+              '<span class="action-add-block">' +
+                 Drupal.theme.layoutModalLink(attributes.actions.add_block.label, attributes.actions.add_block.url, attributes.actions.add_block.options) +
+              '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="row"></div>' +
+        '</div>';
+
+      // Add a class to the region making it easier to toggle between layout
+      // and
+      classes.push('layout-region-blocks');
+    }
+    else {
+      classes.push('layout-region-container');
     }
 
     if (attributes.options.float_blocks === false) {

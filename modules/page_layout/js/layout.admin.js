@@ -162,14 +162,35 @@ Drupal.behaviors.displayLayoutEditor = {
 
       Drupal.layout.appView = new Drupal.layout.AppView({
         model: Drupal.layout.appModel,
-        el: $('#content .form-item-page-variant-blocks .form-textarea-wrapper'),
+        el: $('#layout-app .layout-app-inner'),
         locked: drupalSettings.layout.locked
       });
 
       Drupal.layout.appView.render();
+
+      // Small router to handle fragment changes
+      var AppRouter = Backbone.Router.extend({
+        routes: {
+          "regions": "highlightRegions",
+          "blocks": "highlightBlocks",
+          "": "highlightBlocks"
+        },
+        highlightRegions: function() {
+          $('#layout-app').removeClass('highlight-blocks').addClass('highlight-regions');
+        },
+        highlightBlocks: function() {
+          $('#layout-app').addClass('highlight-blocks').removeClass('highlight-regions');
+        }
+      });
+
+      Drupal.layout.appRouter = new AppRouter();
+      Backbone.history.start();
+
     }
 
   }
 };
+
+
 
 })(jQuery, window, Drupal, drupalSettings);
