@@ -140,9 +140,9 @@ abstract class LayoutRegionFormBase extends FormBase {
       return $response;
     }
 
-    $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
+    $form_state['redirect_route'] = new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'page_variant_id' => $this->pageVariant->id()
+      'display_variant_id' => $this->pageVariant->id()
     ));
   }
 

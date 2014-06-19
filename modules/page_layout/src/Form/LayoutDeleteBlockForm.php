@@ -61,9 +61,9 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return new Url('page_manager.page_variant_edit', array(
+    return new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'page_variant_id' => $this->pageVariant->id()
+      'display_variant_id' => $this->pageVariant->id()
     ));
   }
 

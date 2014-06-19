@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariant\BlockPageVariant.
+ * Contains \Drupal\block_page\Plugin\DisplayVariant\BlockDisplayVariant.
  */
 
-namespace Drupal\block_page\Plugin\PageVariant;
+namespace Drupal\block_page\Plugin\DisplayVariant;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Serialization\Json;
@@ -13,19 +13,19 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\Context\ContextHandler;
-use Drupal\page_manager\Plugin\PageVariantBase;
+use Drupal\page_manager\Plugin\VariantBase;
 use Drupal\layout\Layout;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a page variant that simply contains blocks.
  *
- * @PageVariant(
+ * @DisplayVariant(
  *   id = "block_page_layout",
  *   admin_label = @Translation("Block page (Layout)")
  * )
  */
-class BlockPageVariant extends PageVariantBase implements ContainerFactoryPluginInterface {
+class BlockPageVariant extends VariantBase implements ContainerFactoryPluginInterface {
   /**
    * The layout handler.
    *
@@ -181,10 +181,10 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       $form['block_section']['add'] = array(
         '#type' => 'link',
         '#title' => $this->t('Add new block'),
-        '#route_name' => 'page_manager.page_variant_select_block',
+        '#route_name' => 'page_manager.display_variant_select_block',
         '#route_parameters' => array(
           'page' => $page_id,
-          'page_variant_id' => $this->id(),
+          'display_variant_id' => $this->id(),
         ),
         '#attributes' => $add_button_attributes,
         '#attached' => array(
@@ -286,20 +286,20 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
           $operations = array();
           $operations['edit'] = array(
             'title' => $this->t('Edit'),
-            'route_name' => 'page_manager.page_variant_edit_block',
+            'route_name' => 'page_manager.display_variant_edit_block',
             'route_parameters' => array(
               'page' => $page_id,
-              'page_variant_id' => $this->id(),
+              'display_variant_id' => $this->id(),
               'block_id' => $block_id,
             ),
             'attributes' => $attributes,
           );
           $operations['delete'] = array(
             'title' => $this->t('Delete'),
-            'route_name' => 'page_manager.page_variant_delete_block',
+            'route_name' => 'page_manager.display_variant_delete_block',
             'route_parameters' => array(
               'page' => $page_id,
-              'page_variant_id' => $this->id(),
+              'display_variant_id' => $this->id(),
               'block_id' => $block_id,
             ),
             'attributes' => $attributes,

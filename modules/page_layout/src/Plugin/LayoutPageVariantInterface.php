@@ -2,9 +2,9 @@
 namespace Drupal\page_layout\Plugin;
 
 use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
-use \Drupal\page_manager\Plugin\PageVariantInterface;
+use \Drupal\page_manager\Plugin\VariantInterface;
 
-interface LayoutPageVariantInterface extends PageVariantInterface, LayoutBlockAndContextProviderInterface {
+interface LayoutPageVariantInterface extends VariantInterface, LayoutBlockAndContextProviderInterface {
   /**
    * Adds a LayoutRegion to the layout regions bag.
    *

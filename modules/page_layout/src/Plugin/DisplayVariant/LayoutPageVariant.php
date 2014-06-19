@@ -5,7 +5,7 @@
  * Contains \Drupal\page_manager\Plugin\PageVariant\LandingPageVariant.
  */
 
-namespace Drupal\page_layout\Plugin\PageVariant;
+namespace Drupal\page_layout\Plugin\DisplayVariant;
 
 use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -15,8 +15,7 @@ use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\Core\Plugin\Context\ContextHandler;
-use Drupal\page_manager\PageExecutable;
-use Drupal\page_manager\Plugin\PageVariantBase;
+use Drupal\page_manager\Plugin\VariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Drupal\layout\Layout;
@@ -26,12 +25,12 @@ use Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag;
 /**
  * Provides a page variant that serves as a landing page.
  *
- * @PageVariant(
+ * @DisplayVariant(
  *   id = "layout_page_variant",
  *   admin_label = @Translation("Layout page")
  * )
  */
-class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInterface, ContainerFactoryPluginInterface {
+class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterface, ContainerFactoryPluginInterface {
   /**
    * The context handler.
    *
@@ -298,11 +297,6 @@ class LayoutPageVariant extends PageVariantBase implements LayoutPageVariantInte
     if ($this->getLayoutId() && $layout = $this->getLayout()) {
       $renderer = new LayoutRendererBlockAndContext($this->contextHandler, $this->account);
       $output = $renderer->build($layout, $this);
-      // All layouts get a "Configure layout" contextual link.
-      $output['#contextual_links'] = array(
-        'page_manager.page_variant_edit' => array(
-        'route_parameters' => array('page' => '1', 'page_variant_id' => $this->id()),
-      ));
       return $output;
     }
     return array();
