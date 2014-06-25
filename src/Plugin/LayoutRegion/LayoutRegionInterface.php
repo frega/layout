@@ -53,7 +53,8 @@ interface LayoutRegionInterface extends PluginInspectionInterface {
    *
    * @todo Find a different solution for this?
    *
-   * @return bool
+   * @return string
+   *   Parent region ID.
    */
   public function getParentRegionId();
 }
