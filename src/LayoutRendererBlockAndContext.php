@@ -93,16 +93,16 @@ class LayoutRendererBlockAndContext {
    *   The render array.
    */
   public function buildRegion(LayoutRegionInterface $region, LayoutBlockAndContextProviderInterface $provider) {
-    $renderArray = $this->buildRegionBlocks($region, $provider);
+    $render_array = $this->buildRegionBlocks($region, $provider);
     // A layout region should only have subregions or blocks in order to have
     // one #content element to output.
-    if (!sizeof($renderArray)) {
-      $renderArray = $this->buildSubRegions($region, $provider);
+    if (!count($render_array)) {
+      $render_array = $this->buildSubRegions($region, $provider);
     }
 
     return array(
       '#theme' => $region->getPluginDefinition()['theme'],
-      '#content' => $renderArray,
+      '#content' => $render_array,
       '#region' => $region,
       '#region_uuid' => $region->id(),
       '#region_id' => $region->getConfiguration()['region_id'],
@@ -124,7 +124,7 @@ class LayoutRendererBlockAndContext {
     $contexts = $provider->getContexts();
     $blocksInRegion = $provider->getBlocksByRegion($region->id());
     /** @var $blocksInRegion \Drupal\block\BlockPluginInterface[] */
-    $renderArray = array();
+    $render_array = array();
     foreach ($blocksInRegion as $id => $block) {
       if ($block instanceof ContextAwarePluginInterface) {
         $mapping = array();
@@ -150,10 +150,10 @@ class LayoutRendererBlockAndContext {
         $block_render_array['#configuration']['label'] = String::checkPlain($block_render_array['#configuration']['label']);
         $block_render_array['content'] = $block->build();
 
-        $renderArray[] = $block_render_array;
+        $render_array[] = $block_render_array;
       }
     }
-    return $renderArray;
+    return $render_array;
   }
 
   /**
@@ -169,13 +169,13 @@ class LayoutRendererBlockAndContext {
    */
   public function buildSubRegions(LayoutRegionInterface $region, LayoutBlockAndContextProviderInterface $provider) {
     $regions = $this->getSubRegions($region, $provider);
-    $subregionsRenderArray = array();
+    $subregions_render_array = array();
     if (count($regions)) {
       foreach ($regions as $region) {
-        $subregionsRenderArray[] = $this->buildRegion($region, $provider);
+        $subregions_render_array[] = $this->buildRegion($region, $provider);
       }
     }
-    return $subregionsRenderArray;
+    return $subregions_render_array;
   }
 
   /**
