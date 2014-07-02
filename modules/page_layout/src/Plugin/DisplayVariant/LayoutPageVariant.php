@@ -8,6 +8,7 @@
 namespace Drupal\page_layout\Plugin\DisplayVariant;
 
 use Drupal\block\BlockPluginInterface;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\layout\LayoutRendererBlockAndContext;
@@ -15,11 +16,16 @@ use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\Core\Plugin\Context\ContextHandler;
-use Drupal\page_manager\Plugin\VariantBase;
+use Drupal\Core\Display\VariantBase;
+use Drupal\page_manager\PageExecutable;
+use Drupal\page_manager\Plugin\ConditionVariantTrait;
+use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
+use Drupal\page_manager\Plugin\ContextAwareVariantTrait;
+use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Drupal\layout\Layout;
 use Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag;
+use Drupal\page_manager\Plugin\BlockVariantTrait;
 
 
 /**
@@ -30,26 +36,11 @@ use Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag;
  *   admin_label = @Translation("Layout page")
  * )
  */
-class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterface, ContainerFactoryPluginInterface {
-  /**
-   * The context handler.
-   *
-   * @note: this is public, so that LayoutRegion/Layout instances
-   * can access this; tbd if that stays.
-   *
-   * @var \Drupal\Core\Plugin\Context\ContextHandler
-   */
-  public $contextHandler;
+class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterface, ContainerFactoryPluginInterface, PageAwareVariantInterface, LayoutPageVariantInterface {
 
-  /**
-   * The current user.
-   *
-   * @note: this is public, so that LayoutRegion/LayoutTemplate instances
-   * can access this tbd if that stays.
-   *
-   * @var \Drupal\Core\Session\AccountInterface
-   */
-  public $account;
+  use BlockVariantTrait;
+  use ContextAwareVariantTrait;
+  use ConditionVariantTrait;
 
   /**
    * Layout template.
@@ -64,6 +55,34 @@ class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterfac
    * @var \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag
    */
   public $layoutRegionBag;
+
+  /**
+   * The context handler.
+   *
+   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
+   */
+  protected $contextHandler;
+
+  /**
+   * The UUID generator.
+   *
+   * @var \Drupal\Component\Uuid\UuidInterface
+   */
+  protected $uuidGenerator;
+
+  /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $account;
+
+  /**
+   * The page executable.
+   *
+   * @var \Drupal\page_manager\PageExecutable
+   */
+  protected $executable;
 
   /**
    * @return \Drupal\page_manager\PageInterface
@@ -179,17 +198,6 @@ class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterfac
   }
 
   /**
-   * Build an array for region configuration.
-   *
-   * @todo: distinguish between "template" config & local overrides.
-   */
-  protected function getContainerConfiguration() {
-    return isset($this->configuration['regions']) ? $this->configuration['regions'] :
-      $this->getLayout()->getLayoutRegionPluginDefinitions();
-  }
-
-
-  /**
    * {@inheritdoc}
    */
   public function getLayoutId() {
@@ -231,21 +239,7 @@ class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterfac
   }
 
   /**
-   * Remove a block.
-   *
-   * @note: this is currently missing in PageVariant, refactor up the chain.
-   *
-   * @param $block_id
-   * @return $this
-   */
-  public function removeBlock($block_id) {
-    $this->getBlockBag()->removeInstanceId($block_id);
-    return $this;
-  }
-
-
-  /**
-   * Constructs a new BlockPageVariant.
+   * Constructs a new LayoutPageVariant.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -258,23 +252,25 @@ class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterfac
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandler $context_handler, AccountInterface $account) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandler $context_handler, AccountInterface $account, UuidInterface $uuid_generator) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->contextHandler = $context_handler;
     $this->account = $account;
+    $this->uuidGenerator = $uuid_generator;
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $region, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $region->get('context.handler'),
-      $region->get('current_user')
+      $container->get('context.handler'),
+      $container->get('current_user'),
+      $container->get('uuid')
     );
   }
 
@@ -294,6 +290,13 @@ class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterfac
    * {@inheritdoc}
    */
   public function render() {
+    return $this->build();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function build() {
     if ($this->getLayoutId() && $layout = $this->getLayout()) {
       $renderer = new LayoutRendererBlockAndContext($this->contextHandler, $this->account);
       $output = $renderer->build($layout, $this);
@@ -369,4 +372,75 @@ class LayoutPageVariant extends VariantBase implements LayoutPageVariantInterfac
     }
   }
 
+  public function init(PageExecutable $executable) {
+    return $this->setExecutable($executable);
+  }
+
+  public function getContexts() {
+    return $this->executable->getContexts();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function contextHandler() {
+    return $this->contextHandler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfiguration() {
+    return array(
+      'selection_conditions' => $this->getSelectionConditions()->getConfiguration(),
+      'blocks' => $this->getBlockBag()->getConfiguration(),
+    ) + parent::getConfiguration();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSelectionLogic() {
+    return $this->configuration['selection_logic'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getSelectionConfiguration() {
+    return $this->configuration['selection_conditions'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setExecutable(PageExecutable $executable) {
+    $this->executable = $executable;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getBlockConfig() {
+    return $this->configuration['blocks'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function uuidGenerator() {
+    return $this->uuidGenerator;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return parent::defaultConfiguration() + array(
+      'blocks' => array(),
+      'selection_conditions' => array(),
+      'selection_logic' => 'and',
+    );
+  }
 }

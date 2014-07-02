@@ -31,9 +31,9 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
   /**
    * The page variant plugin.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface
+   * @var \Drupal\Core\Display\VariantInterface
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
   /**
    * The access condition used by this form.
@@ -63,7 +63,7 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
   public function getCancelRoute() {
     return new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'display_variant_id' => $this->pageVariant->id()
+      'display_variant_id' => $this->displayVariant->id()
     ));
   }
 
@@ -79,10 +79,10 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
    */
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $this->page->getVariant($page_variant_id);
-    $this->pageVariant->init($this->page->getExecutable());
+    $this->displayVariant = $this->page->getVariant($page_variant_id);
+    $this->displayVariant->init($this->page->getExecutable());
 
-    $this->block = $this->pageVariant->getBlock($block_id);
+    $this->block = $this->displayVariant->getBlock($block_id);
     $form = parent::buildForm($form, $form_state, $page, $page_variant_id, $layout_region_id, $block_id);
 
     if ($this->getRequest()->isXmlHttpRequest()) {
@@ -97,7 +97,7 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->pageVariant->removeBlock($this->block->getConfiguration()['uuid']);
+    $this->displayVariant->removeBlock($this->block->getConfiguration()['uuid']);
     $this->page->save();
     drupal_set_message($this->t('The block %name has been removed.', array('%name' => $this->block->getConfiguration()['label'])));
 

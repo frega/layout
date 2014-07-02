@@ -144,7 +144,7 @@ class LayoutRendererBlockAndContext {
           //'#weight' => $entity->get('weight'),
           '#configuration' => $block->getConfiguration(),
           '#plugin_id' => $block->getPluginId(),
-          '#base_plugin_id' => $block->getBasePluginId(),
+          '#base_plugin_id' => $block->getBaseId(),
           '#derivative_plugin_id' => $block->getDerivativeId(),
         );
         $block_render_array['#configuration']['label'] = String::checkPlain($block_render_array['#configuration']['label']);

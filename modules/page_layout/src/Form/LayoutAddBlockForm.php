@@ -9,9 +9,8 @@ namespace Drupal\page_layout\Form;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Drupal\page_layout\Form\LayoutConfigureBlockFormBase;
-
+use Drupal\page_manager\PageInterface;
 
 /**
  * Provides a form for adding a block plugin to a page variant.
@@ -53,8 +52,8 @@ class LayoutAddBlockForm extends LayoutConfigureBlockFormBase {
    */
   protected function prepareBlock($plugin_id) {
     $block = $this->blockManager->createInstance($plugin_id);
-    $block_id = $this->pageVariant->addBlock($block->getConfiguration());
-    return $this->pageVariant->getBlock($block_id);
+    $block_id = $this->displayVariant->addBlock($block->getConfiguration());
+    return $this->displayVariant->getBlock($block_id);
   }
 
   /**

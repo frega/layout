@@ -7,12 +7,14 @@
 
 namespace Drupal\page_layout\Form;
 
+use Drupal\Core\Display\VariantInterface;
 use Drupal\page_layout\LayoutStorageInterface;
 
+use Drupal\page_layout\PageLayout;
+use Drupal\page_manager\Form\DisplayVariantConfigureBlockFormBase;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
-use Drupal\Core\Form\FormBase;
 use Drupal\Core\Url;
 
 use Drupal\Core\Ajax\AjaxResponse;
@@ -22,7 +24,7 @@ use Drupal\page_layout\Ajax\LayoutBlockReload;
 /**
  * Provides a base form for configuring a block as part of a page variant.
  */
-abstract class LayoutConfigureBlockFormBase extends FormBase {
+abstract class LayoutConfigureBlockFormBase extends DisplayVariantConfigureBlockFormBase {
 
   use ContextAwarePluginAssignmentTrait;
 
@@ -37,9 +39,9 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
   /**
    * The page variant plugin.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface;
+   * @var \Drupal\Core\Display\VariantInterface
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
 
   /**
@@ -50,33 +52,14 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
   protected $block;
 
   /**
-   * Prepares the block plugin based on the block ID.
-   *
-   * @param string $block_id
-   *   Either a block ID, or the plugin ID used to create a new block.
-   *
-   * @return \Drupal\block\BlockPluginInterface
-   *   The block plugin.
-   */
-  abstract protected function prepareBlock($block_id);
-
-  /**
-   * Returns the text to use for the submit button.
-   *
-   * @return string
-   *   The submit button text.
-   */
-  abstract protected function submitText();
-
-  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
 
     $this->page = $page;
-    $this->pageVariant = $this->page->getVariant($page_variant_id);
-    $this->pageVariant->init($page->getExecutable());
-    $this->layoutRegion = $this->pageVariant->getLayoutRegion($layout_region_id);
+    $this->displayVariant = $this->page->getVariant($page_variant_id);
+    $this->displayVariant->setExecutable($page->getExecutable());
+    $this->layoutRegion = $this->displayVariant->getLayoutRegion($layout_region_id);
 
     $this->block = $this->prepareBlock($block_id);
 
@@ -89,7 +72,7 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
 
     // @note: we removed the region widget as it is implicit in URL.
     if ($this->block instanceof ContextAwarePluginInterface) {
-      $form['context_assignments'] = $this->addContextAssignmentElement($this->block, $this->pageVariant->getContexts());
+      $form['context_assignments'] = $this->addContextAssignmentElement($this->block, $this->displayVariant->getContexts());
     }
 
     $form['actions']['submit'] = array(
@@ -135,7 +118,7 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
       $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
     }
 
-    $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutRegion->id()));
+    $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutRegion->id()));
     $this->page->save();
 
     if ($this->getRequest()->isXmlHttpRequest()) {
@@ -149,7 +132,7 @@ abstract class LayoutConfigureBlockFormBase extends FormBase {
 
     return new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'display_variant_id' => $this->pageVariant->id()
+      'display_variant_id' => $this->displayVariant->id()
     ));
   }
 

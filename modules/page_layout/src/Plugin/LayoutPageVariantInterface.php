@@ -2,7 +2,7 @@
 namespace Drupal\page_layout\Plugin;
 
 use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
-use \Drupal\page_manager\Plugin\VariantInterface;
+use \Drupal\Core\Display\VariantInterface;
 
 interface LayoutPageVariantInterface extends VariantInterface, LayoutBlockAndContextProviderInterface {
   /**

@@ -7,8 +7,8 @@
 
 namespace Drupal\page_layout\Controller;
 
+use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\Plugin\PageVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class LayoutPageVariantRestController extends ContainerAware {
 
-  public function handlePut(PageInterface $page, PageVariantInterface $page_variant, $data = array()) {
+  public function handlePut(PageInterface $page, LayoutPageVariantInterface $page_variant, $data = array()) {
 
     foreach ($data['regions'] as $region) {
       foreach ($region['blocks'] as $block_data) {
