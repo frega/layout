@@ -14,7 +14,6 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface;
 use Drupal\layout\Plugin\Layout\LayoutInterface;
 use Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface;
-use Drupal\search_api\Plugin\ConfigurablePluginInterface;
 
 /**
  * Renders a layout using a block and context provider.
@@ -64,13 +63,14 @@ class LayoutRendererBlockAndContext {
     $renderArray = array();
     $rootRegions = array();
     // Find rootRegions - @note we are doing it this way because *nesting* getLayoutRegions-calls
-    // resets the internal iterator apparently.
+    // resets the internal iterator.
     foreach ($regions as $region) {
       if (!$region->getParentRegionId()) {
         $rootRegions[$region->getConfiguration()['region_id']] = $region;
       }
     }
 
+    // Loop regions and build them, if needed, recursively.
     foreach ($rootRegions as $region_id => $region) {
       $renderArray[$region_id] = $this->buildRegion($region, $provider);
     }
@@ -85,7 +85,7 @@ class LayoutRendererBlockAndContext {
    * Builds the layout region.
    *
    * @param \Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface $region
-   *   The layout to render.
+   *   The layout region to render.
    * @param \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $provider
    *   The block and context provider needed to build the layout region.
    *
@@ -93,10 +93,38 @@ class LayoutRendererBlockAndContext {
    *   The render array.
    */
   public function buildRegion(LayoutRegionInterface $region, LayoutBlockAndContextProviderInterface $provider) {
+    $render_array = $this->buildRegionBlocks($region, $provider);
+    // A layout region should only have subregions or blocks in order to have
+    // one #content element to output.
+    if (!count($render_array)) {
+      $render_array = $this->buildSubRegions($region, $provider);
+    }
+
+    return array(
+      '#theme' => $region->getPluginDefinition()['theme'],
+      '#content' => $render_array,
+      '#region' => $region,
+      '#region_uuid' => $region->id(),
+      '#region_id' => $region->getConfiguration()['region_id'],
+    );
+  }
+
+  /**
+   * Builds the blocks in a layout region.
+   *
+   * @param \Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface $region
+   *   The layout region to render.
+   * @param \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $provider
+   *   The block and context provider needed to build the layout region.
+   *
+   * @return array
+   *   The render array.
+   */
+  public function buildRegionBlocks(LayoutRegionInterface $region, LayoutBlockAndContextProviderInterface $provider) {
     $contexts = $provider->getContexts();
     $blocksInRegion = $provider->getBlocksByRegion($region->id());
     /** @var $blocksInRegion \Drupal\block\BlockPluginInterface[] */
-    $renderArray = array();
+    $render_array = array();
     foreach ($blocksInRegion as $id => $block) {
       if ($block instanceof ContextAwarePluginInterface) {
         $mapping = array();
@@ -122,27 +150,45 @@ class LayoutRendererBlockAndContext {
         $block_render_array['#configuration']['label'] = String::checkPlain($block_render_array['#configuration']['label']);
         $block_render_array['content'] = $block->build();
 
-        $renderArray[] = $block_render_array;
+        $render_array[] = $block_render_array;
       }
     }
-
-    $regions = $this->getSubRegions($region, $provider);
-    $subregionsRenderArray = array();
-    if (count($regions)) {
-      foreach ($regions as $region) {
-        $subregionsRenderArray[] = $this->buildRegion($region, $provider);
-      }
-    }
-
-    return array(
-      '#theme' => $region->getPluginDefinition()['theme'],
-      '#blocks' => $renderArray,
-      '#regions' => $subregionsRenderArray,
-      '#region' => $this,
-      '#region_id' => $region->id(),
-    );
+    return $render_array;
   }
 
+  /**
+   * Builds the subregions in the layout region.
+   *
+   * @param \Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface $region
+   *   The layout to render.
+   * @param \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $provider
+   *   The block and context provider needed to build the layout region.
+   *
+   * @return array
+   *   The render array.
+   */
+  public function buildSubRegions(LayoutRegionInterface $region, LayoutBlockAndContextProviderInterface $provider) {
+    $regions = $this->getSubRegions($region, $provider);
+    $subregions_render_array = array();
+    if (count($regions)) {
+      foreach ($regions as $region) {
+        $subregions_render_array[] = $this->buildRegion($region, $provider);
+      }
+    }
+    return $subregions_render_array;
+  }
+
+  /**
+   * Retrieves subregions of a given layout region.
+   *
+   * @param \Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface $parent_region
+   *   The layout region
+   * @param \Drupal\layout\Plugin\Layout\LayoutBlockAndContextProviderInterface $provider
+   *   The block and context provider needed to build the layout region.
+   *
+   * @return \Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface[]
+   *   Instances of region plugins that are subregions.
+   */
   public function getSubRegions(LayoutRegionInterface $parent_region, LayoutBlockAndContextProviderInterface $provider) {
     $regions = $provider->getLayoutRegions();
     $filtered = array();

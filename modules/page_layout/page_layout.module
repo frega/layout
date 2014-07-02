@@ -34,9 +34,9 @@ function page_layout_theme() {
   $hooks['layout_region'] = $base + array(
     'variables' => array(
       'region' => array(),
-      'blocks' => array(),
-      'regions' => array(),
       'region_id' => NULL,
+      'region_uuid' => NULL,
+      'content' => array(),
     ),
     'template' => 'layout-layout-region',
   );
