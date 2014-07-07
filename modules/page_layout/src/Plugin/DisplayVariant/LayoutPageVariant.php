@@ -11,8 +11,8 @@ use Drupal\block\BlockPluginInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\layout\LayoutRendererBlockAndContext;
-use Drupal\layout\Plugin\Layout\LayoutInterface;
+use Drupal\layout_plugin\LayoutRendererBlockAndContext;
+use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\Core\Plugin\Context\ContextHandler;
@@ -23,8 +23,8 @@ use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
 use Drupal\page_manager\Plugin\ContextAwareVariantTrait;
 use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\layout\Layout;
-use Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag;
+use Drupal\layout_plugin\Layout;
+use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionPluginBag;
 use Drupal\page_manager\Plugin\BlockVariantTrait;
 
 
@@ -45,14 +45,14 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
   /**
    * Layout template.
    *
-   * @var \Drupal\layout\Plugin\Layout\LayoutInterface
+   * @var \Drupal\layout_plugin\Plugin\Layout\LayoutInterface
    */
   public $layout;
 
   /**
    * Layout regions.
    *
-   * @var \Drupal\layout\Plugin\LayoutRegion\LayoutRegionPluginBag
+   * @var \Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionPluginBag
    */
   public $layoutRegionBag;
 
@@ -209,7 +209,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
    *
    * @todo: allow for configuration to be saved (not just the pluginId).
    *
-   * @return \Drupal\layout\Plugin\Layout\LayoutInterface
+   * @return \Drupal\layout_plugin\Plugin\Layout\LayoutInterface
    */
   public function getLayout($reset = FALSE) {
     if (isset($this->layout) && !$reset) {

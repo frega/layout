@@ -5,7 +5,7 @@ namespace Drupal\page_layout;
 use Drupal\page_layout\LayoutPageAction;
 use Drupal\Core\Url;
 use Drupal\block\BlockPluginInterface;
-use Drupal\layout\Plugin\LayoutRegion\LayoutRegionInterface;
+use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\PageInterface;
 

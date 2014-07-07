@@ -8,7 +8,7 @@
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
-use Drupal\layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
+use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
 
 /**
  * The plugin that handles a default region

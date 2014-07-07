@@ -14,7 +14,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\page_manager\Plugin\VariantBase;
-use Drupal\layout\Layout;
+use Drupal\layout_plugin\Layout;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,7 +29,7 @@ class BlockPageVariant extends VariantBase implements ContainerFactoryPluginInte
   /**
    * The layout handler.
    *
-   * @var \Drupal\layout\Plugin\Layout\LayoutInterface
+   * @var \Drupal\layout_plugin\Plugin\Layout\LayoutInterface
    */
   protected $layout;
 
@@ -84,7 +84,7 @@ class BlockPageVariant extends VariantBase implements ContainerFactoryPluginInte
   /**
    * Returns instance of the layout plugin used by this page variant.
    *
-   * @return \Drupal\layout\Plugin\Layout\LayoutInterface
+   * @return \Drupal\layout_plugin\Plugin\Layout\LayoutInterface
    *   Layout plugin instance.
    */
   public function getLayout() {
