@@ -16,8 +16,8 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
 
-use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
-use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
 use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionPluginManager;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -170,7 +170,7 @@ class LayoutPageVariantController extends ControllerBase {
     $definitions = $this->layoutRegionManager->getDefinitions();
     foreach ($definitions as $plugin_id => $plugin_definition) {
       $plugin = $this->layoutRegionManager->createInstance($plugin_id, array());
-      if (is_subclass_of($plugin, 'Drupal\layout_plugin\Plugin\LayoutRegion\LayoutConfigurableRegionInterface')) {
+      if (is_subclass_of($plugin, 'Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface')) {
         $category = isset($plugin_definition['category']) ? String::checkPlain($plugin_definition['category']) : '';
         $category_key = 'category-' . $category;
         if (!isset($form['place_regions']['list'][$category_key])) {

@@ -1,0 +1,39 @@
+flexible:
+  label: Flexible Test
+  category: Examples
+  type: page
+  theme: layout_example_koleary
+  regions:
+    header:
+      plugin_id: layout_region_row
+      label: Header
+    header2:
+      plugin_id: layout_region_row
+      label: Header 2
+    region-container-1:
+      label: Content-Wrapper
+      children:
+        region-container-2:
+          label: region-container-2
+          options: {admin-width: '4/5', can_add_subregions: true}
+          children:
+            content:
+              plugin_id: layout_region_column
+              label: Content
+              options: {float_blocks: false}
+        region-container-3:
+          label: region-container-3
+          options: {admin-width: '1/5'}
+          children:
+            content_2:
+              plugin_id: layout_region_column
+              label: Content 2
+              options: {float_blocks: false}
+            content_3:
+              plugin_id: layout_region_column
+              label: Content 3
+              options: {float_blocks: false}
+    footer:
+      plugin_id: layout_region_row
+      options: {can_add_subregions: true}
+      label: Footer
