@@ -16,6 +16,7 @@ use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Url;
+use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseDialogCommand;
@@ -54,7 +55,7 @@ abstract class LayoutConfigureBlockFormBase extends DisplayVariantConfigureBlock
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
 
     $this->page = $page;
     $this->displayVariant = $this->page->getVariant($page_variant_id);
@@ -94,7 +95,7 @@ abstract class LayoutConfigureBlockFormBase extends DisplayVariantConfigureBlock
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, array &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     $settings = array(
       'values' => &$form_state['values']['settings'],
     );
@@ -105,7 +106,7 @@ abstract class LayoutConfigureBlockFormBase extends DisplayVariantConfigureBlock
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $settings = array(
       'values' => &$form_state['values']['settings'],
       'errors' => $form_state['errors'],

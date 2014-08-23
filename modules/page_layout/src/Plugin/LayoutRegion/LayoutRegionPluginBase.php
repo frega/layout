@@ -7,6 +7,7 @@
 
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
 
@@ -79,7 +80,7 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, array &$form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form['label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
@@ -118,7 +119,7 @@ class LayoutRegionPluginBase extends LayoutConfigurableRegionBase {
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, array &$form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     $this->configuration['label'] = $form_state['values']['label'];
     $this->configuration['parent'] = isset($form_state['values']['region_positioning']['parent']) ?  $form_state['values']['region_positioning']['parent'] : NULL;
     $this->configuration['weight'] = isset($form_state['values']['region_positioning']['weight']) ?  $form_state['values']['region_positioning']['weight'] : 0;

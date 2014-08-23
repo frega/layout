@@ -10,6 +10,7 @@ namespace Drupal\page_layout\Form;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\Core\Form\ConfirmFormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\Core\Url;
 use Drupal\page_layout\Ajax\LayoutBlockDelete;
@@ -77,7 +78,7 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $page_variant_id = NULL, $layout_region_id = NULL, $block_id = NULL) {
     $this->page = $page;
     $this->displayVariant = $this->page->getVariant($page_variant_id);
     $this->displayVariant->init($this->page->getExecutable());
@@ -96,7 +97,7 @@ class LayoutDeleteBlockForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->displayVariant->removeBlock($this->block->getConfiguration()['uuid']);
     $this->page->save();
     drupal_set_message($this->t('The block %name has been removed.', array('%name' => $this->block->getConfiguration()['label'])));
