@@ -17,6 +17,7 @@ use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\Core\Display\VariantBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageExecutable;
 use Drupal\page_manager\Plugin\ConditionVariantTrait;
 use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
@@ -308,7 +309,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, array &$form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     // Adding
     $adding_variant = !isset($this->configuration['layout']);
 
@@ -362,7 +363,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
     return $form;
   }
 
-  public function submitConfigurationForm(array &$form, array &$form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
     $this->configuration['layout'] = $form_state['values']['layout'];
 

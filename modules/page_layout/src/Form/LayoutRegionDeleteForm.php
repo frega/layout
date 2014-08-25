@@ -12,6 +12,7 @@ use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\page_layout\Ajax\LayoutReload;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 
@@ -77,7 +78,7 @@ class LayoutRegionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL) {
     $this->page = $page;
     $this->pageVariant = $page->getVariant($page_variant_id);
     $this->pageVariant->init($this->page->getExecutable());
@@ -97,7 +98,7 @@ class LayoutRegionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->pageVariant->removeLayoutRegion($this->layoutRegion->id());
     $this->page->save();
     drupal_set_message($this->t('The layout region %name has been removed.', array('%name' => $this->layoutRegion->label())));

@@ -14,6 +14,7 @@ use Drupal\page_layout\Ajax\LayoutRegionReload;
 use Drupal\page_layout\Ajax\LayoutReload;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Provides a base form for editing and adding a page variant.
@@ -64,7 +65,7 @@ abstract class LayoutRegionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL, $plugin_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $page_variant_id = NULL,  $layout_region_id = NULL, $plugin_id = NULL) {
     $this->page = $page;
     $this->pageVariant = $page->getVariant($page_variant_id);
     $this->pageVariant->init($page->getExecutable());
@@ -102,7 +103,7 @@ abstract class LayoutRegionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, array &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     // Allow the page variant to validate the form.
     $plugin_values = array(
       'values' => &$form_state['values']['plugin'],
@@ -113,7 +114,7 @@ abstract class LayoutRegionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     // Allow the page variant to submit the form.
     $plugin_values = array(
       'values' => &$form_state['values']['plugin'],
