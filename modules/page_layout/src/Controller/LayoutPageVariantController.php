@@ -18,7 +18,7 @@ use Drupal\Core\Controller\ControllerBase;
 
 use Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
 use Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
-use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionPluginManager;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginManager;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -43,7 +43,7 @@ class LayoutPageVariantController extends ControllerBase {
   /**
    * The context handler.
    *
-   * @var \Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionPluginManager
+   * @var \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginManager
    */
   protected $layoutRegionManager;
 
@@ -68,7 +68,7 @@ class LayoutPageVariantController extends ControllerBase {
     return new static(
       $container->get('plugin.manager.block'),
       $container->get('context.handler'),
-      $container->get('plugin.manager.layout_plugin.region')
+      $container->get('plugin.manager.page_layout.region')
     );
   }
 

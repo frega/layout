@@ -5,11 +5,23 @@ namespace Drupal\page_layout;
 use Drupal\page_layout\LayoutPageAction;
 use Drupal\Core\Url;
 use Drupal\block\BlockPluginInterface;
-use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionInterface;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\PageInterface;
 
 class PageLayout {
+  /**
+   * Returns the plugin manager for the LayoutRegion plugin type.
+   *
+   * @param string $type
+   *   The plugin type, for example filter.
+   *
+   * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginManager
+   */
+  public static function layoutRegionPluginManager() {
+    return \Drupal::service('plugin.manager.page_layout.region');
+  }
+
   /**
    * Converts a BlockPluginInterface to a minimal array (id, label, weight and region/region)
    *

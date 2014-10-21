@@ -11,7 +11,7 @@ use Drupal\block\BlockPluginInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\layout_plugin\LayoutRendererBlockAndContext;
+use Drupal\page_layout\LayoutRendererBlockAndContext;
 use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
@@ -25,7 +25,7 @@ use Drupal\page_manager\Plugin\ContextAwareVariantTrait;
 use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\layout_plugin\Layout;
-use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionPluginBag;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBag;
 use Drupal\page_manager\Plugin\BlockVariantTrait;
 
 
@@ -53,7 +53,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
   /**
    * Layout regions.
    *
-   * @var \Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionPluginBag
+   * @var \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBag
    */
   public $layoutRegionBag;
 
@@ -189,7 +189,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
       }
 
       $regions_data = $this->configuration['regions'];
-      $this->layoutRegionBag = new LayoutRegionPluginBag(Layout::layoutRegionPluginManager(),
+      $this->layoutRegionBag = new LayoutRegionPluginBag(PageLayout::layoutRegionPluginManager(),
         $regions_data
       );
 
