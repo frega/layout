@@ -33,6 +33,13 @@ abstract class LayoutConfigurableRegionBase extends PluginBase implements Layout
   /**
    * {@inheritdoc}
    */
+  public function region_id() {
+    return $this->configuration['region_id'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getWeight() {
     return (int) $this->configuration['weight'];
   }

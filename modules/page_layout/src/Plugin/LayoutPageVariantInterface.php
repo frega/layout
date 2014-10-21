@@ -1,7 +1,7 @@
 <?php
 namespace Drupal\page_layout\Plugin;
 
-use Drupal\layout_plugin\Plugin\Layout\LayoutBlockAndContextProviderInterface;
+use \Drupal\page_layout\LayoutBlockAndContextProviderInterface;
 use \Drupal\Core\Display\VariantInterface;
 
 interface LayoutPageVariantInterface extends VariantInterface, LayoutBlockAndContextProviderInterface {
@@ -18,7 +18,7 @@ interface LayoutPageVariantInterface extends VariantInterface, LayoutBlockAndCon
    *
    * @param $layout_region_id
    *
-   * @return \Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionInterface
+   * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface
    */
   public function getLayoutRegion($layout_region_id);
 

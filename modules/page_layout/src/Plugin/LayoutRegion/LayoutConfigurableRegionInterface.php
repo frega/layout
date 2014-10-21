@@ -7,7 +7,7 @@
 
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
-use Drupal\layout_plugin\Plugin\LayoutRegion\LayoutRegionInterface;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 

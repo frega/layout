@@ -39,7 +39,7 @@ class LayoutRegionAddForm extends LayoutRegionFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.layout_plugin.region')
+      $container->get('plugin.manager.page_layout.region')
     );
   }
 
