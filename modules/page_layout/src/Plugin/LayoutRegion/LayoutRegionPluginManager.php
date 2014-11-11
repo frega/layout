@@ -9,8 +9,8 @@ namespace Drupal\page_layout\Plugin\LayoutRegion;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Plugin\DefaultPluginManager;
+use Drupal\Core\Plugin\Discovery\YamlDiscoveryDecorator;
 
 /**
  * Plugin type manager for all layouts.
@@ -31,6 +31,8 @@ class LayoutRegionPluginManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
+
+    $plugin_interface = 'Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface';
     $plugin_definition_annotation_name = 'Drupal\page_layout\Annotation\LayoutRegion';
     parent::__construct("Plugin/LayoutRegion", $namespaces, $module_handler, $plugin_definition_annotation_name);
 

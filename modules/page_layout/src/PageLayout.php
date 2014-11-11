@@ -4,7 +4,7 @@ namespace Drupal\page_layout;
 
 use Drupal\page_layout\LayoutPageAction;
 use Drupal\Core\Url;
-use Drupal\block\BlockPluginInterface;
+use Drupal\core\Block\BlockPluginInterface;
 use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface;
 use Drupal\page_layout\Plugin\LayoutPageVariantInterface;
 use Drupal\page_manager\PageInterface;
@@ -50,7 +50,7 @@ class PageLayout {
     $actions = array();
     $page = $page_variant->getPage();
 
-    // @note: this is super-hacky; as we are looping the LayoutRegionPluginBag
+    // @note: this is super-hacky; as we are looping the LayoutRegionPluginCollection
     // in self::getGroupedBlockArrays we cannot iterate over it again without
     // resetting / affecting the outer loop :( so that's why we clone.
     $regions = clone $page_variant->getLayoutRegions();

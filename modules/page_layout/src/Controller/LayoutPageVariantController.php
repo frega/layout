@@ -7,7 +7,7 @@
 
 namespace Drupal\page_layout\Controller;
 
-use Drupal\block\BlockManagerInterface;
+use Drupal\Core\Url;
 use Drupal\page_layout\LayoutStorageInterface;
 Use Drupal\Core\Plugin\Context\ContextHandler;
 use Drupal\page_manager\PageInterface;
@@ -15,6 +15,8 @@ use Drupal\page_manager\PageInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Block\BlockManagerInterface;
+
 
 use Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionInterface;
 use Drupal\page_layout\Plugin\LayoutRegion\LayoutConfigurableRegionBase;
@@ -50,7 +52,7 @@ class LayoutPageVariantController extends ControllerBase {
   /**
    * Constructs a new PageVariantEditForm.
    *
-   * @param \Drupal\block\BlockManagerInterface $block_manager
+   * @param \Drupal\Core\Block\BlockManagerInterface $block_manager
    *   The block manager.
    * @param \Drupal\Core\Plugin\Context\ContextHandler $context_handler
    *   The context handler.
@@ -119,14 +121,18 @@ class LayoutPageVariantController extends ControllerBase {
 
       $form['place_blocks']['list'][$category_key]['content']['#links'][$plugin_id] = array(
         'title' => $plugin_definition['admin_label'],
-        // path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/add'
-        'href' => '/admin/structure/page_manager/manage/' . $page->id() .'/manage/' . $page_variant_id . '/layout/'  . $layout_region_id . '/block/' . $plugin_id . '/add',
+        'url' => Url::fromRoute('layout.page_variant_layout_block_add', array(
+          'page' => $page->id(),
+          'page_variant_id' => $page_variant_id,
+          'layout_region_id' => $layout_region_id,
+          'block_id' => $plugin_id,
+        )),
         'attributes' => array(
           'class' => array('use-ajax', 'block-filter-text-source'),
           'data-accepts' => 'application/vnd.drupal-modal',
           'data-dialog-options' => Json::encode(array(
-              'width' => 700,
-            )),
+            'width' => 700,
+          )),
         ),
       );
     }

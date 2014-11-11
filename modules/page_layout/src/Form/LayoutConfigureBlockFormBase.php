@@ -96,26 +96,19 @@ abstract class LayoutConfigureBlockFormBase extends DisplayVariantConfigureBlock
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $settings = array(
-      'values' => &$form_state['values']['settings'],
-    );
     // Call the plugin validate handler.
-    $this->block->validateConfigurationForm($form, $settings);
+    $form_state->setValues($form_state->getValue('settings'));
+    $this->block->validateConfigurationForm($form, $form_state);
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $settings = array(
-      'values' => &$form_state['values']['settings'],
-      'errors' => $form_state['errors'],
-    );
-
     // Call the plugin submit handler.
-    $this->block->submitConfigurationForm($form, $settings);
+    $this->block->submitConfigurationForm($form, $form_state);
 
-    if (!empty($form_state['values']['context_assignments'])) {
+    if (!empty($form_state->getValue('context_assignments'))) {
       $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
     }
 
@@ -127,7 +120,7 @@ abstract class LayoutConfigureBlockFormBase extends DisplayVariantConfigureBlock
       $response->addCommand(new CloseDialogCommand());
       $response->addCommand(new LayoutBlockReload($this->block));
 
-      $form_state['response'] = $response;
+      $form_state->setResponse($response);
       return $response;
     }
 

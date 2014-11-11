@@ -105,10 +105,8 @@ abstract class LayoutRegionFormBase extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // Allow the page variant to validate the form.
-    $plugin_values = array(
-      'values' => &$form_state['values']['plugin'],
-    );
-    $this->layoutRegion->validateConfigurationForm($form, $plugin_values);
+    $form_state->setValues($form_state->getValue('plugin'));
+    $this->layoutRegion->validateConfigurationForm($form, $form_state);
   }
 
   /**

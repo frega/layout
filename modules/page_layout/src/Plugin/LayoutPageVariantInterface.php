@@ -6,7 +6,7 @@ use \Drupal\Core\Display\VariantInterface;
 
 interface LayoutPageVariantInterface extends VariantInterface, LayoutBlockAndContextProviderInterface {
   /**
-   * Adds a LayoutRegion to the layout regions bag.
+   * Adds a LayoutRegion to the layout regions collection.
    *
    * @param array $configuration
    * @return mixed
@@ -14,7 +14,7 @@ interface LayoutPageVariantInterface extends VariantInterface, LayoutBlockAndCon
   public function addLayoutRegion(array $configuration);
 
   /**
-   * Retrieves a LayoutRegion instance from the layout regions bag.
+   * Retrieves a LayoutRegion instance from the layout regions collection.
    *
    * @param $layout_region_id
    *
@@ -23,7 +23,7 @@ interface LayoutPageVariantInterface extends VariantInterface, LayoutBlockAndCon
   public function getLayoutRegion($layout_region_id);
 
   /**
-   * Remove a LayoutRegion instance from the layout regions bag.
+   * Remove a LayoutRegion instance from the layout regions collection.
    */
   public function removeLayoutRegion($layout_region_id);
 

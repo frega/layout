@@ -11,6 +11,7 @@ use Drupal\block\BlockPluginInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
 use Drupal\page_layout\LayoutRendererBlockAndContext;
 use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
 use Drupal\page_layout\PageLayout;
@@ -25,7 +26,7 @@ use Drupal\page_manager\Plugin\ContextAwareVariantTrait;
 use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\layout_plugin\Layout;
-use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBag;
+use Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginCollection;
 use Drupal\page_manager\Plugin\BlockVariantTrait;
 
 
@@ -53,9 +54,9 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
   /**
    * Layout regions.
    *
-   * @var \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBag
+   * @var \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginCollection
    */
-  public $layoutRegionBag;
+  public $layoutRegionCollection;
 
   /**
    * The context handler.
@@ -132,9 +133,9 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
   public function removeLayoutRegion($layout_region_id) {
     $this->getLayoutRegions()->removeInstanceId($layout_region_id);
     // @todo: remove contained blocks.
-    $blocksInRegion = $this->getBlockBag()->getAllByRegion($layout_region_id);
+    $blocksInRegion = $this->getBlockCollection()->getAllByRegion($layout_region_id);
     foreach ($blocksInRegion as $block_id => $block) {
-      $this->getBlockBag()->removeInstanceId($block_id);
+      $this->getBlockCollection()->removeInstanceId($block_id);
     }
     // @note: we need to update the configuration immediately to make sure this is persistable in the Page.
     $this->configuration['regions'] = $this->getLayoutRegions()->getConfiguration();
@@ -145,7 +146,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
    * Initializes the page variant regions on the basis of given layout.
    *
    * @param LayoutInterface $layout
-   * @return LayoutRegionPluginBag|\Drupal\page_layout\Plugin\LayoutRegionPluginBag
+   * @return LayoutRegionPluginCollection|\Drupal\page_layout\Plugin\LayoutRegionPluginCollection
    */
   private function initializeLayoutRegionsFromLayout(LayoutInterface $layout) {
     $this->configuration['regions'] = array();
@@ -183,19 +184,19 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
    * {@inheritdoc}
    */
   public function getLayoutRegions() {
-    if (!isset($this->layoutRegionBag) || !$this->layoutRegionBag) {
+    if (!isset($this->layoutRegionCollection) || !$this->layoutRegionCollection) {
       if (!isset($this->configuration['regions'])) {
         return $this->initializeLayoutRegionsFromLayout($this->getLayout());
       }
 
       $regions_data = $this->configuration['regions'];
-      $this->layoutRegionBag = new LayoutRegionPluginBag(PageLayout::layoutRegionPluginManager(),
+      $this->layoutRegionCollection = new LayoutRegionPluginCollection(PageLayout::layoutRegionPluginManager(),
         $regions_data
       );
 
-      $this->layoutRegionBag->sort();
+      $this->layoutRegionCollection->sort();
     }
-    return $this->layoutRegionBag;
+    return $this->layoutRegionCollection;
   }
 
   /**
@@ -235,7 +236,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
    * @return BlockPluginInterface[]
    */
   public function getBlocksByRegion($region_id) {
-    $all_by_region = $this->getBlockBag()->getAllByRegion($region_id);
+    $all_by_region = $this->getBlockCollection()->getAllByRegion($region_id);
     return isset($all_by_region[$region_id]) ? $all_by_region[$region_id] : array();
   }
 
@@ -324,16 +325,13 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
       '#required' => TRUE,
     );
 
-    $page = $form_state['build_info']['args'][0];
+
+    $page = $form_state->getBuildInfo()['args'][0];
 
     if (!$adding_variant) {
-      $page_variant = $page->getVariant($form_state['build_info']['args'][1]);
+      $build_info = $form_state->getBuildInfo();
+      $page_variant = $page->getVariant($build_info['args'][1]);
       $page_variant->init($page->getExecutable());
-
-      $form['links'] = array(
-        '#type' => 'markup',
-        '#markup' => l(t('Preview layout'), $page->get('path'), array('attributes' => array('target' => drupal_html_id($page->id()))))
-      );
 
       // This is just a quick hack, we need some form of theme_layout_ui call.
       $form['blocks'] = array(
@@ -365,7 +363,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
 
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
-    $this->configuration['layout'] = $form_state['values']['layout'];
+    $this->configuration['layout'] = $form_state->getValue('layout');
 
     // @note: we have no "oop"-way to latch onto the Page-preSave hook.
     if (!isset($this->configuration['regions'])) {
@@ -394,7 +392,7 @@ class LayoutPageVariant extends VariantBase implements ContextAwareVariantInterf
   public function getConfiguration() {
     return array(
       'selection_conditions' => $this->getSelectionConditions()->getConfiguration(),
-      'blocks' => $this->getBlockBag()->getConfiguration(),
+      'blocks' => $this->getBlockCollection()->getConfiguration(),
     ) + parent::getConfiguration();
   }
 

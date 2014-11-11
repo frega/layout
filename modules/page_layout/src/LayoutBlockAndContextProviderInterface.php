@@ -2,9 +2,9 @@
 
 /**
  * @file
- * Contains \Drupal\page_layout\Plugin\Layout\LayoutBlockAndContextProviderInterface.
+ * Contains \Drupal\page_layout\LayoutBlockAndContextProviderInterface.
  */
-namespace Drupal\page_layout\Plugin\Layout;
+namespace Drupal\page_layout;
 
 
 interface LayoutBlockAndContextProviderInterface {
@@ -23,10 +23,10 @@ interface LayoutBlockAndContextProviderInterface {
   public function getBlocksByRegion($region_id);
 
   /**
-   * Returns the plugin bag of LayoutRegions.
+   * Returns the plugin collection of LayoutRegions.
    *
-   * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBag
+   * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginCollection
    */
   public function getLayoutRegions();
 
-} 
+}

@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Contains \Drupal\page_layout\Plugin\LayoutRegionPluginBag.
+ * Contains \Drupal\page_layout\Plugin\LayoutRegionPluginCollection.
  */
 
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
-use Drupal\Core\Plugin\DefaultPluginBag;
+use Drupal\Core\Plugin\DefaultLazyPluginCollection;
 
 /**
  * Provides a collection of layout region plugins.
  */
-class LayoutRegionPluginBag extends DefaultPluginBag {
+class LayoutRegionPluginCollection extends DefaultLazyPluginCollection {
   /**
    * @return \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface
    */
