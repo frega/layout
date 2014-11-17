@@ -16,6 +16,8 @@ use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Url;
+
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\Core\Ajax\AjaxResponse;
@@ -96,20 +98,24 @@ abstract class LayoutConfigureBlockFormBase extends DisplayVariantConfigureBlock
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $settings = (new FormState())->setValues($form_state->getValue('settings'));
     // Call the plugin validate handler.
-    $form_state->setValues($form_state->getValue('settings'));
-    $this->block->validateConfigurationForm($form, $form_state);
+    $this->block->validateConfigurationForm($form, $settings);
+    // Update the original form values.
+    $form_state->setValue('settings', $settings->getValues());
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $settings = (new FormState())->setValues($form_state->getValue('settings'));
+
     // Call the plugin submit handler.
-    $this->block->submitConfigurationForm($form, $form_state);
+    $this->block->submitConfigurationForm($form, $settings);
 
     if (!empty($form_state->getValue('context_assignments'))) {
-      $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
+      $this->submitContextAssignment($this->block, $form_state->getValue('context_assignments'));
     }
 
     $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $this->layoutRegion->id()));

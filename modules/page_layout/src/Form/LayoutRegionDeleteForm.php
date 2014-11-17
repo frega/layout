@@ -107,11 +107,11 @@ class LayoutRegionDeleteForm extends ConfirmFormBase {
       $response = new AjaxResponse();
       $response->addCommand(new CloseDialogCommand());
       $response->addCommand(new LayoutReload($this->pageVariant));
-      $form_state['response'] = $response;
+      $form_state->setResponse($response);
       return $response;
     }
 
-    $form_state['redirect_route'] = $this->getCancelRoute();
+    $form_state->setRedirect($this->getCancelRoute());
   }
 
 }

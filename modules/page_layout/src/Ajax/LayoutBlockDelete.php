@@ -7,7 +7,7 @@
 
 namespace Drupal\page_layout\Ajax;
 
-use Drupal\block\BlockPluginInterface;
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Ajax\CommandInterface;
 
 use Drupal\page_layout\PageLayout;

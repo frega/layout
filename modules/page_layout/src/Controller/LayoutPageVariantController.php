@@ -202,8 +202,13 @@ class LayoutPageVariantController extends ControllerBase {
 
         $form['place_regions']['list'][$category_key]['content']['#links'][$plugin_id] = array(
           'title' => $label,
-          // path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/block/{block_id}/add'
-          'href' => '/admin/structure/page_manager/manage/' . $page->id() .'/manage/' . $page_variant_id . '/layout/'  . $layout_region_id . '/region/' . $plugin_id . '/add',
+          // path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/layout/{layout_region_id}/region/{plugin_id}/add'
+          'url' => Url::fromRoute('layout.layout_region_add_row', array(
+              'page' => $page->id(),
+              'page_variant_id' => $page_variant_id,
+              'layout_region_id' => $layout_region_id,
+              'plugin_id' => $plugin_id,
+            )),
           'attributes' => array(
             'class' => array('use-ajax', 'block-filter-text-source'),
             'data-accepts' => 'application/vnd.drupal-modal',

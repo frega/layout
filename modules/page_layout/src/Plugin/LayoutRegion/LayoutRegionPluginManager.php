@@ -31,18 +31,22 @@ class LayoutRegionPluginManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-
     $plugin_interface = 'Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface';
     $plugin_definition_annotation_name = 'Drupal\page_layout\Annotation\LayoutRegion';
-    parent::__construct("Plugin/LayoutRegion", $namespaces, $module_handler, $plugin_definition_annotation_name);
+    parent::__construct("Plugin/LayoutRegion", $namespaces, $module_handler, $plugin_interface, $plugin_definition_annotation_name);
+    // $this->discovery = new YamlDiscoveryDecorator($this->discovery, 'layout_regions', $module_handler->getModuleDirectories());
 
     $this->defaults += array(
-      'plugin_type' => 'LayoutRegion',
+      'type' => 'region',
+      'theme' => 'layout_region',
       'register_theme' => TRUE,
+      // Used for plugins defined in layouts.yml that do not specify a class
+      // themselves.
+      'class' => 'Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionPluginBase',
     );
 
-    $this->setCacheBackend($cache_backend, 'layout_region');
-    $this->alterInfo('layout_region');
+    $this->setCacheBackend($cache_backend, 'layout_regions');
+    $this->alterInfo('layout_regions');
+    return ;
   }
-
 }

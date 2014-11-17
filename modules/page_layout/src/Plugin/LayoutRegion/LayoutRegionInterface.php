@@ -2,13 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\page_layout\Plugin\LayoutRegionPluginInterface.
+ * Contains \Drupal\page_layout\Plugin\LayoutRegion\LayoutRegionInterface.
  */
 
 namespace Drupal\page_layout\Plugin\LayoutRegion;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\page_layout\LayoutBlockAndContextProviderInterface;
 
 /**
  * Provides an interface for static Layout plugins.

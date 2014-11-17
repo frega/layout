@@ -14,6 +14,7 @@ use Drupal\page_layout\Ajax\LayoutRegionReload;
 use Drupal\page_layout\Ajax\LayoutReload;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -79,7 +80,6 @@ abstract class LayoutRegionFormBase extends FormBase {
       $this->layoutRegion = $this->prepareLayoutRegion($layout_region_id);
     }
 
-
     // Allow the page variant to add to the form.
     $form['plugin'] = $this->layoutRegion->buildConfigurationForm(array(), $form_state);
     $form['plugin']['#tree'] = TRUE;
@@ -104,20 +104,19 @@ abstract class LayoutRegionFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Allow the page variant to validate the form.
-    $form_state->setValues($form_state->getValue('plugin'));
-    $this->layoutRegion->validateConfigurationForm($form, $form_state);
+    $settings = (new FormState())->setValues($form_state->getValue('plugin'));
+    // Call the plugin validate handler.
+    $this->layoutRegion->validateConfigurationForm($form, $settings);
+    // Update the original form values.
+    $form_state->setValue('plugin', $settings->getValues());
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Allow the page variant to submit the form.
-    $plugin_values = array(
-      'values' => &$form_state['values']['plugin'],
-    );
-    $this->layoutRegion->submitConfigurationForm($form, $plugin_values);
+    $settings = (new FormState())->setValues($form_state->getValue('plugin'));
+    $this->layoutRegion->submitConfigurationForm($form, $settings);
 
     $this->pageVariant->updateLayoutRegion($this->layoutRegion->id(), array(
       'label' => $this->layoutRegion->label(),
@@ -135,14 +134,14 @@ abstract class LayoutRegionFormBase extends FormBase {
         $response->addCommand(new LayoutRegionReload($this->pageVariant, $this->layoutRegion));
       }
 
-      $form_state['response'] = $response;
+      $form_state->setResponse($response);
       return $response;
     }
 
-    $form_state['redirect_route'] = new Url('page_manager.display_variant_edit', array(
+    $form_state->setRedirectUrl(new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
       'display_variant_id' => $this->pageVariant->id()
-    ));
+    )));
   }
 
 }
